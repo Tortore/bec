@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Nom de l'entreprise</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" crossorigin="anonymous">
+    <style>
+        .footer {
+            width: 100%;
+            background-color:#127749;
+            color: #FFF;
+            padding: 20px 0;
+        }
+
+        .footer a {
+            color: #CCC;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #FFF;
+        }
+
+        .headin5_amrc {
+            color: #FFF;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .footer_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer_ul_amrc li {
+            margin-bottom: 10px;
+        }
+
+        .social_footer_ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .social_footer_ul li a {
+            display: inline-block;
+            border: 1px solid #CCC;
+            padding: 8px;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+
+        .foote_bottom_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .foote_bottom_ul_amrc li a {
+            font-size: 14px;
+            color: #CCC;
+        }
+
+        .foote_bottom_ul_amrc li a:hover {
+            color: #FFF;
+        }
+    </style>
+    <style>
+        .recent-projects {
+            background-color: #f8f9fa;
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            will-change: transform;
+            /* Optimise les animations */
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Timing function plus rapide */
+            backface-visibility: hidden;
+            /* Améliore le rendu */
+            transform: translateZ(0);
+            /* Active l'accélération GPU */
+        }
+
+        .project-card {
+            flex: 0 0 calc(33.333% - 13.33px);
+            /* 3 cartes visibles (20px de gap / 3 = ~6.66px par côté) */
+            min-width: 300px;
+            /* Largeur minimale cohérente */
+            transform: translateZ(0);
+            /* Optimisation matérielle */
+        }
+
+        .card {
+            height: 100%;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            height: 150px;
+            object-fit: cover;
+            /* Garde un ratio propre */
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .carousel-control.prev {
+            left: 10px;
+        }
+
+        .carousel-control.next {
+            right: 10px;
+        }
+
+        .carousel-control:hover {
+            background-color: rgba(214, 83, 83, 0.8);
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Barre de menu -->
+    <nav class="navbar navbar-expand-lg navbar-dark " id="header">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <div style="height: 50px; overflow: hidden; display: flex; align-items: center;">
+                    <img src="images/logo/LOGOBLANC.png.jpg" alt="Logo" style="height: 100px; width: auto;">
+                </div>
+                <span style="margin-left: 10px;">Bureau Études et Constructions</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Menu Projets -->
+                    <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projetsDropdown" role="button"
+                            data-toggle="dropdown">
+                            Projets
+                        </a>
+                        <div class="dropdown-menu">
+                            <!-- Sous-menu Résidentiel -->
+                            <div class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">
+                                    Résidentiel
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="resident.html">Résidence unique</a>
+                                    <a class="dropdown-item" href="multiresident.html">Multi-résidentiel</a>
+                                    <a class="dropdown-item" href="logement.html">Logement social</a>
+                                </div>
+                            </div>
+                            <a class="dropdown-item" href="public.html">Publique</a>
+                            <a class="dropdown-item" href="hospitalite.html">Hospitalité</a>
+                            <a class="dropdown-item" href="commercial.html">Commercial</a>
+                            <a class="dropdown-item" href="#">Projets de stage</a>
+                            <a class="dropdown-item" href="academique.html">Académiques</a>
+                            <a class="dropdown-item" href="#">Vidéos</a>
+                        </div>
+                    </li>
+                    <!-- Autres menus -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="aproposDropdown" role="button"
+                            data-toggle="dropdown">
+                            À propos de
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="profil.html">Profil</a>
+                            <a class="dropdown-item" href="personne.html">Personne</a>
+                            <a class="dropdown-item" href="#">Prix</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Média</a></li>
+                    <li class="nav-item"><a class="nav-link" href="nouvelle.html">Nouvelles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Carrières</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Carrousel -->
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="images/maison.jpg" class="d-block w-100" alt="Maison">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Résidences modernes</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/hospise.jpg" class="d-block w-100" alt="Hôpital">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Centres de santé</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/chantier.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/chantier1.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/chantier3.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/chantier4.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/img1.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/img2.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/img3.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/img4.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/img6.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/img7.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/img8.jpg" class="d-block w-100" alt="Chantier">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chantiers professionnels</h5>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Précédent</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Suivant</span>
+        </a>
+    </div>
+    <!-- Section Projets Récents -->
+    <section class="recent-projects py-5">
+        <div class="container">
+            <h2 class="mb-4 text-center">Projets Récents</h2>
+            <div class="carousel-container">
+                <div class="carousel-track">
+                    <!-- Projet 1 -->
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <a href="caracteristique.html" class="img-link">
+                                <img src="images/multiresident/multiresident2.jpg" class="card-img-top" alt="Projet 1">
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">Résidence moderne</h5>
+                                <p class="card-text">Lubumbashi, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Projet 2 -->
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/logement/logement3.jpg" class="card-img-top" alt="Projet 2">
+                            <div class="card-body">
+                                <h5 class="card-title">Centre médical</h5>
+                                <p class="card-text">Kinshasa, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Projet 3 -->
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/chantier.jpg" class="card-img-top" alt="Projet 3">
+                            <div class="card-body">
+                                <h5 class="card-title">Complexe commercial</h5>
+                                <p class="card-text">Kolwezi, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Projet 4 -->
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/logement/logement2.jpg" class="card-img-top" alt="Projet 4">
+                            <div class="card-body">
+                                <h5 class="card-title">Bureaux modernes</h5>
+                                <p class="card-text">Lubumbashi, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Projet 5 -->
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/img1.jpg" class="card-img-top" alt="Projet 5">
+                            <div class="card-body">
+                                <h5 class="card-title">Hôtel de luxe</h5>
+                                <p class="card-text">Goma, 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Projet 6 -->
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/img1.jpg" class="card-img-top" alt="Projet 6">
+                            <div class="card-body">
+                                <h5 class="card-title">Villa familiale</h5>
+                                <p class="card-text">Bukavu, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Ajoutez plus de projets ici -->
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/img1.jpg" class="card-img-top" alt="Projet 6">
+                            <div class="card-body">
+                                <h5 class="card-title">Villa familiale</h5>
+                                <p class="card-text">Bukavu, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/img1.jpg" class="card-img-top" alt="Projet 6">
+                            <div class="card-body">
+                                <h5 class="card-title">Villa familiale</h5>
+                                <p class="card-text">Bukavu, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="card shadow-sm">
+                            <img src="images/img1.jpg" class="card-img-top" alt="Projet 6">
+                            <div class="card-body">
+                                <h5 class="card-title">Villa familiale</h5>
+                                <p class="card-text">Bukavu, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Boutons de navigation -->
+                <button class="carousel-control prev" onclick="moveCarousel(-1)">&#10094;</button>
+                <button class="carousel-control next" onclick="moveCarousel(1)">&#10095;</button>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container bottom_border">
+            <div class="row">
+                <!-- Informations de contact -->
+                <div class="col-sm-4 col-md col-12">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Contact</h5>
+                    <p class="mb10">Pour toute information, contactez-nous :</p>
+                    <p><i class="fa fa-location-arrow"></i> Avenue de la Moto, RDC, Lubumbashi, Quartier Gambela 2,
+                        Commune de Lubumbashi</p>
+                    <p><i class="fa fa-phone"></i> +243 97346 0373</p>
+                    <p><i class="fa fa-phone"></i> +243 97840 0373</p>
+                    <p><i class="fa fa-envelope"></i> <a href="mailto:bec@gmail.com"
+                            class="text-white">bec@gmail.com</a></p>
+                </div>
+
+                <!-- Liens rapides -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Liens rapides</h5>
+                    <ul class="footer_ul_amrc">
+                        <li><a href="profil.html">À propos</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                        <li><a href="#">Projets</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Réseaux sociaux -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Suivez-nous</h5>
+                    <ul class="social_footer_ul">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container">
+            <ul class="foote_bottom_ul_amrc">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="profil.html">À propos</a></li>
+                <li><a href="#">Projets</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <p class="text-center">Bureau Études et Constructions © 2025. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let currentPosition = 0;
+
+        function moveCarousel(direction) {
+            const track = document.querySelector('.carousel-track');
+            const cardWidth = document.querySelector('.project-card').offsetWidth + 20; // Inclut l'espace entre les cartes
+            const totalCards = document.querySelectorAll('.project-card').length;
+            const visibleCards = 6;
+
+            // Calcul de la position maximale
+            const maxPosition = Math.max(0, totalCards - visibleCards) * cardWidth;
+
+            // Met à jour la position actuelle
+            currentPosition = Math.min(Math.max(currentPosition + direction * cardWidth, -maxPosition), 0);
+
+            // Applique la translation
+            track.style.transform = `translateX(${currentPosition}px)`;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaracteristiqueMaison</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="stylegalerie.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .footer {
+            width: 100%;
+            background-color: #344E41;
+            color: #FFF;
+            padding: 20px 0;
+        }
+        .footer a {
+            color: #CCC;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #FFF;
+        }
+        .headin5_amrc {
+            color: #FFF;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .footer_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer_ul_amrc li {
+            margin-bottom: 10px;
+        }
+        .social_footer_ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 15px;
+        }
+        .social_footer_ul li a {
+            display: inline-block;
+            border: 1px solid #CCC;
+            padding: 8px;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+        .foote_bottom_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .foote_bottom_ul_amrc li a {
+            font-size: 14px;
+            color: #CCC;
+        }
+        .foote_bottom_ul_amrc li a:hover {
+            color: #FFF;
+        }
+    </style>
+       <style>
+        /* Global Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: bold;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            background: url('images/multiresident/multiresident2.jpg') center center/cover no-repeat;
+            height: 450px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .hero-section h1 {
+            z-index: 2;
+            font-size: 3rem;
+        }
+
+        /* Details Section */
+        .details-section {
+            padding: 60px 20px;
+            background: #fff;
+        }
+
+        .details-section h2 {
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .details-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .details-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .details-box h4 {
+            color: #00af84;
+            margin-bottom: 15px;
+        }
+
+        .details-box ul {
+            padding-left: 20px;
+        }
+
+        .details-box ul li {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 60px 20px;
+            background: #f9f9f9;
+        }
+
+        .gallery-section h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Price Section */
+        .price-section {
+            padding: 40px 20px;
+            background: #00af84;
+            color: white;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-section .price {
+            font-size: 3rem;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .price-section button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: white;
+            color: #00af84;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .price-section button:hover {
+            background: #065b48;
+            color: white;
+        }
+
+        /* Footer Section */
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer a {
+            color: #dcdcdc;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #00af84;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barre de menu -->
+    <nav class="navbar navbar-expand-lg navbar-dark " id="header">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <div style="height: 50px; overflow: hidden; display: flex; align-items: center;">
+                    <img src="images/logo/LOGOBLANC.png.jpg" alt="Logo" style="height: 100px; width: auto;">
+                </div>
+                <span style="margin-left: 10px;">Bureau Études et Constructions</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Menu Projets -->
+                    <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projetsDropdown" role="button"
+                            data-toggle="dropdown">
+                            Projets
+                        </a>
+                        <div class="dropdown-menu">
+                            <!-- Sous-menu Résidentiel -->
+                            <div class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">
+                                    Résidentiel
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="resident.html">Résidence unique</a>
+                                    <a class="dropdown-item" href="multiresident.html">Multi-résidentiel</a>
+                                    <a class="dropdown-item" href="logement.html">Logement social</a>
+                                </div>
+                            </div>
+                            <a class="dropdown-item" href="public.html">Publique</a>
+                            <a class="dropdown-item" href="hospitalite.html">Hospitalité</a>
+                            <a class="dropdown-item" href="commercial.html">Commercial</a>
+                            <a class="dropdown-item" href="#">Projets de stage</a>
+                            <a class="dropdown-item" href="academique.html">Académiques</a>
+                            <a class="dropdown-item" href="#">Vidéos</a>
+                        </div>
+                    </li>
+                    <!-- Autres menus -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="aproposDropdown" role="button"
+                            data-toggle="dropdown">
+                            À propos de
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="profil.html">Profil</a>
+                            <a class="dropdown-item" href="personne.html">Personne</a>
+                            <a class="dropdown-item" href="#">Prix</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Média</a></li>
+                    <li class="nav-item"><a class="nav-link" href="nouvelle.html">Nouvelles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Carrières</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>Découvrez la Résidence Moderne</h1>
+        </div>
+    
+        <!-- Details Section -->
+        <section class="details-section">
+            <h2>Caractéristiques et Matériaux</h2>
+            <div class="details-row">
+                <div class="details-box">
+                    <h4>Caractéristiques principales</h4>
+                    <ul>
+                        <li>Superficie : 250 m²</li>
+                        <li>3 Chambres spacieuses</li>
+                        <li>2 Salles de bains modernes</li>
+                        <li>Terrasse avec vue panoramique</li>
+                        <li>Garage pour 2 voitures</li>
+                    </ul>
+                </div>
+                <div class="details-box">
+                    <h4>Matériaux de qualité</h4>
+                    <ul>
+                        <li>Fondations en béton armé</li>
+                        <li>Fenêtres en double vitrage</li>
+                        <li>Sol en marbre luxueux</li>
+                        <li>Toiture résistante en tuiles</li>
+                        <li>Isolation thermique et acoustique</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Gallery Section -->
+        <section class="gallery-section">
+            <h2>Galerie d'Images</h2>
+            <div class="gallery">
+                <img src="images/logement/logement3.jpg" alt="Vue Extérieure">
+                <img src="images/logement/logement2.jpg" alt="Salon Moderne">
+                <img src="images/logement/logement4.jpg" alt="Cuisine">
+                <img src="images/logement/logement1.jpg" alt="Chambre Spacieuse">
+            </div>
+        </section>
+    
+        <!-- Price Section -->
+        <section class="price-section">
+            <p>Prix de cette résidence</p>
+            <div class="price">250 000 $</div>
+            <button>Demander un devis</button>
+        </section>
+
+     <!-- Pied de page -->
+     <footer class="footer">
+        <div class="container bottom_border">
+            <div class="row">
+                <!-- Informations de contact -->
+                <div class="col-sm-4 col-md col-12">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Contact</h5>
+                    <p class="mb10">Pour toute information, contactez-nous :</p>
+                    <p><i class="fa fa-location-arrow"></i> Avenue de la Moto, RDC, Lubumbashi, Quartier Gambela 2,
+                        Commune de Lubumbashi</p>
+                    <p><i class="fa fa-phone"></i> +243 97346 0373</p>
+                    <p><i class="fa fa-phone"></i> +243 97840 0373</p>
+                    <p><i class="fa fa-envelope"></i> <a href="mailto:bec@gmail.com"
+                            class="text-white">bec@gmail.com</a></p>
+                </div>
+
+                <!-- Liens rapides -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Liens rapides</h5>
+                    <ul class="footer_ul_amrc">
+                        <li><a href="profil.html">À propos</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                        <li><a href="#">Projets</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Réseaux sociaux -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Suivez-nous</h5>
+                    <ul class="social_footer_ul">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                    
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="container">
+            <ul class="foote_bottom_ul_amrc">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="profil.html">À propos</a></li>
+                <li><a href="#">Projets</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <p class="text-center">Bureau Études et Constructions © 2025. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

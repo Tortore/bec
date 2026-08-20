@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personnels</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" crossorigin="anonymous">
+    <style>
+        .footer {
+            width: 100%;
+            background-color: #344E41;
+            color: #FFF;
+            padding: 20px 0;
+        }
+
+        .footer a {
+            color: #CCC;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #FFF;
+        }
+
+        .headin5_amrc {
+            color: #FFF;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .footer_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer_ul_amrc li {
+            margin-bottom: 10px;
+        }
+
+        .social_footer_ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .social_footer_ul li a {
+            display: inline-block;
+            border: 1px solid #CCC;
+            padding: 8px;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+
+        .foote_bottom_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .foote_bottom_ul_amrc li a {
+            font-size: 14px;
+            color: #CCC;
+        }
+
+        .foote_bottom_ul_amrc li a:hover {
+            color: #FFF;
+        }
+    </style>
+    <style>
+        /* Lazy Load Styles */
+        .card-image {
+            display: block;
+            min-height: 20rem;
+            background: #fff center center no-repeat;
+            background-size: cover;
+            filter: blur(3px);
+            transition: filter 0.5s ease;
+            /* Ajoute une transition pour un effet fluide */
+        }
+
+        .card-image:hover {
+            filter: none;
+            /* Supprime le flou au survol */
+        }
+
+
+
+        .card-image>img {
+            display: block;
+            width: 100%;
+            opacity: 0;
+        }
+
+        .card-image.is-loaded {
+            filter: none;
+            transition: filter 1s;
+        }
+
+        /* Layout Styles */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+        }
+
+        .card-list {
+            display: block;
+            margin: 1rem auto;
+            padding: 0;
+            font-size: 0;
+            text-align: center;
+            list-style: none;
+        }
+
+        .card {
+            display: inline-block;
+            width: 90%;
+            max-width: 20rem;
+            margin: 1rem;
+            font-size: 1rem;
+            text-decoration: none;
+            overflow: hidden;
+            box-shadow: 0 0 3rem -1rem rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s;
+        }
+
+        .card:hover {
+            transform: translateY(-0.5rem) scale(1.0125);
+            box-shadow: 0 0.5em 3rem -1rem rgba(0, 0, 0, 0.5);
+        }
+
+        .card-description {
+            padding: 1em 0.5em;
+            color: #515151;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 2rem 0;
+        }
+
+        footer a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .social-icons a {
+            color: #fff;
+            margin: 0 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barre de menu -->
+    <nav class="navbar navbar-expand-lg navbar-dark " id="header">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <div style="height: 50px; overflow: hidden; display: flex; align-items: center;">
+                    <img src="images/logo/LOGOBLANC.png.jpg" alt="Logo" style="height: 100px; width: auto;">
+                </div>
+                <span style="margin-left: 10px;">Bureau Études et Constructions</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Menu Projets -->
+                    <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projetsDropdown" role="button"
+                            data-toggle="dropdown">
+                            Projets
+                        </a>
+                        <div class="dropdown-menu">
+                            <!-- Sous-menu Résidentiel -->
+                            <div class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">
+                                    Résidentiel
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="resident.html">Résidence unique</a>
+                                    <a class="dropdown-item" href="multiresident.html">Multi-résidentiel</a>
+                                    <a class="dropdown-item" href="logement.html">Logement social</a>
+                                </div>
+                            </div>
+                            <a class="dropdown-item" href="public.html">Publique</a>
+                            <a class="dropdown-item" href="hospitalite.html">Hospitalité</a>
+                            <a class="dropdown-item" href="commercial.html">Commercial</a>
+                            <a class="dropdown-item" href="#">Projets de stage</a>
+                            <a class="dropdown-item" href="academique.html">Académiques</a>
+                            <a class="dropdown-item" href="#">Vidéos</a>
+                        </div>
+                    </li>
+                    <!-- Autres menus -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="aproposDropdown" role="button"
+                            data-toggle="dropdown">
+                            À propos de
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="profil.html">Profil</a>
+                            <a class="dropdown-item" href="personne.html">Personne</a>
+                            <a class="dropdown-item" href="#">Prix</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Média</a></li>
+                    <li class="nav-item"><a class="nav-link" href="nouvelle.html">Nouvelles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Carrières</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Contenu principal -->
+    <main>
+        <ul class="card-list">
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/DGCalbeb.jpg');">
+                    <img src="images/Photos/DGCalbeb.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2>Caleb Tshileu</h2>
+                    <p>Directeur Général</p>
+                </div>
+            </li>
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/Dtechnique.jpg');">
+                    <img src="images/Photos/Dtechnique.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2>Fidèle Madika</h2>
+                    <p>Directeur Technique</p>
+                </div>
+            </li>
+
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/ArchPrincipal.jpg');">
+                    <img src="images/Photos/ArchPrincipal.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2> Patrick Mulumba</h2>
+                    <p>Architecte Principal</p>
+                </div>
+            </li>
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/IngCivil.jpg');">
+                    <img src="images/Photos/IngCivil.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2>Junior Inpote</h2>
+                    <p>Ingenieur Civil</p>
+                </div>
+            </li>
+
+        </ul>
+        <ul class="card-list">
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/IngBTP.jpg');">
+                    <img src="images/Photos/IngBTP.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2>Fidèle Mugisho</h2>
+                    <p>Ingenieur BTP</p>
+                </div>
+            </li>
+            <!-- Répétez les autres cartes ici -->
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/ArchInt.jpg');">
+                    <img src="images/Photos/ArchInt.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2>Sarah Tshikala</h2>
+                    <p>Architecte Interieur</p>
+                </div>
+            </li>
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/IngGenielElect.jpg');">
+                    <img src="images/Photos/IngGenielElect.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2> Hertier Sangwa</h2>
+                    <p>Ingenieur en genie electrique</p>
+                </div>
+            </li>
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/Topographie.jpg');">
+                    <img src="images/Photos/Topographie.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2>Robert Ngoy</h2>
+                    <p>Topographe</p>
+                </div>
+            </li>
+        </ul>
+        <ul class="card-list">
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/Secretaire.jpg');">
+                    <img src="images/Photos/Secretaire.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2>Anne Mole</h2>
+                    <p>Secretaire General</p>
+                </div>
+            </li>
+            <!-- Répétez les autres cartes ici -->
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/Consultant.jpg');">
+                    <img src="images/Photos/Consultant.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2> Richard Mpande </h2>
+                    <p>Consultant Architecte</p>
+                </div>
+            </li>
+            <li class="card">
+                <div class="card-image" style="background-image: url('images/Photos/GRhumaine.jpg');">
+                    <img src="images/Photos/GRhumaine.jpg" alt="Caleb Tshileu" />
+                </div>
+                <div class="card-description">
+                    <h2> Josue Lwamba</h2>
+                    <p>Directeur des ressours humaines</p>
+                </div>
+            </li>
+        </ul>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container bottom_border">
+            <div class="row">
+                <!-- Informations de contact -->
+                <div class="col-sm-4 col-md col-12">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Contact</h5>
+                    <p class="mb10">Pour toute information, contactez-nous :</p>
+                    <p><i class="fa fa-location-arrow"></i> Avenue de la Moto, RDC, Lubumbashi, Quartier Gambela 2,
+                        Commune de Lubumbashi</p>
+                    <p><i class="fa fa-phone"></i> +243 97346 0373</p>
+                    <p><i class="fa fa-phone"></i> +243 97840 0373</p>
+                    <p><i class="fa fa-envelope"></i> <a href="mailto:bec@gmail.com"
+                            class="text-white">bec@gmail.com</a></p>
+                </div>
+
+                <!-- Liens rapides -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Liens rapides</h5>
+                    <ul class="footer_ul_amrc">
+                        <li><a href="profil.html">À propos</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                        <li><a href="#">Projets</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Réseaux sociaux -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Suivez-nous</h5>
+                    <ul class="social_footer_ul">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <ul class="foote_bottom_ul_amrc">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="profil.html">À propos</a></li>
+                <li><a href="#">Projets</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <p class="text-center">Bureau Études et Constructions © 2025. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Lazy load images
+        window.addEventListener("load", function () {
+            setTimeout(lazyLoad, 1000);
+        });
+
+        function lazyLoad() {
+            var card_images = document.querySelectorAll(".card-image");
+
+            card_images.forEach(function (card_image) {
+                var image_url = card_image.getAttribute("data-image-full");
+                var content_image = card_image.querySelector("img");
+
+                content_image.src = image_url;
+
+                content_image.addEventListener("load", function () {
+                    card_image.style.backgroundImage = "url(" + image_url + ")";
+                    card_image.className += " is-loaded";
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

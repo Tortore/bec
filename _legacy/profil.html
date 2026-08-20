@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+    <style>
+        .footer {
+            width: 100%;
+            background-color: #344E41;
+            color: #FFF;
+            padding: 20px 0;
+        }
+        .footer a {
+            color: #CCC;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #FFF;
+        }
+        .headin5_amrc {
+            color: #FFF;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .footer_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer_ul_amrc li {
+            margin-bottom: 10px;
+        }
+        .social_footer_ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 15px;
+        }
+        .social_footer_ul li a {
+            display: inline-block;
+            border: 1px solid #CCC;
+            padding: 8px;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+        .foote_bottom_ul_amrc {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .foote_bottom_ul_amrc li a {
+            font-size: 14px;
+            color: #CCC;
+        }
+        .foote_bottom_ul_amrc li a:hover {
+            color: #FFF;
+        }
+    </style>
+    <style>
+        /* Corps global */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Section titre principal */
+        h1, h2 {
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        /* Style des sections */
+        section {
+            background: #fff;
+            padding: 4rem 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Icônes */
+        .bi {
+            font-size: 1.5rem;
+            color: #1e40af;
+            margin-right: 10px;
+        }
+
+        /* Boutons */
+        .btn-primary {
+            background-color: #2563eb;
+            border-color: #2563eb;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e3a8a;
+        }
+
+        /* Liste stylisée */
+        ul.list-unstyled li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        ul.list-unstyled li i {
+            margin-right: 15px;
+            color: #2563eb;
+        }
+
+        /* Effets sur les paragraphes */
+        p.lead {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        /* Titres */
+        .display-5, .display-4 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Conteneur global */
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+      
+    </style>
+</head>
+
+<body>
+    <!-- Barre de menu -->
+    <nav class="navbar navbar-expand-lg navbar-dark " id="header">
+        <div class="container">
+            
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <div style="height: 50px; overflow: hidden; display: flex; align-items: center;">
+                    <img src="images/logo/LOGOBLANC.png.jpg" alt="Logo" style="height: 100px; width: auto;">
+                </div>
+                <span style="margin-left: 10px;">Bureau Études et Constructions</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Menu Projets -->
+                    <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projetsDropdown" role="button"
+                            data-toggle="dropdown">
+                            Projets
+                        </a>
+                        <div class="dropdown-menu">
+                            <!-- Sous-menu Résidentiel -->
+                            <div class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">
+                                    Résidentiel
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="resident.html">Résidence unique</a>
+                                    <a class="dropdown-item" href="multiresident.html">Multi-résidentiel</a>
+                                    <a class="dropdown-item" href="logement.html">Logement social</a>
+                                </div>
+                            </div>
+                            <a class="dropdown-item" href="public.html">Publique</a>
+                            <a class="dropdown-item" href="hospitalite.html">Hospitalité</a>
+                            <a class="dropdown-item" href="commercial.html">Commercial</a>
+                            <a class="dropdown-item" href="#">Projets de stage</a>
+                            <a class="dropdown-item" href="academique.html">Académiques</a>
+                            <a class="dropdown-item" href="#">Vidéos</a>
+                        </div>
+                    </li>
+                    <!-- Autres menus -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="aproposDropdown" role="button"
+                            data-toggle="dropdown">
+                            À propos de
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="profil.html">Profil</a>
+                            <a class="dropdown-item" href="personne.html">Personne</a>
+                            <a class="dropdown-item" href="#">Prix</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Média</a></li>
+                    <li class="nav-item"><a class="nav-link" href="nouvelle.html">Nouvelles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Carrières</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="container mt-5">
+        <!-- Section: Qui sommes-nous ? -->
+        <section class="text-center mb-5">
+            <h1 class="display-4 fw-bold">Qui sommes-nous ?</h1>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="lead">
+                        Fondé en 2022 en République Démocratique du Congo (RDC) par deux architectes visionnaires,
+                        <strong>Caleb Tshileu</strong> et <strong>Fidèle Djese</strong>, le <strong>Bureau d’Études et
+                            Construction (BEC)</strong>
+                        est une entreprise qui révolutionne l’architecture contemporaine.
+                    </p>
+                    <p class="text-muted">
+                        De la conception de bâtiments résidentiels aux projets d’envergure urbanistique, nous nous
+                        engageons à
+                        transformer chaque idée en une œuvre architecturale unique, alliant modernité et durabilité.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Notre Mission -->
+        <section class="mb-5">
+            <h2 class="text-center display-5 fw-bold">Notre Mission</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="lead text-muted">
+                        Au-delà de la simple conception architecturale, notre mission est de bâtir un futur où chaque
+                        projet devient
+                        un symbole d’innovation et de fierté. Nous nous engageons à :
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-primary"></i> Traduire la vision unique
+                            de chaque client en solutions concrètes.</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-primary"></i> Accompagner chaque projet
+                            de l’idée initiale à son aboutissement.</li>
+                        <li class="mb-3"><i class="bi bi-check-circle-fill text-primary"></i> Offrir des expériences
+                            client inégalées grâce à des solutions sur mesure.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Notre Équipe -->
+        <section class="mb-5">
+            <h2 class="text-center display-5 fw-bold">Notre Équipe</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="lead text-muted">
+                        L’excellence de nos réalisations repose sur une équipe dynamique et multidisciplinaire composée
+                        de :
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-person-check-fill text-primary"></i> Architectes professionnels
+                        </li>
+                        <li class="mb-3"><i class="bi bi-person-check-fill text-primary"></i> Designers d’intérieur</li>
+                        <li class="mb-3"><i class="bi bi-person-check-fill text-primary"></i> Ingénieurs en construction
+                        </li>
+                        <li class="mb-3"><i class="bi bi-person-check-fill text-primary"></i> Experts en urbanisme</li>
+                    </ul>
+                    <p class="text-muted">
+                        Notre philosophie d’équipe repose sur l’innovation, la collaboration, et la proximité avec nos
+                        clients et partenaires.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Nos Valeurs -->
+        <section class="mb-5">
+            <h2 class="text-center display-5 fw-bold">Nos Valeurs</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="lead text-muted">
+                        Chez BEC, nos décisions sont guidées par des valeurs fondamentales qui définissent notre
+                        identité :
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-gem text-primary"></i> <strong>Rigueur :</strong> Livrer des
+                            projets précis et de qualité supérieure.</li>
+                        <li class="mb-3"><i class="bi bi-lightbulb-fill text-primary"></i> <strong>Créativité :</strong>
+                            Offrir des solutions innovantes et uniques.</li>
+                        <li class="mb-3"><i class="bi bi-tree text-primary"></i> <strong>Durabilité :</strong> Concilier
+                            esthétique et respect de l’environnement.</li>
+                        <li class="mb-3"><i class="bi bi-handshake text-primary"></i> <strong>Confiance :</strong> Bâtir
+                            des relations solides avec nos partenaires.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Nos Réalisations -->
+        <section class="mb-5">
+            <h2 class="text-center display-5 fw-bold">Nos Réalisations</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="lead text-muted">
+                        Depuis notre création, nous avons marqué notre empreinte à travers des projets ambitieux tels
+                        que :
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-house-door-fill text-primary"></i> <strong>Bâtiments
+                                résidentiels modernes :</strong> Adaptés aux besoins des familles.</li>
+                        <li class="mb-3"><i class="bi bi-lamp-fill text-primary"></i> <strong>Designs d’intérieur
+                                :</strong> Esthétisme et fonctionnalité harmonisés.</li>
+                        <li class="mb-3"><i class="bi bi-building text-primary"></i> <strong>Projets mixtes :</strong>
+                            Espaces commerciaux et résidentiels.</li>
+                        <li class="mb-3"><i class="bi bi-globe text-primary"></i> <strong>Projets urbanistiques
+                                :</strong> Conception et planification à grande échelle.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Nos Services -->
+        <section class="mb-5">
+            <h2 class="text-center display-5 fw-bold">Nos Services</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="lead text-muted">
+                        BEC propose une large gamme de services répondant aux besoins les plus complexes :
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-pencil-ruler text-primary"></i> <strong>Conception
+                                architecturale :</strong> Plans innovants et personnalisés.</li>
+                        <li class="mb-3"><i class="bi bi-palette text-primary"></i> <strong>Design d’intérieur
+                                :</strong> Espaces esthétiques et fonctionnels.</li>
+                        <li class="mb-3"><i class="bi bi-tools text-primary"></i> <strong>Gestion de projet :</strong>
+                            Coordination de bout en bout.</li>
+                        <li class="mb-3"><i class="bi bi-geo-alt-fill text-primary"></i> <strong>Urbanisme :</strong>
+                            Développement durable et planification stratégique.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Nos Engagements -->
+        <section>
+            <h2 class="text-center display-5 fw-bold">Nos Engagements</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <p class="lead text-muted">
+                        Nous nous engageons à respecter nos promesses et à dépasser vos attentes :
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="bi bi-hourglass-split text-primary"></i> Respecter les délais et les
+                            budgets convenus.</li>
+                        <li class="mb-3"><i class="bi bi-award-fill text-primary"></i> Garantir une qualité d’exécution
+                            irréprochable.</li>
+                        <li class="mb-3"><i class="bi bi-recycle text-primary"></i> Promouvoir l’usage de matériaux
+                            durables.</li>
+                        <li class="mb-3"><i class="bi bi-people-fill text-primary"></i> Prioriser la satisfaction et
+                            l’expérience client.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+    <!-- Pied de page -->
+    <footer class="footer">
+        <div class="container bottom_border">
+            <div class="row">
+                <!-- Informations de contact -->
+                <div class="col-sm-4 col-md col-12">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Contact</h5>
+                    <p class="mb10">Pour toute information, contactez-nous :</p>
+                    <p><i class="fa fa-location-arrow"></i> Avenue de la Moto, RDC, Lubumbashi, Quartier Gambela 2,
+                        Commune de Lubumbashi</p>
+                    <p><i class="fa fa-phone"></i> +243 97346 0373</p>
+                    <p><i class="fa fa-phone"></i> +243 97840 0373</p>
+                    <p><i class="fa fa-envelope"></i> <a href="mailto:bec@gmail.com"
+                            class="text-white">bec@gmail.com</a></p>
+                </div>
+
+                <!-- Liens rapides -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Liens rapides</h5>
+                    <ul class="footer_ul_amrc">
+                        <li><a href="profil.html">À propos</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                        <li><a href="#">Projets</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Réseaux sociaux -->
+                <div class="col-sm-4 col-md col-6">
+                    <h5 class="headin5_amrc col_white_amrc pt2">Suivez-nous</h5>
+                    <ul class="social_footer_ul">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <ul class="foote_bottom_ul_amrc">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="profil.html">À propos</a></li>
+                <li><a href="#">Projets</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <p class="text-center">Bureau Études et Constructions © 2025. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

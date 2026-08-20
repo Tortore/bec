@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  slug        String   @id
+  title       String
+  subtitle    String
+  category    String
+  city        String
+  country     String
+  year        Int
+  cover       String
+  images      String[]
+  excerpt     String
+  description String
+  features    String[]
+  materials   String[]
+  area        String?
+  client      String?
+  duration    String?
+  price       String?
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published, featured])
+  @@index([year])
+}
+
+model Article {
+  slug           String   @id
+  title          String
+  excerpt        String
+  content        String[]
+  cover          String
+  category       String
+  date           String
+  readingMinutes Int      @default(4)
+  published      Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([published, date])
+}
+
+model Service {
+  id               String   @id
+  title            String
+  shortDescription String
+  description      String
+  features         String[]
+  process          Json
+  image            String
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model TeamMember {
+  id         String         @id
+  name       String
+  role       String
+  specialty  String
+  image      String
+  department String
+  sortOrder  Int            @default(0)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([read, createdAt])
+}
+
+model SiteSettings {
+  id          String   @id @default("default")
+  email       String
+  phones      String[]
+  whatsapp    String
+  street      String
+  neighborhood String
+  commune     String
+  city        String
+  country     String
+  fullAddress String
+  hours       Json
+  mapsEmbed   String
+  mapsUrl     String
+  facebook    String   @default("#")
+  twitter     String   @default("#")
+  linkedin    String   @default("#")
+  instagram   String   @default("#")
+  tagline     String
+  updatedAt   DateTime @updatedAt
+}
+
+model CompanyProfile {
+  id        String   @id @default("default")
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+model HomePage {
+  id      String @id @default("default")
+  data    Json
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        String   @id
+  label     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Application {
+  id           String   @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String
+  phone        String
+  city         String
+  position     String
+  experience   String   @default("")
+  education    String   @default("")
+  message      String
+  cvFileName   String
+  cvStoredName String
+  cvMimeType   String
+  cvSize       Int
+  idFileName   String?
+  idStoredName String?
+  idMimeType   String?
+  idSize       Int?
+  status       String   @default("nouveau")
+  notes        String   @default("")
+  read         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([read, createdAt])
+}
+
+model AdminUser {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  name         String
+  email        String?
+  passwordHash String
+  role         String   @default("admin")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
