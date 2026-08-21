@@ -7,7 +7,11 @@ type SessionPayload = {
 };
 
 function secret() {
-  return process.env.SESSION_SECRET || process.env.ADMIN_PASSWORD || "bec-dev-session";
+  const value = process.env.SESSION_SECRET;
+  if (process.env.NODE_ENV === "production" && (!value || value.length < 32)) {
+    throw new Error("SESSION_SECRET doit contenir au moins 32 caractères en production.");
+  }
+  return value || "bec-development-session-secret";
 }
 
 function toBase64Url(bytes: ArrayBuffer | Uint8Array) {

@@ -2,6 +2,9 @@ import type { MetadataRoute } from "next";
 import { getPublishedArticles, getPublishedProjects } from "@/lib/cms/queries";
 import { siteConfig } from "@/lib/site";
 
+// Le sitemap reprend le contenu administrable et doit être généré à la demande.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url.replace(/\/$/, "") || "https://www.bec-rdc.com";
   const lastModified = new Date();

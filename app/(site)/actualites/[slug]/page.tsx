@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Facebook, Linkedin, Twitter } from "lucide-react";
-import { getArticle, getPublishedArticles, getRelatedArticles } from "@/lib/cms/queries";
+import { getArticle, getRelatedArticles } from "@/lib/cms/queries";
 import { createMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
@@ -10,10 +10,6 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { SiteImage } from "@/components/site-image";
 
 type Props = { params: Promise<{ slug: string }> };
-
-export async function generateStaticParams() {
-  return (await getPublishedArticles()).map((article) => ({ slug: article.slug }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

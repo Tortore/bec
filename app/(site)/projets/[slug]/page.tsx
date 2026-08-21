@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCategoryLabels, getProject, getRelatedProjects, getPublishedProjects } from "@/lib/cms/queries";
+import { getCategoryLabels, getProject, getRelatedProjects } from "@/lib/cms/queries";
 import { createMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProjectCard } from "@/components/projects/project-card";
@@ -10,10 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 type Props = { params: Promise<{ slug: string }> };
-
-export async function generateStaticParams() {
-  return (await getPublishedProjects()).map((project) => ({ slug: project.slug }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

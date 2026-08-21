@@ -14,9 +14,6 @@
     "db:studio": "prisma studio",
     "images:optimize": "npx tsx scripts/optimize-public-images.ts"
   },
-  "prisma": {
-    "seed": "npx tsx prisma/seed.ts"
-  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@prisma/client": "^6.13.0",

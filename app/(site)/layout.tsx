@@ -6,7 +6,9 @@ import { ConsentProvider } from "@/components/consent/consent-provider";
 import { AnalyticsGate } from "@/components/consent/analytics-gate";
 import { getCategories, getSettings } from "@/lib/cms/queries";
 
-export const revalidate = 300;
+// Le contenu est administrable depuis le CMS : il doit être lu au moment de la
+// requête. Cela évite également de nécessiter PostgreSQL pendant `next build`.
+export const dynamic = "force-dynamic";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [settings, categories] = await Promise.all([getSettings(), getCategories()]);

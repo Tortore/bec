@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Définir POSTGRES_USER dans .env.production}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Définir POSTGRES_PASSWORD dans .env.production}
+      POSTGRES_DB: ${POSTGRES_DB:?Définir POSTGRES_DB dans .env.production}
+    volumes:
+      - bec_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      ADMIN_USERNAME: ${ADMIN_USERNAME:?Définir ADMIN_USERNAME dans .env.production}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Définir ADMIN_PASSWORD dans .env.production}
+      SESSION_SECRET: ${SESSION_SECRET:?Définir SESSION_SECRET dans .env.production}
+      EMAIL_HOST: ${EMAIL_HOST:-}
+      EMAIL_USER: ${EMAIL_USER:-}
+      EMAIL_PASS: ${EMAIL_PASS:-}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Définir l'URL publique dans .env.production}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api}
+      NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-}
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - bec_uploads:/app/public/uploads
+      - bec_applications:/app/storage/candidatures
+
+volumes:
+  bec_postgres:
+  bec_uploads:
+  bec_applications:

@@ -4,9 +4,14 @@ import { hashPassword, verifyPassword } from "@/lib/cms/password";
 import { adminCookieName, adminSessionMaxAge, signSession, verifySessionToken } from "@/lib/cms/session";
 
 function envCredentials() {
+  const username = process.env.ADMIN_USERNAME?.trim();
+  const password = process.env.ADMIN_PASSWORD;
+  if (process.env.NODE_ENV === "production" && (!username || !password)) {
+    throw new Error("ADMIN_USERNAME et ADMIN_PASSWORD sont requis en production.");
+  }
   return {
-    username: process.env.ADMIN_USERNAME || "admin",
-    password: process.env.ADMIN_PASSWORD || "BecAdmin2022!",
+    username: username || "admin",
+    password: password || "bec-development-only",
   };
 }
 
