@@ -39,6 +39,7 @@ public/uploads/*
 !public/uploads/.gitkeep
 storage/candidatures/*
 !storage/candidatures/.gitkeep
+/backups/
 
 # vercel
 .vercel
