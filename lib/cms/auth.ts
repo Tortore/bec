@@ -19,8 +19,9 @@ export async function ensureAdminUser() {
   const count = await prisma.adminUser.count();
   if (count > 0) return;
   const env = envCredentials();
-  await prisma.adminUser.create({
-    data: {
+  await prisma.adminUser.upsert({
+    where: { username: env.username },
+    create: {
       username: env.username,
       name: "Administrateur",
       email: "bec@gmail.com",
@@ -28,6 +29,7 @@ export async function ensureAdminUser() {
       role: "admin",
       active: true,
     },
+    update: {},
   });
 }
 
