@@ -55,9 +55,10 @@ Ajouter également dans `.env.production` les variables PostgreSQL utilisées pa
 POSTGRES_USER=bec
 POSTGRES_PASSWORD=choisir-un-mot-de-passe-de-base-de-donnees-unique
 POSTGRES_DB=bec
+APP_HOST_PORT=3001
 ```
 
-L'application écoute uniquement sur `127.0.0.1:3000`. Configurer ensuite Nginx (ou le proxy Hostinger) pour transmettre le domaine HTTPS vers `http://127.0.0.1:3000`. Ne pas exposer PostgreSQL sur Internet.
+L'application écoute uniquement sur `127.0.0.1:3001` par défaut. Configurer ensuite Nginx (ou le proxy Hostinger) pour transmettre le domaine HTTPS vers `http://127.0.0.1:3001`. Ne pas exposer PostgreSQL sur Internet.
 
 Pour mettre à jour le site :
 
