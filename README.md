@@ -46,6 +46,9 @@ nano .env.production
 docker compose --env-file .env.production -f docker-compose.production.yml up -d --build
 ```
 
+La commande `--build` est importante à chaque modification de `NEXT_PUBLIC_SITE_URL`,
+`NEXT_PUBLIC_API_URL` ou `NEXT_PUBLIC_GA_ID`, car ces valeurs sont intégrées dans le code navigateur.
+
 Ajouter également dans `.env.production` les variables PostgreSQL utilisées par Docker :
 
 ```dotenv
