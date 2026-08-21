@@ -15,6 +15,7 @@ export const defaultHome: HomeContent = {
     "Architecture, études techniques et construction. BEC vous accompagne de l'idée à la livraison.",
   heroLocation: "Lubumbashi, République Démocratique du Congo",
   heroImage: "/images/maison.jpg",
+  heroVideo: "",
   heroPrimaryLabel: "Nos réalisations",
   heroSecondaryLabel: "Demander un devis",
   servicesEyebrow: "Nos services",

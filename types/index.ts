@@ -136,6 +136,7 @@ export type HomeContent = {
   heroSubtitle: string;
   heroLocation: string;
   heroImage: string;
+  heroVideo: string;
   heroPrimaryLabel: string;
   heroSecondaryLabel: string;
   servicesEyebrow: string;

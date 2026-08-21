@@ -27,7 +27,7 @@ const quickLinks = [
   { label: "Services", href: "/services" },
   { label: "Projets", href: "/projets" },
   { label: "Actualités", href: "/actualites" },
-  { label: "Carrières", href: "/carrieres" },
+  { label: "Recrutement", href: "/carrieres" },
   { label: "Contact", href: "/contact" },
 ];
 

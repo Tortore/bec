@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { HomeForm } from "@/components/admin/home-form";
 import { requireAdmin } from "@/lib/cms/auth";
-import { listMedia } from "@/lib/cms/media";
+import { listMedia, listVideos } from "@/lib/cms/media";
 import { getHome } from "@/lib/cms/queries";
 
 export const metadata: Metadata = { title: "Accueil" };
@@ -13,7 +13,7 @@ export default async function AdminAccueilPage({
   searchParams: Promise<{ ok?: string }>;
 }) {
   await requireAdmin();
-  const [home, media] = await Promise.all([getHome(), listMedia()]);
+  const [home, media, videos] = await Promise.all([getHome(), listMedia(), listVideos()]);
   const saved = (await searchParams).ok === "1";
   return (
     <div>
@@ -26,7 +26,7 @@ export default async function AdminAccueilPage({
           L’accueil a été mis à jour.
         </p>
       ) : null}
-      <HomeForm home={home} media={media} />
+      <HomeForm home={home} media={media} videos={videos} />
     </div>
   );
 }

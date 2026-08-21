@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { contactSchema } from "@/lib/contact-schema";
 import { clearSessionCookie, requireAdmin, setSessionCookie, verifyLogin } from "@/lib/cms/auth";
-import { saveUpload, deleteUpload, isUploadedMedia } from "@/lib/cms/media";
+import { saveUpload, saveVideoUpload, deleteUpload, isUploadedMedia } from "@/lib/cms/media";
 import { uniqueSlug } from "@/lib/cms/slug";
 import { defaultHome } from "@/lib/cms/defaults";
 import { hashPassword } from "@/lib/cms/password";
@@ -113,6 +113,23 @@ export async function uploadMediaAction(formData: FormData) {
     if (code === "FORMAT") return { ok: false as const, error: "Formats acceptés : JPG, PNG, WEBP, AVIF ou GIF." };
     if (code === "SIZE") return { ok: false as const, error: "L’image ne doit pas dépasser 8 Mo." };
     return { ok: false as const, error: "Impossible d’enregistrer l’image." };
+  }
+}
+
+export async function uploadVideoAction(formData: FormData) {
+  await requireAdmin();
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false as const, error: "Choisissez une vidéo." };
+  }
+  try {
+    const src = await saveVideoUpload(file);
+    return { ok: true as const, src };
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    if (code === "FORMAT") return { ok: false as const, error: "Formats acceptés : MP4 ou WebM." };
+    if (code === "SIZE") return { ok: false as const, error: "La vidéo ne doit pas dépasser 50 Mo." };
+    return { ok: false as const, error: "Impossible d’enregistrer la vidéo." };
   }
 }
 
@@ -511,6 +528,7 @@ export async function saveHomeAction(formData: FormData) {
     heroSubtitle: String(formData.get("heroSubtitle") ?? current.heroSubtitle),
     heroLocation: String(formData.get("heroLocation") ?? current.heroLocation),
     heroImage: String(formData.get("heroImage") ?? current.heroImage),
+    heroVideo: String(formData.get("heroVideo") ?? current.heroVideo),
     heroPrimaryLabel: String(formData.get("heroPrimaryLabel") ?? current.heroPrimaryLabel),
     heroSecondaryLabel: String(formData.get("heroSecondaryLabel") ?? current.heroSecondaryLabel),
     servicesEyebrow: String(formData.get("servicesEyebrow") ?? current.servicesEyebrow),
@@ -543,6 +561,20 @@ export async function markApplicationReadAction(id: string) {
   await prisma.application.update({ where: { id }, data: { read: true } });
   revalidatePath("/admin/recrutement");
   revalidatePath("/admin");
+}
+
+export async function setReviewApprovedAction(id: string, approved: boolean) {
+  await requireAdmin();
+  await prisma.review.update({ where: { id }, data: { approved } });
+  revalidatePath("/");
+  revalidatePath("/admin/avis");
+}
+
+export async function deleteReviewAction(id: string) {
+  await requireAdmin();
+  await prisma.review.delete({ where: { id } });
+  revalidatePath("/");
+  revalidatePath("/admin/avis");
 }
 
 export async function updateApplicationAction(id: string, formData: FormData) {

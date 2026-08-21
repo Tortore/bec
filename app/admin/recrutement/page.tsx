@@ -29,7 +29,7 @@ export default async function AdminRecruitmentPage({ searchParams }: Props) {
     <div>
       <AdminHeader
         title="Recrutement"
-        description="Candidatures reçues depuis la page Carrières : identité, CV et pièces jointes."
+        description="Candidatures reçues depuis la page Recrutement : identité, CV et pièces jointes."
       />
 
       <div className="mb-6 flex flex-wrap items-center gap-2">

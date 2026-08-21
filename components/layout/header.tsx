@@ -105,7 +105,12 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
             >
               <Menu className="h-6 w-6" />
             </button>
-            <Link href="/" className="inline-flex min-w-0 items-center gap-2 sm:gap-3" aria-label="Accueil BEC">
+            <Link
+              href="/"
+              onClick={() => setOpen(false)}
+              className="inline-flex min-w-0 items-center gap-2 sm:gap-3"
+              aria-label="Retour à l’accueil BEC"
+            >
               <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white/10 sm:h-12 sm:w-12">
                 <SiteImage
                   src="/images/logo/LOGOBLANC.png.jpg"
@@ -225,10 +230,15 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
         aria-label="Menu"
       >
         <div className="flex items-center justify-between bg-[#065b48] p-6 text-white">
-          <div>
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Retour à l’accueil BEC"
+          >
             <span className="block text-xl font-bold">BEC</span>
             <span className="text-xs text-white/75">Bureau d&apos;Études et Constructions</span>
-          </div>
+          </Link>
           <button
             type="button"
             onClick={() => setOpen(false)}

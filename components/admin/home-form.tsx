@@ -1,4 +1,5 @@
 import { ImageField } from "@/components/admin/image-field";
+import { VideoField } from "@/components/admin/video-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,7 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { saveHomeAction } from "@/lib/cms/actions";
 import type { HomeContent } from "@/types";
 
-export function HomeForm({ home, media }: { home: HomeContent; media: string[] }) {
+export function HomeForm({
+  home,
+  media,
+  videos,
+}: {
+  home: HomeContent;
+  media: string[];
+  videos: string[];
+}) {
   return (
     <form action={saveHomeAction} className="space-y-8">
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -25,7 +34,13 @@ export function HomeForm({ home, media }: { home: HomeContent; media: string[] }
           <Field id="heroPrimaryLabel" label="Bouton principal" defaultValue={home.heroPrimaryLabel} />
           <Field id="heroSecondaryLabel" label="Bouton secondaire" defaultValue={home.heroSecondaryLabel} />
         </div>
-        <ImageField name="heroImage" label="Image de fond" defaultValue={home.heroImage} media={media} />
+        <ImageField
+          name="heroImage"
+          label="Image de fond et aperçu de secours"
+          defaultValue={home.heroImage}
+          media={media}
+        />
+        <VideoField name="heroVideo" defaultValue={home.heroVideo} videos={videos} />
       </section>
 
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

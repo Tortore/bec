@@ -16,7 +16,7 @@ import { ApplicationForm } from "@/components/careers/application-form";
 import { SiteImage } from "@/components/site-image";
 
 export const metadata: Metadata = createMetadata({
-  title: "Carrières",
+  title: "Recrutement",
   description:
     "Rejoindre Bureau d'Études et Constructions à Lubumbashi : déposez votre identité, votre CV et votre candidature en ligne.",
   path: "/carrieres",
@@ -78,7 +78,7 @@ export default function CareersPage() {
         <div className="container-site relative z-10 w-full pb-12 pt-10 md:pb-16">
           <Breadcrumbs
             className="text-white/70 [&_span]:text-[#00af84]"
-            items={[{ label: "Accueil", href: "/" }, { label: "Carrières" }]}
+            items={[{ label: "Accueil", href: "/" }, { label: "Recrutement" }]}
           />
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-[#00af84] sm:text-sm sm:tracking-[0.2em]">
             Recrutement

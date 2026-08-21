@@ -105,6 +105,19 @@ export async function getUnreadApplicationsCount() {
   return prisma.application.count({ where: { read: false } });
 }
 
+export async function getApprovedReviews() {
+  return prisma.review.findMany({
+    where: { approved: true },
+    orderBy: { createdAt: "desc" },
+    take: 6,
+    select: { id: true, name: true, rating: true, message: true },
+  });
+}
+
+export async function getAdminReviews() {
+  return prisma.review.findMany({ orderBy: { createdAt: "desc" } });
+}
+
 export async function getDashboardStats() {
   const [db, messages, applications, unreadApplications, applicationCount] = await Promise.all([
     getDatabase(),

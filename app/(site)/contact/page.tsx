@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ArrowRight, Clock, Mail, MapPin, Phone, PhoneCall } from "lucide-react";
-import { getSettings } from "@/lib/cms/queries";
+import { getApprovedReviews, getSettings } from "@/lib/cms/queries";
 import { createMetadata } from "@/lib/seo";
 import { whatsappLink } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
@@ -8,6 +8,7 @@ import { ContactForm } from "@/components/contact-form";
 import { ContactFaq } from "@/components/contact-faq";
 import { MapEmbed } from "@/components/consent/map-embed";
 import { SiteImage } from "@/components/site-image";
+import { ReviewsSection } from "@/components/sections/reviews-section";
 
 export const metadata: Metadata = createMetadata({
   title: "Contact",
@@ -18,7 +19,7 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async function ContactPage() {
-  const settings = await getSettings();
+  const [settings, reviews] = await Promise.all([getSettings(), getApprovedReviews()]);
   const whatsapp = whatsappLink(settings.whatsapp, "Bonjour BEC, je souhaite un devis.");
 
   return (
@@ -187,6 +188,8 @@ export default async function ContactPage() {
           </div>
         </div>
       </section>
+
+      <ReviewsSection reviews={reviews} />
 
       <section className="bg-slate-50 py-16 md:py-20">
         <div className="container-site">

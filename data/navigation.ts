@@ -2,7 +2,6 @@ import type { NavItem } from "@/types";
 
 export const navigation: NavItem[] = [
   { label: "Accueil", href: "/" },
-  { label: "Actualités", href: "/actualites" },
   {
     label: "Projets",
     href: "/projets",
@@ -18,7 +17,7 @@ export const navigation: NavItem[] = [
     ],
   },
   { label: "Services", href: "/services" },
-  { label: "Carrières", href: "/carrieres" },
+  { label: "Recrutement", href: "/carrieres" },
   { label: "Contact", href: "/contact" },
   { label: "À propos", href: "/a-propos" },
 ];
