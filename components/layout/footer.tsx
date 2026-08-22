@@ -7,6 +7,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  Plus,
   Twitter,
 } from "lucide-react";
 import { CookieSettingsButton } from "@/components/consent/cookie-settings-button";
@@ -41,15 +42,31 @@ type FooterSectionProps = {
 
 function FooterSection({ id, title, children }: FooterSectionProps) {
   return (
-    <section className="border-b border-white/10 last:border-b-0 sm:border-b-0">
-      <h3 className="flex min-h-12 items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white sm:min-h-0">
-        <span className="h-3 w-px bg-[#5de0bf]" aria-hidden />
-        {title}
-      </h3>
-      <div id={id} className="pb-5 sm:mt-5 sm:pb-0">
-        {children}
-      </div>
-    </section>
+    <>
+      <details className="group border-b border-white/10 sm:hidden">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5de0bf] [&::-webkit-details-marker]:hidden">
+          <span className="h-3 w-px bg-[#5de0bf]" aria-hidden />
+          <span className="flex-1">{title}</span>
+          <Plus
+            className="h-4 w-4 text-[#5de0bf] transition-transform duration-200 group-open:rotate-45"
+            aria-hidden
+          />
+        </summary>
+        <div id={`${id}-mobile`} className="pb-5 pt-1">
+          {children}
+        </div>
+      </details>
+
+      <section className="hidden sm:block">
+        <h3 className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
+          <span className="h-3 w-px bg-[#5de0bf]" aria-hidden />
+          {title}
+        </h3>
+        <div id={id} className="mt-5">
+          {children}
+        </div>
+      </section>
+    </>
   );
 }
 
