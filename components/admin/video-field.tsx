@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { mediaFileName, runtimeMediaUrl } from "@/lib/utils";
 
 const maxVideoSize = 50 * 1024 * 1024;
-const videoExt = /\.(mp4|webm)$/i;
+const videoExt = /\.(mp4|webm|mov|m4v)$/i;
 
 export function VideoField({
   name,
@@ -31,13 +31,13 @@ export function VideoField({
 
   async function onUpload(file: File | undefined) {
     if (!file) return;
-    if (!videoExt.test(file.name) && file.type !== "video/mp4" && file.type !== "video/webm") {
-      setError("Choisissez une vidéo MP4 ou WebM.");
+    if (!videoExt.test(file.name) && !file.type.startsWith("video/")) {
+      setError("Choisissez une vidéo MP4, WebM ou MOV.");
       setOk("");
       return;
     }
     if (file.size > maxVideoSize) {
-      setError("La vidéo ne doit pas dépasser 50 Mo.");
+      setError("La vidéo ne doit pas dépasser 50 Mo. Compressez-la si besoin.");
       setOk("");
       return;
     }
@@ -52,7 +52,7 @@ export function VideoField({
       setError(result.error);
       return;
     }
-    choose(result.src, "La vidéo a bien été téléversée. Cliquez sur « Enregistrer l’accueil » pour la publier.");
+    choose(result.src, "La vidéo a bien été téléversée. Cliquez sur « Enregistrer l’accueil » tout en bas.");
   }
 
   function removeVideo() {
@@ -61,10 +61,9 @@ export function VideoField({
 
   return (
     <div className="space-y-2">
-      <Label>Vidéo de fond (facultative)</Label>
-      <input type="hidden" name={name} value={value} />
+      <Label htmlFor={name}>Vidéo de fond (facultative)</Label>
       <p className="text-sm text-slate-500">
-        Téléversez un fichier MP4 ou WebM (50 Mo maximum). Sans vidéo, l’image ci-dessus reste affichée.
+        Téléversez un fichier MP4 (H.264), WebM ou MOV, 50 Mo maximum. Puis enregistrez l’accueil.
       </p>
       {playbackSrc ? (
         <video
@@ -74,15 +73,15 @@ export function VideoField({
           controls
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
         />
       ) : null}
       <div className="flex flex-wrap gap-2">
         <label className="inline-flex cursor-pointer items-center rounded-lg bg-[#065b48] px-3 py-2 text-sm font-medium text-white hover:bg-[#00af84]">
-          {uploading ? "Envoi…" : value ? "Remplacer la vidéo" : "Téléverser une vidéo"}
+          {uploading ? "Envoi en cours, patientez…" : value ? "Remplacer la vidéo" : "Téléverser une vidéo"}
           <input
             type="file"
-            accept="video/mp4,video/webm,.mp4,.webm"
+            accept="video/mp4,video/webm,video/quicktime,video/x-m4v,.mp4,.webm,.mov,.m4v"
             className="hidden"
             disabled={uploading}
             onChange={(event) => {
@@ -100,6 +99,19 @@ export function VideoField({
             Retirer la vidéo
           </button>
         ) : null}
+      </div>
+      <div className="max-w-xl space-y-1">
+        <Label htmlFor={name} className="text-xs font-medium text-slate-500">
+          Vidéo sélectionnée
+        </Label>
+        <input
+          id={name}
+          type="text"
+          name={name}
+          value={value}
+          readOnly
+          className="h-11 w-full rounded-md border border-input bg-slate-50 px-3 text-sm text-slate-700"
+        />
       </div>
       {videos.length ? (
         <details className="max-w-xl rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm">

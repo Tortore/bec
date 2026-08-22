@@ -4,7 +4,7 @@ import { slugify } from "@/lib/cms/slug";
 import { optimizeUpload } from "@/lib/cms/optimize-image";
 
 const imageExt = /\.(jpe?g|png|webp|avif|gif)$/i;
-const videoExt = /\.(mp4|webm)$/i;
+const videoExt = /\.(mp4|webm|mov|m4v)$/i;
 
 async function walk(dir: string, acc: string[]) {
   let entries;
@@ -75,17 +75,33 @@ export async function saveUpload(file: File) {
 }
 
 export async function saveVideoUpload(file: File) {
-  const ext = path.extname(file.name).toLowerCase();
-  const allowedTypes = new Set(["video/mp4", "video/webm", "application/octet-stream", ""]);
-  if (!videoExt.test(ext) || (file.type && !allowedTypes.has(file.type) && !file.type.startsWith("video/"))) {
+  const originalExt = path.extname(file.name).toLowerCase();
+  let ext = originalExt === ".m4v" ? ".mp4" : originalExt;
+  const allowedTypes = new Set([
+    "video/mp4",
+    "video/webm",
+    "video/quicktime",
+    "video/x-m4v",
+    "application/octet-stream",
+    "",
+  ]);
+  if (!videoExt.test(file.name) && !(file.type && file.type.startsWith("video/"))) {
     throw new Error("FORMAT");
+  }
+  if (file.type && !allowedTypes.has(file.type) && !file.type.startsWith("video/")) {
+    throw new Error("FORMAT");
+  }
+  if (!ext || !videoExt.test(ext === ".mp4" ? ".mp4" : ext)) {
+    if (file.type === "video/webm") ext = ".webm";
+    else if (file.type === "video/quicktime") ext = ".mov";
+    else ext = ".mp4";
   }
   if (file.size > 50 * 1024 * 1024) {
     throw new Error("SIZE");
   }
   const dir = path.join(process.cwd(), "public", "uploads");
   await fs.mkdir(dir, { recursive: true });
-  const base = slugify(path.basename(file.name, ext)) || "video";
+  const base = slugify(path.basename(file.name, originalExt || ext)) || "video";
   const name = `${base}-${Date.now()}${ext}`;
   await fs.writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));
   return `/uploads/${name}`;

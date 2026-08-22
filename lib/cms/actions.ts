@@ -135,7 +135,7 @@ export async function uploadVideoAction(formData: FormData) {
     return { ok: true as const, src };
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
-    if (code === "FORMAT") return { ok: false as const, error: "Formats acceptés : MP4 ou WebM." };
+    if (code === "FORMAT") return { ok: false as const, error: "Formats acceptés : MP4, WebM ou MOV." };
     if (code === "SIZE") return { ok: false as const, error: "La vidéo ne doit pas dépasser 50 Mo." };
     return { ok: false as const, error: "Impossible d’enregistrer la vidéo." };
   }
@@ -536,7 +536,7 @@ export async function saveHomeAction(formData: FormData) {
     heroSubtitle: String(formData.get("heroSubtitle") ?? current.heroSubtitle),
     heroLocation: String(formData.get("heroLocation") ?? current.heroLocation),
     heroImage: asMediaSrc(formData.get("heroImage"), current.heroImage) || current.heroImage,
-    heroVideo: asMediaSrc(formData.get("heroVideo"), ""),
+    heroVideo: formData.has("heroVideo") ? asMediaSrc(formData.get("heroVideo"), "") : current.heroVideo,
     heroPrimaryLabel: String(formData.get("heroPrimaryLabel") ?? current.heroPrimaryLabel),
     heroSecondaryLabel: String(formData.get("heroSecondaryLabel") ?? current.heroSecondaryLabel),
     servicesEyebrow: String(formData.get("servicesEyebrow") ?? current.servicesEyebrow),

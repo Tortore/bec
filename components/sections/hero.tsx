@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SiteImage } from "@/components/site-image";
-import { runtimeMediaUrl } from "@/lib/utils";
+import { HeroVideo } from "@/components/sections/hero-video";
 import type { HomeContent } from "@/types";
 
 export function Hero({ home }: { home: HomeContent }) {
-  const hasVideo = Boolean(home.heroVideo);
+  const hasVideo = Boolean(home.heroVideo?.startsWith("/"));
 
   return (
     <section className="relative flex min-h-[28rem] items-end overflow-hidden py-12 sm:min-h-[32rem] sm:items-center sm:py-16 md:min-h-[38rem] md:py-0">
@@ -18,18 +18,8 @@ export function Hero({ home }: { home: HomeContent }) {
           sizes="100vw"
           className="object-cover"
         />
-        {hasVideo ? (
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
-            src={runtimeMediaUrl(home.heroVideo)}
-            poster={runtimeMediaUrl(home.heroImage)}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-          />
+        {hasVideo && home.heroVideo ? (
+          <HeroVideo src={home.heroVideo} poster={home.heroImage} />
         ) : (
           <>
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/25" />
