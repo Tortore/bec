@@ -13,9 +13,11 @@ import { hashPassword } from "@/lib/cms/password";
 import { prisma } from "@/lib/prisma";
 import { getDatabase, updateDatabase, updateMessages } from "@/lib/cms/store";
 import { getCategories, getHome, getUsers } from "@/lib/cms/queries";
-import { teamDepartments, type Project, type ServiceItem, type TeamMember } from "@/types";
+import { saveServiceForm, ServiceFormError } from "@/lib/cms/service-save";
+import { teamDepartments, type Project, type TeamMember } from "@/types";
 import { deleteStoredFile } from "@/lib/cms/cv-storage";
 import { isApplicationStatus } from "@/lib/recruitment";
+import { logServerWarning } from "@/lib/server-log";
 
 const attempts = new Map<string, { count: number; until: number }>();
 
@@ -41,6 +43,13 @@ function asMediaSrc(value: FormDataEntryValue | null, fallback = "") {
   if (!raw) return fallback;
   if (raw.startsWith("/") && !raw.startsWith("//") && !raw.includes("..")) return raw;
   return fallback;
+}
+
+function adminFormErrorPath(section: string, currentId: string, code: string) {
+  const base = currentId
+    ? `/admin/${section}/${encodeURIComponent(currentId)}`
+    : `/admin/${section}/nouveau`;
+  return `${base}?error=${encodeURIComponent(code)}`;
 }
 
 export async function loginAction(formData: FormData) {
@@ -258,8 +267,15 @@ export async function saveArticleAction(formData: FormData) {
     readingMinutes: Number(formData.get("readingMinutes") || 4),
     published: bool(formData.get("published")),
   };
-  if (article.title.length < 2 || article.excerpt.length < 10 || !article.cover) {
-    throw new Error("INVALID_ARTICLE");
+  if (
+    article.title.trim().length < 2 ||
+    article.excerpt.trim().length < 10 ||
+    !article.cover.startsWith("/") ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(article.date) ||
+    !Number.isFinite(article.readingMinutes) ||
+    article.readingMinutes < 1
+  ) {
+    redirect(adminFormErrorPath("actualites", currentSlug, "INVALID_ARTICLE"));
   }
   await updateDatabase((current) => ({
     ...current,
@@ -282,43 +298,22 @@ export async function deleteArticleAction(slug: string) {
 
 export async function saveServiceAction(formData: FormData) {
   await requireAdmin();
-  const db = await getDatabase();
   const currentId = String(formData.get("currentId") ?? "");
-  const title = String(formData.get("title") ?? "");
-  const id = uniqueSlug(
-    String(formData.get("id") || title),
-    db.services.map((item) => item.id).filter((item) => item !== currentId),
-    currentId || undefined,
-  );
-  const processSteps = parseLines(formData.get("process"));
-  const service: ServiceItem = {
-    id,
-    title,
-    shortDescription: String(formData.get("shortDescription") ?? ""),
-    description: String(formData.get("description") ?? ""),
-    features: parseLines(formData.get("features")),
-    process: processSteps.map((line) => {
-      const [step, ...rest] = line.split("|");
-      return { step: step.trim(), description: rest.join("|").trim() || step.trim() };
-    }),
-    image: String(formData.get("image") ?? ""),
-  };
-  await updateDatabase((current) => ({
-    ...current,
-    services: currentId
-      ? current.services.map((item) => (item.id === currentId ? service : item))
-      : [...current.services, service],
-  }));
+  try {
+    await saveServiceForm(formData);
+  } catch (error) {
+    if (error instanceof ServiceFormError) {
+      redirect(adminFormErrorPath("services", currentId, "INVALID_SERVICE"));
+    }
+    throw error;
+  }
   revalidateSite();
   redirect("/admin/services");
 }
 
 export async function deleteServiceAction(id: string) {
   await requireAdmin();
-  await updateDatabase((current) => ({
-    ...current,
-    services: current.services.filter((item) => item.id !== id),
-  }));
+  await prisma.service.deleteMany({ where: { id } });
   revalidateSite();
 }
 
@@ -345,6 +340,14 @@ export async function saveTeamMemberAction(formData: FormData) {
     image: String(formData.get("image") ?? ""),
     department,
   };
+  if (
+    member.name.trim().length < 2 ||
+    member.role.trim().length < 2 ||
+    member.specialty.trim().length < 2 ||
+    !member.image.startsWith("/")
+  ) {
+    redirect(adminFormErrorPath("equipe", currentId, "INVALID_TEAM"));
+  }
   await updateDatabase((current) => ({
     ...current,
     team: currentId
@@ -367,11 +370,15 @@ export async function deleteTeamMemberAction(id: string) {
 export async function saveSettingsAction(formData: FormData) {
   await requireAdmin();
   const phones = parseLines(formData.get("phones"));
+  const email = String(formData.get("email") ?? "").trim();
+  if (!/^\S+@\S+\.\S+$/.test(email) || phones.length === 0) {
+    redirect("/admin/parametres?error=INVALID_SETTINGS");
+  }
   await updateDatabase((current) => ({
     ...current,
     settings: {
       ...current.settings,
-      email: String(formData.get("email") ?? current.settings.email),
+      email,
       phones: phones.length ? phones : current.settings.phones,
       whatsapp: String(formData.get("whatsapp") ?? current.settings.whatsapp).replace(/\D/g, ""),
       tagline: String(formData.get("tagline") ?? current.settings.tagline),
@@ -439,13 +446,13 @@ export async function saveUserAction(formData: FormData) {
   const role = String(formData.get("role") ?? "admin") === "editor" ? "editor" : "admin";
   const active = bool(formData.get("active")) || !currentId;
   if (username.length < 3 || name.length < 2) {
-    throw new Error("INVALID_USER");
+    redirect(adminFormErrorPath("utilisateurs", currentId, "INVALID_USER"));
   }
   const existing = await prisma.adminUser.findFirst({
     where: { username: { equals: username, mode: "insensitive" }, NOT: currentId ? { id: currentId } : undefined },
   });
   if (existing) {
-    throw new Error("USERNAME_TAKEN");
+    redirect(adminFormErrorPath("utilisateurs", currentId, "USERNAME_TAKEN"));
   }
   if (currentId) {
     const data: { username: string; name: string; email: string | null; role: string; active: boolean; passwordHash?: string } = {
@@ -458,7 +465,7 @@ export async function saveUserAction(formData: FormData) {
     if (password.length >= 8) data.passwordHash = hashPassword(password);
     await prisma.adminUser.update({ where: { id: currentId }, data });
   } else {
-    if (password.length < 8) throw new Error("WEAK_PASSWORD");
+    if (password.length < 8) redirect(adminFormErrorPath("utilisateurs", currentId, "WEAK_PASSWORD"));
     await prisma.adminUser.create({
       data: {
         username,
@@ -575,14 +582,18 @@ export async function setReviewApprovedAction(id: string, approved: boolean) {
   await requireAdmin();
   await prisma.review.update({ where: { id }, data: { approved } });
   revalidatePath("/");
-  revalidatePath("/admin/avis");
+  revalidatePath("/contact");
+  revalidatePath("/admin/messages");
+  revalidatePath(`/admin/messages/avis/${id}`);
 }
 
 export async function deleteReviewAction(id: string) {
   await requireAdmin();
-  await prisma.review.delete({ where: { id } });
+  await prisma.review.deleteMany({ where: { id } });
   revalidatePath("/");
-  revalidatePath("/admin/avis");
+  revalidatePath("/contact");
+  revalidatePath("/admin/messages");
+  redirect("/admin/messages?onglet=avis");
 }
 
 export async function updateApplicationAction(id: string, formData: FormData) {
@@ -605,9 +616,16 @@ export async function deleteApplicationAction(id: string) {
   await requireAdmin();
   const row = await prisma.application.findUnique({ where: { id } });
   if (row) {
-    await deleteStoredFile(row.cvStoredName);
-    await deleteStoredFile(row.idStoredName);
     await prisma.application.delete({ where: { id } });
+    const cleanup = await Promise.allSettled([
+      deleteStoredFile(row.cvStoredName),
+      deleteStoredFile(row.idStoredName),
+    ]);
+    for (const result of cleanup) {
+      if (result.status === "rejected") {
+        logServerWarning("admin.recruitment.cleanup", result.reason, { applicationId: id });
+      }
+    }
   }
   revalidatePath("/admin/recrutement");
   revalidatePath("/admin");

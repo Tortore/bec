@@ -1,11 +1,15 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GalleryField } from "@/components/admin/gallery-field";
 import { ImageField } from "@/components/admin/image-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { saveProjectAction } from "@/lib/cms/actions";
 import type { Category, Project } from "@/types";
+import { fetchWithTimeout, RequestTimeoutError } from "@/lib/fetch-with-timeout";
 
 export function ProjectForm({
   project,
@@ -16,8 +20,39 @@ export function ProjectForm({
   media: string[];
   categories: Category[];
 }) {
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      const response = await fetchWithTimeout("/api/admin/projects", {
+        method: "POST",
+        body: new FormData(event.currentTarget),
+      }, 30_000);
+      const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!response.ok || !result?.ok) {
+        setError(result?.error || "Impossible d’enregistrer le projet.");
+        return;
+      }
+      router.push("/admin/projets?ok=1");
+      router.refresh();
+    } catch (caught) {
+      setError(
+        caught instanceof RequestTimeoutError
+          ? "Le serveur met trop de temps à répondre. Vérifiez votre connexion puis réessayez."
+          : "La connexion au serveur a été interrompue. Réessayez sans fermer cette page.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
-    <form action={saveProjectAction} className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <form onSubmit={onSubmit} className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <input type="hidden" name="currentSlug" value={project?.slug ?? ""} />
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Titre" name="title" defaultValue={project?.title} required />
@@ -93,7 +128,14 @@ export function ProjectForm({
         </div>
       </details>
 
-      <Button type="submit">{project ? "Enregistrer le projet" : "Créer le projet"}</Button>
+      {error ? (
+        <p role="alert" aria-live="assertive" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </p>
+      ) : null}
+      <Button type="submit" disabled={saving}>
+        {saving ? "Enregistrement…" : project ? "Enregistrer le projet" : "Créer le projet"}
+      </Button>
     </form>
   );
 }

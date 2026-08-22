@@ -20,6 +20,7 @@ const mimeByExt: Record<string, string> = {
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
   ".png": "image/png",
+  ".webp": "image/webp",
 };
 
 function extensionOf(name: string) {
@@ -27,16 +28,22 @@ function extensionOf(name: string) {
   return ext === ".jpeg" ? ".jpg" : ext;
 }
 
+function head(buffer: Buffer, length = 16) {
+  return buffer.subarray(0, Math.min(buffer.length, length));
+}
+
 function looksLikePdf(buffer: Buffer) {
-  return buffer.subarray(0, 4).toString("ascii") === "%PDF";
+  const start = buffer.subarray(0, Math.min(buffer.length, 2048)).toString("latin1");
+  return start.includes("%PDF");
 }
 
 function looksLikeZip(buffer: Buffer) {
-  return buffer[0] === 0x50 && buffer[1] === 0x4b;
+  return buffer.length >= 2 && buffer[0] === 0x50 && buffer[1] === 0x4b;
 }
 
 function looksLikeOle(buffer: Buffer) {
   return (
+    buffer.length >= 4 &&
     buffer[0] === 0xd0 &&
     buffer[1] === 0xcf &&
     buffer[2] === 0x11 &&
@@ -45,15 +52,21 @@ function looksLikeOle(buffer: Buffer) {
 }
 
 function looksLikeRtf(buffer: Buffer) {
-  return buffer.subarray(0, 5).toString("ascii") === "{\\rtf";
+  const start = buffer.subarray(0, Math.min(buffer.length, 64)).toString("latin1");
+  return start.includes("{\\rtf");
 }
 
 function looksLikeJpeg(buffer: Buffer) {
-  return buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  const slice = head(buffer, 32);
+  for (let i = 0; i < slice.length - 2; i += 1) {
+    if (slice[i] === 0xff && slice[i + 1] === 0xd8 && slice[i + 2] === 0xff) return true;
+  }
+  return false;
 }
 
 function looksLikePng(buffer: Buffer) {
   return (
+    buffer.length >= 4 &&
     buffer[0] === 0x89 &&
     buffer[1] === 0x50 &&
     buffer[2] === 0x4e &&
@@ -61,14 +74,37 @@ function looksLikePng(buffer: Buffer) {
   );
 }
 
+function looksLikeWebp(buffer: Buffer) {
+  if (buffer.length < 12) return false;
+  const riff = buffer.subarray(0, 4).toString("ascii");
+  const webp = buffer.subarray(8, 12).toString("ascii");
+  return riff === "RIFF" && webp === "WEBP";
+}
+
 function magicMatches(buffer: Buffer, ext: string) {
   if (ext === ".pdf") return looksLikePdf(buffer);
   if (ext === ".docx" || ext === ".odt") return looksLikeZip(buffer);
-  if (ext === ".doc") return looksLikeOle(buffer);
+  if (ext === ".doc") return looksLikeOle(buffer) || looksLikeZip(buffer);
   if (ext === ".rtf") return looksLikeRtf(buffer);
   if (ext === ".jpg") return looksLikeJpeg(buffer);
   if (ext === ".png") return looksLikePng(buffer);
+  if (ext === ".webp") return looksLikeWebp(buffer);
   return false;
+}
+
+function sniffExtension(buffer: Buffer, kind: FileKind): string | null {
+  if (looksLikePdf(buffer)) return ".pdf";
+  if (kind === "id") {
+    if (looksLikeJpeg(buffer)) return ".jpg";
+    if (looksLikePng(buffer)) return ".png";
+    if (looksLikeWebp(buffer)) return ".webp";
+  }
+  if (kind === "cv") {
+    if (looksLikeRtf(buffer)) return ".rtf";
+    if (looksLikeOle(buffer)) return ".doc";
+    if (looksLikeZip(buffer)) return ".docx";
+  }
+  return null;
 }
 
 function sanitizeOriginalName(name: string) {
@@ -77,14 +113,23 @@ function sanitizeOriginalName(name: string) {
 }
 
 export function detectApplicationFile(buffer: Buffer, originalName: string, kind: FileKind) {
-  const allowed = kind === "cv" ? isAllowedCvName(originalName) : isAllowedIdentityName(originalName);
-  if (!allowed) return null;
-  const ext = extensionOf(originalName);
-  if (!magicMatches(buffer, ext)) return null;
+  const allowedByName = kind === "cv" ? isAllowedCvName(originalName) : isAllowedIdentityName(originalName);
+  let ext = extensionOf(originalName);
+
+  if (allowedByName && magicMatches(buffer, ext)) {
+    if (ext === ".doc" && looksLikeZip(buffer)) ext = ".docx";
+  } else {
+    const sniffed = sniffExtension(buffer, kind);
+    if (!sniffed) return null;
+    ext = sniffed;
+    const allowedBySniff = kind === "cv" ? isAllowedCvName(`file${ext}`) : isAllowedIdentityName(`file${ext}`);
+    if (!allowedBySniff && !(kind === "id" && ext === ".webp")) return null;
+  }
+
   return {
     ext,
     mimeType: mimeByExt[ext] ?? "application/octet-stream",
-    fileName: sanitizeOriginalName(originalName),
+    fileName: sanitizeOriginalName(originalName || `document${ext}`),
   };
 }
 
@@ -125,6 +170,16 @@ export function resolveStoredFile(storedName: string) {
 
 export async function readStoredFile(storedName: string) {
   return fs.readFile(resolveStoredFile(storedName));
+}
+
+export async function storedFileExists(storedName: string | null | undefined) {
+  if (!storedName) return false;
+  try {
+    await fs.access(resolveStoredFile(storedName));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function deleteStoredFile(storedName: string | null | undefined) {

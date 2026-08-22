@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { after } from "next/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
-import { deleteMessageAction, markMessageReadAction } from "@/lib/cms/actions";
+import { deleteMessageAction } from "@/lib/cms/actions";
 import { requireAdmin } from "@/lib/cms/auth";
+import { markContactMessageRead } from "@/lib/cms/queries";
 import { getMessages } from "@/lib/cms/store";
 import { formatDate } from "@/lib/utils";
 
@@ -17,7 +19,9 @@ export default async function AdminMessagePage({ params }: Props) {
   const { id } = await params;
   const message = (await getMessages()).find((item) => item.id === id);
   if (!message) notFound();
-  if (!message.read) await markMessageReadAction(id);
+  if (!message.read) {
+    after(() => markContactMessageRead(id));
+  }
 
   return (
     <div>
@@ -61,9 +65,7 @@ export default async function AdminMessagePage({ params }: Props) {
           </Link>
           <ConfirmDelete
             message="Supprimer ce message ?"
-            action={async () => {
-              await deleteMessageAction(id);
-            }}
+            action={deleteMessageAction.bind(null, id)}
           />
         </div>
       </article>

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { uploadVideoAction } from "@/lib/cms/actions";
 import { Label } from "@/components/ui/label";
-import { mediaFileName, runtimeMediaUrl } from "@/lib/utils";
+import { mediaFileName, runtimeMediaUrl } from "@/lib/media-url";
+import { fetchWithTimeout, RequestTimeoutError } from "@/lib/fetch-with-timeout";
 
 const maxVideoSize = 50 * 1024 * 1024;
 const videoExt = /\.(mp4|webm|mov|m4v)$/i;
@@ -46,13 +46,26 @@ export function VideoField({
     setOk("");
     const data = new FormData();
     data.set("file", file);
-    const result = await uploadVideoAction(data);
-    setUploading(false);
-    if (!result.ok) {
-      setError(result.error);
-      return;
+    try {
+      const response = await fetchWithTimeout("/api/admin/videos", {
+        method: "POST",
+        body: data,
+      }, 90_000);
+      const result = (await response.json().catch(() => null)) as { ok?: boolean; src?: string; error?: string } | null;
+      if (!response.ok || !result?.ok || !result.src) {
+        setError(result?.error || "Impossible d’enregistrer la vidéo.");
+        return;
+      }
+      choose(result.src, "La vidéo a bien été téléversée. Cliquez sur « Enregistrer l’accueil » tout en bas.");
+    } catch (caught) {
+      setError(
+        caught instanceof RequestTimeoutError
+          ? "L’envoi prend trop de temps. Vérifiez votre connexion, puis réessayez."
+          : "L’envoi a été interrompu. Vérifiez la connexion, puis réessayez.",
+      );
+    } finally {
+      setUploading(false);
     }
-    choose(result.src, "La vidéo a bien été téléversée. Cliquez sur « Enregistrer l’accueil » tout en bas.");
   }
 
   function removeVideo() {
@@ -73,7 +86,10 @@ export function VideoField({
           controls
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
+          onError={() => {
+            setError("Cette vidéo ne peut pas être lue par le navigateur. Utilisez de préférence un MP4 H.264.");
+          }}
         />
       ) : null}
       <div className="flex flex-wrap gap-2">

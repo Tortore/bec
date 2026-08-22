@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { contactSchema, type ContactValues } from "@/lib/contact-schema";
 import { contactEndpoint } from "@/lib/env";
+import { fetchWithTimeout, RequestTimeoutError } from "@/lib/fetch-with-timeout";
 
 const subjects = [
   "Demande de devis",
@@ -25,6 +26,7 @@ const subjects = [
 
 export function ContactForm({ defaultSubject = "Demande de devis" }: { defaultSubject?: string }) {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
     handleSubmit,
@@ -44,17 +46,26 @@ export function ContactForm({ defaultSubject = "Demande de devis" }: { defaultSu
 
   async function onSubmit(values: ContactValues) {
     setStatus("idle");
+    setErrorMessage("");
     try {
-      const response = await fetch(contactEndpoint(), {
+      const response = await fetchWithTimeout(contactEndpoint(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
-      });
-      if (!response.ok) throw new Error("Request failed");
+      }, 20_000);
+      const result = (await response.json().catch(() => null)) as { error?: string } | null;
+      if (!response.ok) throw new Error(result?.error || "L’envoi a échoué.");
       setStatus("success");
       reset({ name: "", email: "", phone: "", subject: defaultSubject, message: "", privacy: false });
-    } catch {
+    } catch (error) {
       setStatus("error");
+      setErrorMessage(
+        error instanceof RequestTimeoutError
+          ? "Le serveur met trop de temps à répondre. Vérifiez votre connexion puis réessayez."
+          : error instanceof Error
+            ? error.message
+            : "L’envoi a échoué. Réessayez, ou écrivez-nous directement.",
+      );
     }
   }
 
@@ -176,7 +187,7 @@ export function ContactForm({ defaultSubject = "Demande de devis" }: { defaultSu
       </Button>
       {status === "error" ? (
         <p role="alert" className="text-sm text-destructive">
-          L&apos;envoi a échoué. Vous pouvez aussi nous écrire à bec@gmail.com.
+          {errorMessage} Vous pouvez aussi écrire à bec@gmail.com.
         </p>
       ) : null}
     </form>

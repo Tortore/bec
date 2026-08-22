@@ -123,8 +123,8 @@ export function ServicesExplorer({ services }: { services: ServiceItem[] }) {
                 <p className="mt-5 leading-relaxed text-muted-foreground">{service.description}</p>
                 <h3 className="mt-8 text-lg font-bold text-[#065b48]">Ce que nous offrons</h3>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {service.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm">
+                  {service.features.map((feature, index) => (
+                    <li key={`${index}-${feature}`} className="flex items-start gap-2 text-sm">
                       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#00af84]" aria-hidden />
                       {feature}
                     </li>
@@ -133,7 +133,7 @@ export function ServicesExplorer({ services }: { services: ServiceItem[] }) {
                 <h3 className="mt-8 text-lg font-bold text-[#065b48]">Notre processus</h3>
                 <ol className="mt-4 space-y-4">
                   {service.process.map((step, index) => (
-                    <li key={step.step} className="flex gap-4">
+                    <li key={`${index}-${step.step}`} className="flex gap-4">
                       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#065b48] text-sm font-bold text-white">
                         {index + 1}
                       </span>

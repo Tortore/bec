@@ -114,6 +114,22 @@ export default async function AdminRecruitmentPage({ searchParams }: Props) {
                       >
                         Ouvrir
                       </Link>
+                      <a
+                        href={`/admin/recrutement/${application.id}/fichier/cv`}
+                        download={application.cvFileName}
+                        className="mr-2 font-medium text-[#065b48]"
+                      >
+                        CV
+                      </a>
+                      {application.idStoredName && application.idFileName ? (
+                        <a
+                          href={`/admin/recrutement/${application.id}/fichier/identite`}
+                          download={application.idFileName}
+                          className="mr-2 font-medium text-[#065b48]"
+                        >
+                          Pièce
+                        </a>
+                      ) : null}
                       <ConfirmDelete
                         message="Supprimer cette candidature et les fichiers associés ?"
                         action={deleteApplicationAction.bind(null, application.id)}

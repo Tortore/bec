@@ -1,10 +1,12 @@
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-export const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "/api";
-
-export function contactEndpoint() {
-  return `${apiUrl.replace(/\/$/, "")}/contact`;
-}
+// Les formulaires appartiennent à cette application. Une URL relative évite
+// d’envoyer les données vers un autre port ou sous-domaine et les erreurs CORS.
+export const apiUrl = "/api";
 
 export function recruitmentEndpoint() {
-  return `${apiUrl.replace(/\/$/, "")}/recrutement`;
+  return "/api/recrutement";
+}
+
+export function contactEndpoint() {
+  return "/api/contact";
 }

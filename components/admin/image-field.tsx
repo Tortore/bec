@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { uploadMediaAction } from "@/lib/cms/actions";
 import { validateImageFile } from "@/lib/cms/image-file";
+import { uploadAdminImage } from "@/lib/cms/upload-client";
 import { Label } from "@/components/ui/label";
 import { SiteImage } from "@/components/site-image";
 import { mediaFileName } from "@/lib/utils";
@@ -13,12 +13,14 @@ export function ImageField({
   defaultValue = "",
   media,
   previewClassName = "object-cover",
+  required = false,
 }: {
   name: string;
   label: string;
   defaultValue?: string;
   media: string[];
   previewClassName?: string;
+  required?: boolean;
 }) {
   const [value, setValue] = useState(defaultValue);
   const [error, setError] = useState("");
@@ -42,15 +44,14 @@ export function ImageField({
     setUploading(true);
     setError("");
     setOk("");
-    const data = new FormData();
-    data.set("file", file);
-    const result = await uploadMediaAction(data);
-    setUploading(false);
-    if (!result.ok) {
-      setError(result.error);
-      return;
+    try {
+      const src = await uploadAdminImage(file);
+      choose(src, "L’image a bien été ajoutée. Enregistrez le formulaire pour la publier.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "L’envoi de l’image a été interrompu. Réessayez.");
+    } finally {
+      setUploading(false);
     }
-    choose(result.src, "L’image a bien été ajoutée. Enregistrez le formulaire pour la publier.");
   }
 
   return (
@@ -86,6 +87,7 @@ export function ImageField({
               type="text"
               name={name}
               value={value}
+              required={required}
               onChange={(event) => {
                 setValue(event.target.value);
                 setError("");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { runtimeMediaUrl } from "@/lib/utils";
+import { runtimeMediaUrl } from "@/lib/media-url";
 
 export function HeroVideo({ src, poster }: { src: string; poster: string }) {
   const ref = useRef<HTMLVideoElement>(null);

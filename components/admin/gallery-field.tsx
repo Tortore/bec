@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Trash2, Upload } from "lucide-react";
-import { uploadMediaAction } from "@/lib/cms/actions";
 import { validateImageFile } from "@/lib/cms/image-file";
+import { uploadAdminImage } from "@/lib/cms/upload-client";
 import { Label } from "@/components/ui/label";
 import { SiteImage } from "@/components/site-image";
 import { mediaFileName } from "@/lib/utils";
@@ -52,23 +52,22 @@ export function GalleryField({
     setError("");
     setOk("");
     let added = 0;
-    for (const file of Array.from(files)) {
-      const invalid = validateImageFile(file);
-      if (invalid) {
-        setError(invalid);
-        break;
+    try {
+      for (const file of Array.from(files)) {
+        const invalid = validateImageFile(file);
+        if (invalid) {
+          setError(invalid);
+          break;
+        }
+        const src = await uploadAdminImage(file);
+        add(src);
+        added += 1;
       }
-      const data = new FormData();
-      data.set("file", file);
-      const result = await uploadMediaAction(data);
-      if (!result.ok) {
-        setError(result.error);
-        break;
-      }
-      add(result.src);
-      added += 1;
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "L’envoi des photos a été interrompu. Réessayez.");
+    } finally {
+      setUploading(false);
     }
-    setUploading(false);
     if (added) {
       setOk(added > 1 ? `${added} photos ont bien été ajoutées.` : "La photo a bien été ajoutée.");
     }

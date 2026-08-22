@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
+import { after } from "next/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Download, FileText, IdCard, Mail, Phone } from "lucide-react";
+import { FileText, IdCard, Mail, Phone } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
+import { ApplicationFileLink } from "@/components/admin/application-file-link";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
-import {
-  deleteApplicationAction,
-  markApplicationReadAction,
-  updateApplicationAction,
-} from "@/lib/cms/actions";
+import { deleteApplicationAction, updateApplicationAction } from "@/lib/cms/actions";
 import { requireAdmin } from "@/lib/cms/auth";
-import { getApplication } from "@/lib/cms/queries";
+import { storedFileExists } from "@/lib/cms/cv-storage";
+import { getApplication, markApplicationRead } from "@/lib/cms/queries";
 import {
   applicationStatusClasses,
   applicationStatusLabels,
@@ -30,10 +29,16 @@ export default async function AdminApplicationPage({ params }: Props) {
   const { id } = await params;
   const application = await getApplication(id);
   if (!application) notFound();
-  if (!application.read) await markApplicationReadAction(id);
+  if (!application.read) {
+    after(() => markApplicationRead(id));
+  }
 
   const status = isApplicationStatus(application.status) ? application.status : "nouveau";
   const fullName = `${application.firstName} ${application.lastName}`;
+  const [cvExists, idExists] = await Promise.all([
+    storedFileExists(application.cvStoredName),
+    storedFileExists(application.idStoredName),
+  ]);
 
   return (
     <div>
@@ -104,38 +109,27 @@ export default async function AdminApplicationPage({ params }: Props) {
             Pièces jointes
           </h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <a
+            <ApplicationFileLink
               href={`/admin/recrutement/${application.id}/fichier/cv`}
-              className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 hover:border-[#00af84]"
-            >
-              <span className="min-w-0">
-                <span className="flex items-center gap-2 text-sm font-medium text-[#065b48]">
-                  <FileText className="h-4 w-4" aria-hidden />
-                  Curriculum vitae
-                </span>
-                <span className="mt-1 block truncate text-xs text-slate-500">
-                  {application.cvFileName} · {formatFileSize(application.cvSize)}
-                </span>
-              </span>
-              <Download className="h-4 w-4 shrink-0 text-[#00af84]" aria-hidden />
-            </a>
+              fileName={application.cvFileName}
+              label="Curriculum vitae"
+              meta={`${application.cvFileName} · ${formatFileSize(application.cvSize)}`}
+              missing={!cvExists}
+              icon={<FileText className="h-4 w-4" aria-hidden />}
+            />
             {application.idStoredName && application.idFileName ? (
-              <a
+              <ApplicationFileLink
                 href={`/admin/recrutement/${application.id}/fichier/identite`}
-                className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 hover:border-[#00af84]"
-              >
-                <span className="min-w-0">
-                  <span className="flex items-center gap-2 text-sm font-medium text-[#065b48]">
-                    <IdCard className="h-4 w-4" aria-hidden />
-                    Pièce d’identité
-                  </span>
-                  <span className="mt-1 block truncate text-xs text-slate-500">
-                    {application.idFileName}
-                    {application.idSize ? ` · ${formatFileSize(application.idSize)}` : ""}
-                  </span>
-                </span>
-                <Download className="h-4 w-4 shrink-0 text-[#00af84]" aria-hidden />
-              </a>
+                fileName={application.idFileName}
+                label="Pièce d’identité"
+                meta={
+                  application.idSize
+                    ? `${application.idFileName} · ${formatFileSize(application.idSize)}`
+                    : application.idFileName
+                }
+                missing={!idExists}
+                icon={<IdCard className="h-4 w-4" aria-hidden />}
+              />
             ) : (
               <div className="rounded-xl border border-dashed border-slate-200 px-4 py-3 text-sm text-slate-500">
                 Aucune pièce d’identité jointe.

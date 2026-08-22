@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { applicationFieldsSchema } from "@/lib/application-schema";
 import { recruitmentEndpoint } from "@/lib/env";
+import { fetchWithTimeout, RequestTimeoutError } from "@/lib/fetch-with-timeout";
 import {
   acceptAttribute,
   careerPositions,
@@ -199,7 +200,11 @@ export function ApplicationForm() {
     if (values.identityDoc) body.set("identityDoc", values.identityDoc);
 
     try {
-      const response = await fetch(recruitmentEndpoint(), { method: "POST", body });
+      const response = await fetchWithTimeout(
+        recruitmentEndpoint(),
+        { method: "POST", body, credentials: "same-origin" },
+        90_000,
+      );
       const payload = (await response.json().catch(() => null)) as { error?: string } | null;
       if (!response.ok) {
         setServerError(payload?.error || "L’envoi a échoué.");
@@ -221,15 +226,28 @@ export function ApplicationForm() {
         cv: undefined,
         identityDoc: undefined,
       });
-    } catch {
+    } catch (error) {
       setStatus("error");
-      setServerError("L’envoi a échoué. Vous pouvez aussi nous écrire à bec@gmail.com.");
+      setServerError(
+        error instanceof RequestTimeoutError
+          ? "L’envoi prend trop de temps. Vérifiez votre connexion puis réessayez."
+          : "L’envoi a échoué. Vous pouvez aussi nous écrire à bec@gmail.com.",
+      );
     }
+  }
+
+  function onInvalid() {
+    setStatus("error");
+    setServerError("Vérifiez les champs signalés dans le formulaire, puis réessayez.");
   }
 
   if (status === "success") {
     return (
-      <div className="rounded-2xl border border-[#00af84]/25 bg-[#00af84]/5 p-8 text-center">
+      <div
+        role="status"
+        aria-live="polite"
+        className="rounded-2xl border border-[#00af84]/25 bg-[#00af84]/5 p-8 text-center"
+      >
         <CheckCircle className="mx-auto h-14 w-14 text-[#00af84]" aria-hidden />
         <h3 className="mt-4 text-xl font-bold text-[#065b48]">Candidature envoyée</h3>
         <p className="mt-2 text-muted-foreground">
@@ -244,7 +262,7 @@ export function ApplicationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-8" noValidate>
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider text-[#00af84]">Identité</p>
         <div className="mt-4 grid gap-6 md:grid-cols-2">
@@ -409,7 +427,7 @@ export function ApplicationForm() {
         )}
       </Button>
       {status === "error" ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" aria-live="assertive" className="text-sm text-destructive">
           {serverError || "L’envoi a échoué. Vous pouvez aussi nous écrire à bec@gmail.com."}
         </p>
       ) : null}

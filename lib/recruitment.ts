@@ -58,7 +58,7 @@ export const applicationStatusClasses: Record<ApplicationStatus, string> = {
 };
 
 export const cvExtensions = [".pdf", ".doc", ".docx", ".odt", ".rtf"] as const;
-export const identityExtensions = [".pdf", ".jpg", ".jpeg", ".png"] as const;
+export const identityExtensions = [".pdf", ".jpg", ".jpeg", ".png", ".webp"] as const;
 
 const cvExtSet = new Set<string>(cvExtensions);
 const identityExtSet = new Set<string>(identityExtensions);

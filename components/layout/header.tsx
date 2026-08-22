@@ -11,7 +11,6 @@ import {
   Home,
   Mail,
   Menu,
-  Newspaper,
   PencilRuler,
   Phone,
   Users,
@@ -28,7 +27,6 @@ const navIcons = {
   "/services": PencilRuler,
   "/projets": FolderOpen,
   "/a-propos": Users,
-  "/actualites": Newspaper,
   "/contact": Mail,
   "/carrieres": Briefcase,
 } as const;

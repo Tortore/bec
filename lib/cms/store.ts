@@ -335,22 +335,69 @@ async function persistDatabase(next: CmsDatabase) {
 }
 
 export async function ensureSeeded() {
-  const settings = await prisma.siteSettings.findUnique({ where: { id: "default" } });
-  if (!settings) await persistDatabase(seedDatabase());
+  const [settings, company, projectCount, articleCount, serviceCount, teamCount] = await Promise.all([
+    prisma.siteSettings.findUnique({ where: { id: "default" } }),
+    prisma.companyProfile.findUnique({ where: { id: "default" } }),
+    prisma.project.count(),
+    prisma.article.count(),
+    prisma.service.count(),
+    prisma.teamMember.count(),
+  ]);
+  const freshDatabase =
+    !settings && !company && projectCount === 0 && articleCount === 0 && serviceCount === 0 && teamCount === 0;
+
+  if (freshDatabase) {
+    await persistDatabase(seedDatabase());
+  } else {
+    if (!settings) {
+      await prisma.siteSettings.upsert({
+        where: { id: "default" },
+        create: {
+          id: "default",
+          email: defaultSettings.email,
+          phones: defaultSettings.phones,
+          whatsapp: defaultSettings.whatsapp,
+          street: defaultSettings.address.street,
+          neighborhood: defaultSettings.address.neighborhood,
+          commune: defaultSettings.address.commune,
+          city: defaultSettings.address.city,
+          country: defaultSettings.address.country,
+          fullAddress: defaultSettings.address.full,
+          hours: defaultSettings.hours,
+          mapsEmbed: defaultSettings.mapsEmbed,
+          mapsUrl: defaultSettings.mapsUrl,
+          facebook: defaultSettings.social.facebook,
+          twitter: defaultSettings.social.twitter,
+          linkedin: defaultSettings.social.linkedin,
+          instagram: defaultSettings.social.instagram,
+          tagline: defaultSettings.tagline,
+        },
+        update: {},
+      });
+    }
+    if (!company) {
+      await prisma.companyProfile.upsert({
+        where: { id: "default" },
+        create: { id: "default", data: seedDatabase().company as Prisma.InputJsonValue },
+        update: {},
+      });
+    }
+  }
 
   await ensureAdminUser();
 
   if ((await prisma.category.count()) === 0) {
     await prisma.category.createMany({
       data: seedCategories,
+      skipDuplicates: true,
     });
   }
 
-  if (!(await prisma.homePage.findUnique({ where: { id: "default" } }))) {
-    await prisma.homePage.create({
-      data: { id: "default", data: defaultHome as Prisma.InputJsonValue },
-    });
-  }
+  await prisma.homePage.upsert({
+    where: { id: "default" },
+    create: { id: "default", data: defaultHome as Prisma.InputJsonValue },
+    update: {},
+  });
 }
 
 export async function getDatabase(): Promise<CmsDatabase> {

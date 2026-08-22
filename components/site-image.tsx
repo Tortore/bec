@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image, { type ImageProps } from "next/image";
-import { cn, isPublicHttpUrl, needsUnoptimizedImage, runtimeMediaUrl } from "@/lib/utils";
+import { isPublicHttpUrl, needsUnoptimizedImage, runtimeMediaUrl } from "@/lib/media-url";
+import { cn } from "@/lib/utils";
 
 type SiteImageProps = Omit<ImageProps, "src"> & {
   src: string;

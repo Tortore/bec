@@ -102,6 +102,14 @@ export async function getApplication(id: string) {
   return prisma.application.findUnique({ where: { id } });
 }
 
+export async function markContactMessageRead(id: string) {
+  await prisma.contactMessage.updateMany({ where: { id, read: false }, data: { read: true } });
+}
+
+export async function markApplicationRead(id: string) {
+  await prisma.application.updateMany({ where: { id, read: false }, data: { read: true } });
+}
+
 export async function getUnreadApplicationsCount() {
   return prisma.application.count({ where: { read: false } });
 }
@@ -119,13 +127,23 @@ export async function getAdminReviews() {
   return prisma.review.findMany({ orderBy: { createdAt: "desc" } });
 }
 
+export async function getReview(id: string) {
+  return prisma.review.findUnique({ where: { id } });
+}
+
+export async function getPendingReviewsCount() {
+  return prisma.review.count({ where: { approved: false } });
+}
+
 export async function getDashboardStats() {
-  const [db, messages, applications, unreadApplications, applicationCount] = await Promise.all([
+  const [db, messages, applications, unreadApplications, applicationCount, pendingReviews, reviews] = await Promise.all([
     getDatabase(),
     getMessages(),
     prisma.application.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
     prisma.application.count({ where: { read: false } }),
     prisma.application.count(),
+    getPendingReviewsCount(),
+    prisma.review.count(),
   ]);
   return {
     projects: db.projects.length,
@@ -134,7 +152,9 @@ export async function getDashboardStats() {
     services: db.services.length,
     team: db.team.length,
     messages: messages.length,
+    reviews,
     unreadMessages: messages.filter((item) => !item.read).length,
+    pendingReviews,
     recentMessages: messages.slice(0, 5),
     applications: applicationCount,
     unreadApplications,

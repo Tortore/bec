@@ -3,8 +3,9 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
-import { deleteMediaAction, uploadMediaAction } from "@/lib/cms/actions";
+import { deleteMediaAction } from "@/lib/cms/actions";
 import { validateImageFile } from "@/lib/cms/image-file";
+import { uploadAdminImage } from "@/lib/cms/upload-client";
 import { Button } from "@/components/ui/button";
 import { SiteImage } from "@/components/site-image";
 import { mediaFileName } from "@/lib/utils";
@@ -54,15 +55,16 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
     }
     setPending(true);
     setNotice(null);
-    const result = await uploadMediaAction(formData);
-    setPending(false);
-    if (!result.ok) {
-      setNotice({ tone: "error", text: result.error });
-      return;
+    try {
+      await uploadAdminImage(file);
+      setNotice({ tone: "ok", text: `L’image « ${file.name} » a bien été ajoutée.` });
+      if (inputRef.current) inputRef.current.value = "";
+      router.refresh();
+    } catch (caught) {
+      setNotice({ tone: "error", text: caught instanceof Error ? caught.message : "L’envoi a échoué." });
+    } finally {
+      setPending(false);
     }
-    setNotice({ tone: "ok", text: `L’image « ${file.name} » a bien été ajoutée.` });
-    if (inputRef.current) inputRef.current.value = "";
-    router.refresh();
   }
 
   async function onDelete(item: MediaItem) {
@@ -72,14 +74,19 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
     if (!window.confirm(`Supprimer « ${mediaFileName(item.src)} » ?${used}`)) return;
     setDeleting(item.src);
     setNotice(null);
-    const result = await deleteMediaAction(item.src);
-    setDeleting("");
-    if (!result.ok) {
-      setNotice({ tone: "error", text: result.error });
-      return;
+    try {
+      const result = await deleteMediaAction(item.src);
+      if (!result.ok) {
+        setNotice({ tone: "error", text: result.error });
+        return;
+      }
+      setNotice({ tone: "ok", text: `L’image « ${mediaFileName(item.src)} » a été supprimée.` });
+      router.refresh();
+    } catch {
+      setNotice({ tone: "error", text: "La suppression a échoué. Réessayez." });
+    } finally {
+      setDeleting("");
     }
-    setNotice({ tone: "ok", text: `L’image « ${mediaFileName(item.src)} » a été supprimée.` });
-    router.refresh();
   }
 
   const uploaded = items.filter((item) => item.uploaded).length;

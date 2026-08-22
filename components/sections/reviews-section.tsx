@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { CheckCircle2, Send, Star } from "lucide-react";
+import { fetchWithTimeout, RequestTimeoutError } from "@/lib/fetch-with-timeout";
 
 type PublicReview = {
   id: string;
@@ -23,7 +24,7 @@ export function ReviewsSection({ reviews }: { reviews: PublicReview[] }) {
     const form = event.currentTarget;
     const data = new FormData(form);
     try {
-      const response = await fetch("/api/avis", {
+      const response = await fetchWithTimeout("/api/avis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -34,14 +35,20 @@ export function ReviewsSection({ reviews }: { reviews: PublicReview[] }) {
           privacy: data.get("privacy") === "on",
           website: data.get("website"),
         }),
-      });
-      const result = (await response.json()) as { ok?: boolean; error?: string };
-      if (!response.ok || !result.ok) throw new Error(result.error || "Envoi impossible.");
+      }, 20_000);
+      const result = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!response.ok || !result?.ok) throw new Error(result?.error || "Envoi impossible.");
       form.reset();
       setRating(5);
       setStatus("success");
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Envoi impossible.");
+      setError(
+        caught instanceof RequestTimeoutError
+          ? "Le serveur met trop de temps à répondre. Vérifiez votre connexion puis réessayez."
+          : caught instanceof Error
+            ? caught.message
+            : "Envoi impossible.",
+      );
       setStatus("error");
     }
   }

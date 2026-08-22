@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,10 +13,8 @@ import {
   LogOut,
   Mail,
   Menu,
-  Newspaper,
   PencilRuler,
   Settings,
-  Star,
   Tags,
   UserCog,
   Users,
@@ -26,33 +24,33 @@ import { logoutAction } from "@/lib/cms/actions";
 import { SiteImage } from "@/components/site-image";
 import { cn } from "@/lib/utils";
 
-const nav = [
+const links = [
   { href: "/admin", label: "Tableau de bord", icon: LayoutDashboard },
   { href: "/admin/accueil", label: "Accueil", icon: Home },
   { href: "/admin/projets", label: "Projets", icon: FolderKanban },
   { href: "/admin/categories", label: "Catégories", icon: Tags },
-  { href: "/admin/actualites", label: "Actualités", icon: Newspaper },
   { href: "/admin/services", label: "Services", icon: PencilRuler },
   { href: "/admin/equipe", label: "Équipe", icon: Users },
   { href: "/admin/messages", label: "Messages", icon: Mail },
-  { href: "/admin/avis", label: "Avis", icon: Star },
   { href: "/admin/recrutement", label: "Recrutement", icon: Briefcase },
   { href: "/admin/medias", label: "Médias", icon: ImageIcon },
   { href: "/admin/cabinet", label: "Cabinet", icon: Building2 },
   { href: "/admin/utilisateurs", label: "Utilisateurs", icon: UserCog },
   { href: "/admin/parametres", label: "Paramètres", icon: Settings },
-];
+] as const;
 
 export function AdminShell({
   user,
   unread,
   unreadApplications = 0,
+  unreadReviews = 0,
   children,
 }: {
   user: string;
   unread: number;
   unreadApplications?: number;
-  children: React.ReactNode;
+  unreadReviews?: number;
+  children: ReactNode;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -97,7 +95,7 @@ export function AdminShell({
           </button>
         </div>
         <nav className="flex-1 space-y-1 px-3 pb-6">
-          {nav.map((item) => {
+          {links.map((item) => {
             const active =
               item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
             const Icon = item.icon;
@@ -113,9 +111,9 @@ export function AdminShell({
               >
                 <Icon className="h-4 w-4" />
                 <span className="flex-1">{item.label}</span>
-                {item.href === "/admin/messages" && unread > 0 ? (
+                {item.href === "/admin/messages" && unread + unreadReviews > 0 ? (
                   <span className="rounded-full bg-[#00af84] px-2 py-0.5 text-[11px] font-semibold text-white">
-                    {unread}
+                    {unread + unreadReviews}
                   </span>
                 ) : null}
                 {item.href === "/admin/recrutement" && unreadApplications > 0 ? (

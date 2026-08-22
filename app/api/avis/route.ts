@@ -3,36 +3,18 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { reviewSchema } from "@/lib/review-schema";
+import { logServerError, requestId } from "@/lib/server-log";
+import { MemoryRateLimiter, requestClientKey } from "@/lib/rate-limit";
 
-const windowMs = 15 * 60 * 1000;
-const maxAttempts = 3;
-const attempts = new Map<string, { count: number; until: number }>();
-
-function clientKey(request: Request) {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown"
-  );
-}
-
-function isRateLimited(key: string) {
-  const now = Date.now();
-  const current = attempts.get(key);
-  if (!current || current.until <= now) {
-    attempts.set(key, { count: 1, until: now + windowMs });
-    return false;
-  }
-  current.count += 1;
-  return current.count > maxAttempts;
-}
+const limiter = new MemoryRateLimiter(3, 15 * 60 * 1000);
 
 export async function POST(request: Request) {
+  const id = requestId(request);
   try {
-    if (isRateLimited(clientKey(request))) {
+    if (limiter.isLimited(requestClientKey(request))) {
       return NextResponse.json(
         { ok: false, error: "Trop d’avis envoyés. Réessayez dans quelques minutes." },
-        { status: 429 },
+        { status: 429, headers: { "Retry-After": "900", "X-Request-Id": id } },
       );
     }
     const parsed = reviewSchema.parse(await request.json());
@@ -45,15 +27,20 @@ export async function POST(request: Request) {
       },
     });
     revalidatePath("/");
-    revalidatePath("/admin/avis");
-    return NextResponse.json({ ok: true });
+    revalidatePath("/contact");
+    revalidatePath("/admin/messages");
+    return NextResponse.json({ ok: true }, { headers: { "X-Request-Id": id } });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { ok: false, error: error.issues[0]?.message ?? "Vérifiez les informations." },
-        { status: 400 },
+        { status: 400, headers: { "X-Request-Id": id } },
       );
     }
-    return NextResponse.json({ ok: false, error: "Impossible d’enregistrer l’avis." }, { status: 500 });
+    logServerError("api.reviews", error, { requestId: id });
+    return NextResponse.json(
+      { ok: false, error: "L’avis n’a pas pu être enregistré. Réessayez dans un instant." },
+      { status: 500, headers: { "X-Request-Id": id } },
+    );
   }
 }

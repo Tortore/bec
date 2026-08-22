@@ -5,7 +5,6 @@ import {
   Briefcase,
   FolderKanban,
   Mail,
-  Newspaper,
   PencilRuler,
   Users,
 } from "lucide-react";
@@ -24,10 +23,15 @@ export default async function AdminHomePage() {
 
   const cards = [
     { label: "Projets", value: stats.projects, hint: `${stats.publishedProjects} publiés`, href: "/admin/projets", icon: FolderKanban },
-    { label: "Actualités", value: stats.articles, hint: "Articles du site", href: "/admin/actualites", icon: Newspaper },
     { label: "Services", value: stats.services, hint: "Offre du cabinet", href: "/admin/services", icon: PencilRuler },
     { label: "Équipe", value: stats.team, hint: "Collaborateurs", href: "/admin/equipe", icon: Users },
-    { label: "Messages", value: stats.messages, hint: `${stats.unreadMessages} non lus`, href: "/admin/messages", icon: Mail },
+    {
+      label: "Messages",
+      value: stats.messages + stats.reviews,
+      hint: `${stats.messages} messages · ${stats.reviews} avis`,
+      href: "/admin/messages",
+      icon: Mail,
+    },
     { label: "Recrutement", value: stats.applications, hint: `${stats.unreadApplications} non lus`, href: "/admin/recrutement", icon: Briefcase },
   ];
 

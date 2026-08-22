@@ -35,15 +35,28 @@ export async function ensureAdminUser() {
 
 export async function verifyLogin(username: string, password: string) {
   await ensureAdminUser();
+  const env = envCredentials();
   const user = await prisma.adminUser.findFirst({
     where: { username: { equals: username.trim(), mode: "insensitive" } },
   });
   if (user) {
     if (!user.active) return null;
-    return verifyPassword(password, user.passwordHash) ? user : null;
+    if (verifyPassword(password, user.passwordHash)) return user;
+    // En local, le hash en base peut dater d’un ancien mot de passe :
+    // si les identifiants .env.local sont corrects, on les resynchronise.
+    if (
+      process.env.NODE_ENV !== "production" &&
+      username.trim().toLowerCase() === env.username.toLowerCase() &&
+      password === env.password
+    ) {
+      return prisma.adminUser.update({
+        where: { id: user.id },
+        data: { passwordHash: hashPassword(password), active: true },
+      });
+    }
+    return null;
   }
 
-  const env = envCredentials();
   if (username.trim() === env.username && password === env.password) {
     return prisma.adminUser.create({
       data: {

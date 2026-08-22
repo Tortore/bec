@@ -7,8 +7,11 @@ import { getServices } from "@/lib/cms/queries";
 
 export const metadata: Metadata = { title: "Services" };
 
-export default async function AdminServicesPage() {
+type Props = { searchParams: Promise<{ ok?: string }> };
+
+export default async function AdminServicesPage({ searchParams }: Props) {
   const services = await getServices();
+  const saved = (await searchParams).ok === "1";
   return (
     <div>
       <AdminHeader
@@ -16,7 +19,17 @@ export default async function AdminServicesPage() {
         description="Les prestations affichées sur la page Services et l’accueil."
         action={{ href: "/admin/services/nouveau", label: "Nouveau service" }}
       />
+      {saved ? (
+        <p className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          Le service a bien été enregistré.
+        </p>
+      ) : null}
       <div className="grid gap-4">
+        {services.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">
+            Aucun service pour le moment.
+          </div>
+        ) : null}
         {services.map((service) => (
           <article key={service.id} className="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center">
             <div>

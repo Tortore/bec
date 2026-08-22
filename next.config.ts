@@ -1,5 +1,15 @@
 import type { NextConfig } from "next";
 
+const turboRequested = process.argv.some((argument) =>
+  ["--turbo", "--turbopack"].includes(argument),
+);
+
+if (turboRequested) {
+  throw new Error(
+    "Turbopack est désactivé pour ce projet afin d’éviter les erreurs HMR. Lancez `npm run dev`.",
+  );
+}
+
 const oneYear = "public, max-age=31536000, immutable";
 const oneMonth = "public, max-age=2592000, stale-while-revalidate=86400";
 const cdnLong = "public, max-age=31536000, stale-while-revalidate=86400";
@@ -54,19 +64,30 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
+  async redirects() {
+    return [
+      { source: "/actualites", destination: "/", permanent: true },
+      { source: "/actualites/:path*", destination: "/", permanent: true },
+      { source: "/admin/actualites", destination: "/admin", permanent: false },
+      { source: "/admin/actualites/:path*", destination: "/admin", permanent: false },
+      { source: "/admin/avis", destination: "/admin/messages?onglet=avis", permanent: false },
+      { source: "/admin/avis/:path*", destination: "/admin/messages?onglet=avis", permanent: false },
+    ];
+  },
   async headers() {
+    const assets = process.env.NODE_ENV === "production" ? immutableHeaders : [{ key: "Cache-Control", value: "no-store" }];
+    const images = process.env.NODE_ENV === "production" ? staticHeaders : [{ key: "Cache-Control", value: "no-store" }];
     return [
       { source: "/:path*", headers: securityHeaders },
-      { source: "/_next/static/:path*", headers: immutableHeaders },
-      { source: "/images/:path*", headers: staticHeaders },
-      { source: "/uploads/:path*", headers: immutableHeaders },
-      { source: "/favicon.png", headers: staticHeaders },
-      { source: "/apple-touch-icon.png", headers: staticHeaders },
+      { source: "/_next/static/:path*", headers: assets },
+      { source: "/images/:path*", headers: images },
+      { source: "/uploads/:path*", headers: process.env.NODE_ENV === "production" ? immutableHeaders : [{ key: "Cache-Control", value: "no-store" }] },
+      { source: "/favicon.png", headers: images },
+      { source: "/apple-touch-icon.png", headers: images },
     ];
   },
   serverExternalPackages: ["@prisma/client", "prisma"],
   experimental: {
-    optimizePackageImports: ["lucide-react"],
     middlewareClientMaxBodySize: "55mb",
     serverActions: {
       bodySizeLimit: "55mb",

@@ -1,6 +1,5 @@
 import { createReadStream } from "node:fs";
 import { open, stat } from "node:fs/promises";
-import { Readable } from "node:stream";
 import nodePath from "node:path";
 import { NextResponse } from "next/server";
 
@@ -62,9 +61,41 @@ function notFound() {
   return new NextResponse(null, { status: 404, headers: { "Cache-Control": "no-store" } });
 }
 
-function fileStream(filePath: string, start: number, end: number) {
-  const nodeStream = createReadStream(filePath, { start, end });
-  return Readable.toWeb(nodeStream) as ReadableStream<Uint8Array>;
+function fileStream(filePath: string, start: number, end: number, signal: AbortSignal) {
+  let nodeStream: ReturnType<typeof createReadStream> | undefined;
+  let settled = false;
+
+  return new ReadableStream<Uint8Array>({
+    start(controller) {
+      nodeStream = createReadStream(filePath, { start, end });
+      const abort = () => {
+        if (settled) return;
+        settled = true;
+        nodeStream?.destroy();
+      };
+      signal.addEventListener("abort", abort, { once: true });
+      nodeStream.on("data", (chunk) => {
+        if (!settled) controller.enqueue(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+      });
+      nodeStream.on("end", () => {
+        if (settled) return;
+        settled = true;
+        signal.removeEventListener("abort", abort);
+        controller.close();
+      });
+      nodeStream.on("error", (error) => {
+        if (settled) return;
+        settled = true;
+        signal.removeEventListener("abort", abort);
+        controller.error(error);
+      });
+    },
+    cancel() {
+      if (settled) return;
+      settled = true;
+      nodeStream?.destroy();
+    },
+  });
 }
 
 export async function HEAD(_request: Request, context: RouteContext) {
@@ -102,7 +133,7 @@ export async function GET(request: Request, context: RouteContext) {
     }
 
     const length = end - start + 1;
-    return new NextResponse(fileStream(media.filePath, start, end), {
+    return new NextResponse(fileStream(media.filePath, start, end, request.signal), {
       status: 206,
       headers: mediaHeaders(media.contentType, length, {
         "Content-Range": `bytes ${start}-${end}/${size}`,
@@ -111,7 +142,7 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   if (media.isVideo) {
-    return new NextResponse(fileStream(media.filePath, 0, size - 1), {
+    return new NextResponse(fileStream(media.filePath, 0, size - 1, request.signal), {
       status: 200,
       headers: mediaHeaders(media.contentType, size),
     });

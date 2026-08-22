@@ -1,46 +1,27 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { contactSchema } from "@/lib/contact-schema";
-import { updateMessages } from "@/lib/cms/store";
 import { sendContactMail } from "@/lib/mail";
+import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { logServerError, logServerWarning, requestId } from "@/lib/server-log";
+import { MemoryRateLimiter, requestClientKey } from "@/lib/rate-limit";
 
-const windowMs = 15 * 60 * 1000;
-const maxAttempts = 5;
-const attempts = new Map<string, { count: number; until: number }>();
-
-function clientKey(request: Request) {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown"
-  );
-}
-
-function isRateLimited(key: string) {
-  const now = Date.now();
-  const current = attempts.get(key);
-  if (current && current.until > now && current.count >= maxAttempts) return true;
-  if (!current || current.until <= now) {
-    attempts.set(key, { count: 1, until: now + windowMs });
-    return false;
-  }
-  current.count += 1;
-  return current.count > maxAttempts;
-}
+const limiter = new MemoryRateLimiter(5, 15 * 60 * 1000);
 
 export async function POST(request: Request) {
+  const id = requestId(request);
   try {
-    if (isRateLimited(clientKey(request))) {
+    if (limiter.isLimited(requestClientKey(request))) {
       return NextResponse.json(
         { ok: false, error: "Trop de messages. Réessayez dans quelques minutes." },
-        { status: 429 },
+        { status: 429, headers: { "Retry-After": "900", "X-Request-Id": id } },
       );
     }
 
     const data = await request.json();
     if (!data?.email || !data?.message) {
-      return NextResponse.json({ ok: false, error: "Champs requis manquants" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "Renseignez votre e-mail et votre message." }, { status: 400, headers: { "X-Request-Id": id } });
     }
 
     const parsed = contactSchema.parse(data);
@@ -52,32 +33,35 @@ export async function POST(request: Request) {
       message: parsed.message,
     };
 
-    await updateMessages((messages) => [
-      {
-        id: crypto.randomUUID(),
+    await prisma.contactMessage.create({
+      data: {
         ...fields,
-        createdAt: new Date().toISOString(),
+        phone: fields.phone || null,
         read: false,
       },
-      ...messages,
-    ]);
+    });
 
     try {
       await sendContactMail(fields);
-    } catch {
+    } catch (error) {
       // Le message reste enregistré même si l’e-mail SMTP échoue.
+      logServerWarning("api.contact.email", error, { requestId: id });
     }
 
     revalidatePath("/admin/messages");
     revalidatePath("/admin");
-    return NextResponse.json({ ok: true, success: true });
+    return NextResponse.json({ ok: true, success: true }, { headers: { "X-Request-Id": id } });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { ok: false, error: "Champs requis manquants", issues: error.issues },
-        { status: 400 },
+        { ok: false, error: error.issues[0]?.message ?? "Vérifiez les informations du formulaire.", issues: error.issues },
+        { status: 400, headers: { "X-Request-Id": id } },
       );
     }
-    return NextResponse.json({ ok: false, error: "Erreur serveur" }, { status: 500 });
+    logServerError("api.contact", error, { requestId: id });
+    return NextResponse.json(
+      { ok: false, error: "Le message n’a pas pu être enregistré. Réessayez dans un instant." },
+      { status: 500, headers: { "X-Request-Id": id } },
+    );
   }
 }
