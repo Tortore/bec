@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SiteImage } from "@/components/site-image";
+import { runtimeMediaUrl } from "@/lib/utils";
 import type { HomeContent } from "@/types";
 
 export function Hero({ home }: { home: HomeContent }) {
@@ -18,8 +19,8 @@ export function Hero({ home }: { home: HomeContent }) {
         {home.heroVideo ? (
           <video
             className="absolute inset-0 h-full w-full object-cover"
-            src={home.heroVideo}
-            poster={home.heroImage}
+            src={runtimeMediaUrl(home.heroVideo)}
+            poster={runtimeMediaUrl(home.heroImage)}
             autoPlay
             muted
             loop

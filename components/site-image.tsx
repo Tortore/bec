@@ -2,14 +2,24 @@
 
 import { useState } from "react";
 import Image, { type ImageProps } from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, runtimeMediaUrl } from "@/lib/utils";
 
 type SiteImageProps = Omit<ImageProps, "src"> & {
   src: string;
 };
 
-export function SiteImage({ src, alt, priority, loading, className, fill, ...props }: SiteImageProps) {
+export function SiteImage({
+  src,
+  alt,
+  priority,
+  loading,
+  className,
+  fill,
+  unoptimized,
+  ...props
+}: SiteImageProps) {
   const [failed, setFailed] = useState(false);
+  const uploaded = src.startsWith("/uploads/");
 
   if (!src || failed) {
     return (
@@ -24,12 +34,13 @@ export function SiteImage({ src, alt, priority, loading, className, fill, ...pro
 
   return (
     <Image
-      src={src}
+      src={runtimeMediaUrl(src)}
       alt={alt}
       fill={fill}
       priority={priority}
       loading={priority ? "eager" : (loading ?? "lazy")}
       className={className}
+      unoptimized={unoptimized ?? uploaded}
       onError={() => setFailed(true)}
       {...props}
     />

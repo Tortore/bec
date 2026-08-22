@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { uploadVideoAction } from "@/lib/cms/actions";
 import { Label } from "@/components/ui/label";
-import { mediaFileName } from "@/lib/utils";
+import { mediaFileName, runtimeMediaUrl } from "@/lib/utils";
 
 const maxVideoSize = 50 * 1024 * 1024;
 const videoTypes = new Set(["video/mp4", "video/webm"]);
@@ -65,7 +65,7 @@ export function VideoField({
       {value ? (
         <video
           className="aspect-video w-full max-w-xl rounded-xl bg-black object-cover"
-          src={value}
+          src={runtimeMediaUrl(value)}
           controls
           muted
           playsInline

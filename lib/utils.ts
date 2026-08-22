@@ -9,6 +9,16 @@ export function mediaFileName(src: string) {
   return decodeURIComponent(src.split("/").pop() ?? src);
 }
 
+export function runtimeMediaUrl(src: string) {
+  if (!src.startsWith("/uploads/")) return src;
+  const relative = src
+    .slice("/uploads/".length)
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  return `/api/media/${relative}`;
+}
+
 export function encodeImagePath(src: string) {
   return src
     .split("/")
