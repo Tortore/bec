@@ -20,6 +20,10 @@ export function HomeForm({
     <form action={saveHomeAction} className="space-y-8">
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-[#065b48]">Bannière (hero)</h2>
+        <p className="text-sm text-slate-500">
+          Après avoir téléversé ou choisi une image ou une vidéo, cliquez sur « Enregistrer l’accueil » tout en bas
+          pour publier la modification.
+        </p>
         <Field id="heroBadge" label="Pastille" defaultValue={home.heroBadge} />
         <div className="grid gap-5 md:grid-cols-2">
           <Field id="heroTitle" label="Titre" defaultValue={home.heroTitle} />

@@ -45,7 +45,7 @@ export function ImageField({
       return;
     }
     setValue(result.src);
-    setOk("L’image a bien été ajoutée.");
+    setOk("L’image a bien été ajoutée. Enregistrez le formulaire pour publier le changement.");
   }
 
   return (

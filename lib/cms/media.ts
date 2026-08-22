@@ -61,7 +61,7 @@ export async function saveUpload(file: File) {
   if (!imageExt.test(ext)) {
     throw new Error("FORMAT");
   }
-  if (file.size > 50 * 1024 * 1024) {
+  if (file.size > 8 * 1024 * 1024) {
     throw new Error("SIZE");
   }
   const dir = path.join(process.cwd(), "public", "uploads");
@@ -80,7 +80,7 @@ export async function saveVideoUpload(file: File) {
   if (!videoExt.test(ext) || !allowedTypes.has(file.type)) {
     throw new Error("FORMAT");
   }
-  if (file.size > 8 * 1024 * 1024) {
+  if (file.size > 50 * 1024 * 1024) {
     throw new Error("SIZE");
   }
   const dir = path.join(process.cwd(), "public", "uploads");
