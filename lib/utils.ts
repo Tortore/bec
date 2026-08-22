@@ -10,13 +10,19 @@ export function mediaFileName(src: string) {
 }
 
 export function runtimeMediaUrl(src: string) {
-  if (!src.startsWith("/uploads/")) return src;
-  const relative = src
-    .slice("/uploads/".length)
-    .split("/")
-    .map((segment) => encodeURIComponent(segment))
-    .join("/");
-  return `/api/media/${relative}`;
+  const value = src.trim();
+  if (!value) return value;
+  if (isPublicHttpUrl(value)) return value;
+  if (value.startsWith("/uploads/")) {
+    const relative = value
+      .slice("/uploads/".length)
+      .split("/")
+      .map((segment) => encodeURIComponent(segment))
+      .join("/");
+    return `/api/media/${relative}`;
+  }
+  if (value.startsWith("/")) return encodeImagePath(value);
+  return value;
 }
 
 export function encodeImagePath(src: string) {
@@ -25,6 +31,15 @@ export function encodeImagePath(src: string) {
     .map((segment) => encodeURIComponent(segment))
     .join("/")
     .replace(/%2F/g, "/");
+}
+
+export function needsUnoptimizedImage(src: string) {
+  return (
+    isPublicHttpUrl(src) ||
+    src.startsWith("/uploads/") ||
+    src.startsWith("/api/") ||
+    /[\s()%]/.test(src)
+  );
 }
 
 export function formatDate(isoDate: string, locale = "fr-FR") {

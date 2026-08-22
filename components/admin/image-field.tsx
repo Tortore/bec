@@ -25,6 +25,12 @@ export function ImageField({
   const [ok, setOk] = useState("");
   const [uploading, setUploading] = useState(false);
 
+  function choose(src: string, message: string) {
+    setValue(src.trim());
+    setError("");
+    setOk(message);
+  }
+
   async function onUpload(file: File | undefined) {
     if (!file) return;
     const invalid = validateImageFile(file);
@@ -44,18 +50,16 @@ export function ImageField({
       setError(result.error);
       return;
     }
-    setValue(result.src);
-    setOk("L’image a bien été ajoutée. Enregistrez le formulaire pour publier le changement.");
+    choose(result.src, "L’image a bien été ajoutée. Enregistrez le formulaire pour la publier.");
   }
 
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <input type="hidden" name={name} value={value} />
       <div className="grid gap-3 md:grid-cols-[8rem_1fr]">
         <div className="relative h-36 overflow-hidden rounded-xl bg-[#065b48]">
           {value ? (
-            <SiteImage src={value} alt="" fill className={previewClassName} sizes="160px" />
+            <SiteImage key={value} src={value} alt="" fill className={previewClassName} sizes="160px" />
           ) : (
             <span className="flex h-full items-center justify-center text-xs text-white/60">Aperçu</span>
           )}
@@ -67,15 +71,39 @@ export function ImageField({
               type="file"
               accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
               className="hidden"
-              onChange={(event) => onUpload(event.target.files?.[0])}
+              onChange={(event) => {
+                onUpload(event.target.files?.[0]);
+                event.target.value = "";
+              }}
             />
           </label>
+          <div className="space-y-1">
+            <Label htmlFor={name} className="text-xs font-medium text-slate-500">
+              Image sélectionnée
+            </Label>
+            <input
+              id={name}
+              type="text"
+              name={name}
+              value={value}
+              onChange={(event) => {
+                setValue(event.target.value);
+                setError("");
+                setOk("");
+              }}
+              placeholder="/images/maison.jpg"
+              className="h-11 w-full rounded-md border border-input bg-white px-3 text-sm"
+            />
+          </div>
           <details className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
             <summary className="cursor-pointer text-slate-600">Choisir une photo déjà en ligne</summary>
             <select
               className="mt-2 h-11 w-full rounded-md border border-input bg-white px-3 text-sm"
               value={media.includes(value) ? value : ""}
-              onChange={(event) => setValue(event.target.value)}
+              onChange={(event) => {
+                if (!event.target.value) return;
+                choose(event.target.value, "Photo sélectionnée. Enregistrez le formulaire pour la publier.");
+              }}
             >
               <option value="">Sélectionner</option>
               {media.map((src) => (

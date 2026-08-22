@@ -21,6 +21,7 @@ const attempts = new Map<string, { count: number; until: number }>();
 
 function revalidateSite() {
   revalidatePath("/", "layout");
+  revalidatePath("/");
   revalidatePath("/admin", "layout");
 }
 
@@ -33,6 +34,13 @@ function parseLines(value: FormDataEntryValue | null) {
 
 function bool(value: FormDataEntryValue | null) {
   return value === "on" || value === "true" || value === "1";
+}
+
+function asMediaSrc(value: FormDataEntryValue | null, fallback = "") {
+  const raw = String(value ?? "").trim();
+  if (!raw) return fallback;
+  if (raw.startsWith("/") && !raw.startsWith("//") && !raw.includes("..")) return raw;
+  return fallback;
 }
 
 export async function loginAction(formData: FormData) {
@@ -527,8 +535,8 @@ export async function saveHomeAction(formData: FormData) {
     heroAccent: String(formData.get("heroAccent") ?? current.heroAccent),
     heroSubtitle: String(formData.get("heroSubtitle") ?? current.heroSubtitle),
     heroLocation: String(formData.get("heroLocation") ?? current.heroLocation),
-    heroImage: String(formData.get("heroImage") ?? current.heroImage),
-    heroVideo: String(formData.get("heroVideo") ?? current.heroVideo),
+    heroImage: asMediaSrc(formData.get("heroImage"), current.heroImage) || current.heroImage,
+    heroVideo: asMediaSrc(formData.get("heroVideo"), ""),
     heroPrimaryLabel: String(formData.get("heroPrimaryLabel") ?? current.heroPrimaryLabel),
     heroSecondaryLabel: String(formData.get("heroSecondaryLabel") ?? current.heroSecondaryLabel),
     servicesEyebrow: String(formData.get("servicesEyebrow") ?? current.servicesEyebrow),

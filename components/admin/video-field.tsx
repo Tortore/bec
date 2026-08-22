@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { mediaFileName, runtimeMediaUrl } from "@/lib/utils";
 
 const maxVideoSize = 50 * 1024 * 1024;
-const videoTypes = new Set(["video/mp4", "video/webm"]);
+const videoExt = /\.(mp4|webm)$/i;
 
 export function VideoField({
   name,
@@ -21,10 +21,17 @@ export function VideoField({
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
   const [uploading, setUploading] = useState(false);
+  const playbackSrc = value.startsWith("/") ? runtimeMediaUrl(value) : "";
+
+  function choose(src: string, message: string) {
+    setValue(src.trim());
+    setError("");
+    setOk(message);
+  }
 
   async function onUpload(file: File | undefined) {
     if (!file) return;
-    if (!videoTypes.has(file.type)) {
+    if (!videoExt.test(file.name) && file.type !== "video/mp4" && file.type !== "video/webm") {
       setError("Choisissez une vidéo MP4 ou WebM.");
       setOk("");
       return;
@@ -45,14 +52,11 @@ export function VideoField({
       setError(result.error);
       return;
     }
-    setValue(result.src);
-    setOk("La vidéo a bien été ajoutée. Enregistrez l’accueil pour la publier.");
+    choose(result.src, "La vidéo a bien été téléversée. Cliquez sur « Enregistrer l’accueil » pour la publier.");
   }
 
   function removeVideo() {
-    setValue("");
-    setError("");
-    setOk("La vidéo sera retirée après l’enregistrement. L’image sera affichée à sa place.");
+    choose("", "La vidéo sera retirée après l’enregistrement. L’image sera affichée à sa place.");
   }
 
   return (
@@ -60,12 +64,13 @@ export function VideoField({
       <Label>Vidéo de fond (facultative)</Label>
       <input type="hidden" name={name} value={value} />
       <p className="text-sm text-slate-500">
-        MP4 ou WebM, 50 Mo maximum. Sans vidéo, l’image ci-dessus reste affichée.
+        Téléversez un fichier MP4 ou WebM (50 Mo maximum). Sans vidéo, l’image ci-dessus reste affichée.
       </p>
-      {value ? (
+      {playbackSrc ? (
         <video
+          key={playbackSrc}
           className="aspect-video w-full max-w-xl rounded-xl bg-black object-cover"
-          src={runtimeMediaUrl(value)}
+          src={playbackSrc}
           controls
           muted
           playsInline
@@ -77,10 +82,13 @@ export function VideoField({
           {uploading ? "Envoi…" : value ? "Remplacer la vidéo" : "Téléverser une vidéo"}
           <input
             type="file"
-            accept="video/mp4,video/webm"
+            accept="video/mp4,video/webm,.mp4,.webm"
             className="hidden"
             disabled={uploading}
-            onChange={(event) => onUpload(event.target.files?.[0])}
+            onChange={(event) => {
+              onUpload(event.target.files?.[0]);
+              event.target.value = "";
+            }}
           />
         </label>
         {value ? (
@@ -100,9 +108,8 @@ export function VideoField({
             className="mt-2 h-11 w-full rounded-md border border-input bg-white px-3 text-sm"
             value={videos.includes(value) ? value : ""}
             onChange={(event) => {
-              setValue(event.target.value);
-              setError("");
-              setOk("");
+              if (!event.target.value) return;
+              choose(event.target.value, "Vidéo sélectionnée. Enregistrez l’accueil pour la publier.");
             }}
           >
             <option value="">Sélectionner</option>

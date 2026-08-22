@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image, { type ImageProps } from "next/image";
-import { cn, runtimeMediaUrl } from "@/lib/utils";
+import { cn, isPublicHttpUrl, needsUnoptimizedImage, runtimeMediaUrl } from "@/lib/utils";
 
 type SiteImageProps = Omit<ImageProps, "src"> & {
   src: string;
@@ -19,7 +19,10 @@ export function SiteImage({
   ...props
 }: SiteImageProps) {
   const [failed, setFailed] = useState(false);
-  const uploaded = src.startsWith("/uploads/");
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
 
   if (!src || failed) {
     return (
@@ -32,15 +35,17 @@ export function SiteImage({
     );
   }
 
+  const displaySrc = src.startsWith("/uploads/") || isPublicHttpUrl(src) ? runtimeMediaUrl(src) : src;
+
   return (
     <Image
-      src={runtimeMediaUrl(src)}
+      src={displaySrc}
       alt={alt}
       fill={fill}
       priority={priority}
       loading={priority ? "eager" : (loading ?? "lazy")}
       className={className}
-      unoptimized={unoptimized ?? uploaded}
+      unoptimized={unoptimized ?? (needsUnoptimizedImage(src) || isPublicHttpUrl(displaySrc))}
       onError={() => setFailed(true)}
       {...props}
     />

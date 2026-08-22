@@ -5,6 +5,8 @@ import { runtimeMediaUrl } from "@/lib/utils";
 import type { HomeContent } from "@/types";
 
 export function Hero({ home }: { home: HomeContent }) {
+  const hasVideo = Boolean(home.heroVideo);
+
   return (
     <section className="relative flex min-h-[28rem] items-end overflow-hidden py-12 sm:min-h-[32rem] sm:items-center sm:py-16 md:min-h-[38rem] md:py-0">
       <div className="absolute inset-0">
@@ -16,7 +18,7 @@ export function Hero({ home }: { home: HomeContent }) {
           sizes="100vw"
           className="object-cover"
         />
-        {home.heroVideo ? (
+        {hasVideo ? (
           <video
             className="absolute inset-0 h-full w-full object-cover"
             src={runtimeMediaUrl(home.heroVideo)}
@@ -28,16 +30,15 @@ export function Hero({ home }: { home: HomeContent }) {
             preload="metadata"
             aria-hidden="true"
           />
-        ) : null}
-        {!home.heroVideo ? (
+        ) : (
           <>
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/25" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
           </>
-        ) : null}
+        )}
       </div>
 
-      {!home.heroVideo ? (
+      {!hasVideo ? (
         <div className="container-site relative z-10 w-full">
           <div className="max-w-2xl">
             <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-6xl">

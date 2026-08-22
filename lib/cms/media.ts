@@ -76,8 +76,8 @@ export async function saveUpload(file: File) {
 
 export async function saveVideoUpload(file: File) {
   const ext = path.extname(file.name).toLowerCase();
-  const allowedTypes = new Set(["video/mp4", "video/webm"]);
-  if (!videoExt.test(ext) || !allowedTypes.has(file.type)) {
+  const allowedTypes = new Set(["video/mp4", "video/webm", "application/octet-stream", ""]);
+  if (!videoExt.test(ext) || (file.type && !allowedTypes.has(file.type) && !file.type.startsWith("video/"))) {
     throw new Error("FORMAT");
   }
   if (file.size > 50 * 1024 * 1024) {

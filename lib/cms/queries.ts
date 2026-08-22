@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { getDatabase, getMessages, ensureSeeded } from "@/lib/cms/store";
 import { defaultHome, labelsFrom } from "@/lib/cms/defaults";
 import { listMedia } from "@/lib/cms/media";
@@ -155,6 +156,7 @@ export async function getCategoryLabels() {
 }
 
 export async function getHome(): Promise<HomeContent> {
+  noStore();
   await ensureSeeded();
   const row = await prisma.homePage.findUnique({ where: { id: "default" } });
   const data = (row?.data as Partial<HomeContent> | undefined) ?? {};
