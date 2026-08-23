@@ -13,7 +13,7 @@ import { ReviewsSection } from "@/components/sections/reviews-section";
 export const metadata: Metadata = createMetadata({
   title: "Contact",
   description:
-    "Contactez Bureau d'Études et Constructions à Lubumbashi : Avenue de la Moto, Gambela 2. Téléphone, e-mail, WhatsApp et devis.",
+    "Contactez Bureau d'Études et Construction à Lubumbashi : Avenue de la Moto, Gambela 2. Téléphone, e-mail, WhatsApp et devis.",
   path: "/contact",
   image: "/images/contact.jpg",
 });
@@ -28,7 +28,7 @@ export default async function ContactPage() {
         <div className="absolute inset-0">
           <SiteImage
             src="/images/contact.jpg"
-            alt="Contact Bureau d'Études et Constructions"
+            alt="Contact Bureau d'Études et Construction"
             fill
             priority
             sizes="100vw"
@@ -43,7 +43,7 @@ export default async function ContactPage() {
             items={[{ label: "Accueil", href: "/" }, { label: "Contact" }]}
           />
           <h1 className="mt-6 max-w-3xl text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Contactez Bureau d&apos;Études et Constructions
+            Contactez Bureau d&apos;Études et Construction
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">
             Pour un devis, un rendez-vous à Lubumbashi ou toute information sur

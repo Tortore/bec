@@ -119,7 +119,7 @@ export function Footer({ settings }: { settings?: CmsSettings }) {
                 <span>
                   <span className="block text-xl font-bold tracking-tight sm:text-2xl">BEC</span>
                   <span className="mt-0.5 block max-w-[16rem] text-xs leading-4 text-white/60">
-                    Bureau d&apos;Études et Constructions
+                    Bureau d&apos;Études et Construction
                   </span>
                 </span>
               </span>

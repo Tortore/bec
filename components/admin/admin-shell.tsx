@@ -149,7 +149,7 @@ export function AdminShell({
           >
             <Menu className="h-5 w-5" />
           </button>
-          <p className="hidden text-sm text-slate-500 lg:block">Bureau d’Études et Constructions</p>
+          <p className="hidden text-sm text-slate-500 lg:block">Bureau d’Études et Construction</p>
           <Link
             href="/"
             target="_blank"

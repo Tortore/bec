@@ -1,10 +1,10 @@
 export const siteConfig = {
-  name: "Bureau d'Études et Constructions",
+  name: "Bureau d'Études et Construction",
   shortName: "BEC",
-  legalName: "Bureau Études et Constructions",
+  legalName: "Bureau Études et Construction",
   tagline: "Architecture contemporaine, études et construction en RDC",
   description:
-    "Bureau d'Études et Constructions (BEC) est un cabinet d'architecture, d'ingénierie et de construction fondé à Lubumbashi en 2022. Conception, études techniques, suivi de chantier et urbanisme.",
+    "Bureau d'Études et Construction (BEC) est un cabinet d'architecture, d'ingénierie et de construction fondé à Lubumbashi en 2022. Conception, études techniques, suivi de chantier et urbanisme.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bec-rdc.com",
   locale: "fr_CD",
   founded: 2022,

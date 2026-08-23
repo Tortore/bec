@@ -1,4 +1,4 @@
-# Bureau d'Études et Constructions (BEC)
+# Bureau d'Études et Construction (BEC)
 
 Site vitrine officiel de BEC, cabinet d'architecture, d'ingénierie et de construction basé à Lubumbashi (RDC).
 

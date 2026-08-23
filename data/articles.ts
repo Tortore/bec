@@ -8,7 +8,7 @@ export const articles: Article[] = [
       "Impression 3D, bâtiments intelligents, et nouvelles méthodes de construction révolutionnent le secteur...",
     content: [
       "Impression 3D, bâtiments intelligents, et nouvelles méthodes de construction révolutionnent le secteur. Grâce aux avancées technologiques, la construction devient plus rapide, plus économique et plus écologique, permettant de répondre aux défis actuels.",
-      "Chez Bureau d'Études et Constructions, ces évolutions nourrissent une pratique déjà tournée vers la modernité et la durabilité : de la conception architecturale au suivi de chantier, chaque projet peut bénéficier d'outils plus précis, d'une meilleure coordination et d'une qualité d'exécution renforcée.",
+      "Chez Bureau d'Études et Construction, ces évolutions nourrissent une pratique déjà tournée vers la modernité et la durabilité : de la conception architecturale au suivi de chantier, chaque projet peut bénéficier d'outils plus précis, d'une meilleure coordination et d'une qualité d'exécution renforcée.",
       "L'impression 3D ouvre des pistes pour des composants sur mesure et des délais maîtrisés. Les bâtiments intelligents, de leur côté, intègrent supervision, confort et performance énergétique. Ensemble, ces méthodes redessinent le futur du bâtiment en République Démocratique du Congo comme ailleurs.",
     ],
     cover: "/images/logement/logement3.jpg",

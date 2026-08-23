@@ -24,11 +24,7 @@ export function HomeForm({
           Téléversez une image ou une vidéo (MP4/WebM), puis cliquez sur « Enregistrer l’accueil »
           tout en bas pour publier.
         </p>
-        <Field id="heroBadge" label="Pastille" defaultValue={home.heroBadge} />
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field id="heroTitle" label="Titre" defaultValue={home.heroTitle} />
-          <Field id="heroAccent" label="Accent (ligne verte)" defaultValue={home.heroAccent} />
-        </div>
+        <Field id="heroTitle" label="Titre" defaultValue={home.heroTitle} />
         <div className="space-y-2">
           <Label htmlFor="heroSubtitle">Texte d’introduction</Label>
           <Textarea id="heroSubtitle" name="heroSubtitle" rows={3} defaultValue={home.heroSubtitle} />

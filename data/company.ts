@@ -98,7 +98,7 @@ export const company = {
       year: "2022",
       title: "Fondation à Lubumbashi",
       description:
-        "Caleb Tshileu et Fidèle Djese créent le Bureau d'Études et Constructions.",
+        "Caleb Tshileu et Fidèle Djese créent le Bureau d'Études et Construction.",
     },
     {
       year: "2023",

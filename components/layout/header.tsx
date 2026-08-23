@@ -124,7 +124,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
                   {siteConfig.shortName}
                 </span>
                 <span className="block truncate text-[10px] leading-tight text-white/70 sm:text-xs">
-                  Bureau d&apos;Études et Constructions
+                  Bureau d&apos;Études et Construction
                 </span>
               </span>
             </Link>
@@ -235,7 +235,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
             aria-label="Retour à l’accueil BEC"
           >
             <span className="block text-xl font-bold">BEC</span>
-            <span className="text-xs text-white/75">Bureau d&apos;Études et Constructions</span>
+            <span className="text-xs text-white/75">Bureau d&apos;Études et Construction</span>
           </Link>
           <button
             type="button"

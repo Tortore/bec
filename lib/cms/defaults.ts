@@ -8,7 +8,7 @@ export const seedCategories: Category[] = projectCategories.map((id, index) => (
 }));
 
 export const defaultHome: HomeContent = {
-  heroBadge: "Bureau d'Études et Constructions",
+  heroBadge: "Bureau d'Études et Construction",
   heroTitle: "Concevoir et construire",
   heroAccent: "à Lubumbashi",
   heroSubtitle:
@@ -29,7 +29,7 @@ export const defaultHome: HomeContent = {
   teamTitle: "Les personnes de BEC",
   teamIntro: "Architectes, ingénieurs et spécialistes réunis autour de chaque projet.",
   ctaEyebrow: "Un projet à concevoir ou à construire ?",
-  ctaTitle: "Contactez Bureau d'Études et Constructions",
+  ctaTitle: "Contactez Bureau d'Études et Construction",
   ctaText:
     "Demandez un devis ou un rendez-vous à Lubumbashi. Notre équipe vous répond aux horaires d'ouverture.",
   ctaButton: "Demander un devis",

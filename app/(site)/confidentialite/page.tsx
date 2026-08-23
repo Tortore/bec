@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = createMetadata({
   title: "Politique de confidentialité",
   description:
-    "Politique de confidentialité RGPD de Bureau d'Études et Constructions : données collectées, finalités, durées et vos droits.",
+    "Politique de confidentialité RGPD de Bureau d'Études et Construction : données collectées, finalités, durées et vos droits.",
   path: "/confidentialite",
 });
 

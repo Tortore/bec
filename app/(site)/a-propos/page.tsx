@@ -49,7 +49,7 @@ export default async function AboutPage() {
         <div className="absolute inset-0">
           <SiteImage
             src="/images/chantier.jpg"
-            alt="Chantier Bureau d'Études et Constructions"
+            alt="Chantier Bureau d'Études et Construction"
             fill
             priority
             sizes="100vw"
@@ -67,7 +67,7 @@ export default async function AboutPage() {
             {company.history.title}
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">
-            Histoire, valeurs et équipe de Bureau d&apos;Études et Constructions,
+            Histoire, valeurs et équipe de Bureau d&apos;Études et Construction,
             fondé à Lubumbashi en 2022.
           </p>
         </div>
@@ -85,7 +85,7 @@ export default async function AboutPage() {
             <div className="mt-6 space-y-4 leading-relaxed text-muted-foreground">
               <p>
                 <strong className="text-[#065b48]">
-                  Bureau d&apos;Études et Constructions (BEC)
+                  Bureau d&apos;Études et Construction (BEC)
                 </strong>{" "}
                 a été fondé en 2022 par{" "}
                 <strong className="text-[#00af84]">Caleb Tshileu</strong> et{" "}

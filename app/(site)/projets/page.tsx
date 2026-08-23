@@ -8,7 +8,7 @@ import { createMetadata } from "@/lib/seo";
 export const metadata: Metadata = createMetadata({
   title: "Projets",
   description:
-    "Portfolio de Bureau d'Études et Constructions : résidentiel, commercial, hospitalité, public, académique, santé et logement social.",
+    "Portfolio de Bureau d'Études et Construction : résidentiel, commercial, hospitalité, public, académique, santé et logement social.",
   path: "/projets",
 });
 

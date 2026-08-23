@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createMetadata({
   title: "Politique de cookies",
-  description: "Politique de cookies de Bureau d'Études et Constructions, avec gestion du consentement.",
+  description: "Politique de cookies de Bureau d'Études et Construction, avec gestion du consentement.",
   path: "/cookies",
 });
 

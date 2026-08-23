@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createMetadata({
   title: "Mentions légales",
-  description: "Mentions légales de Bureau d'Études et Constructions (BEC), Lubumbashi.",
+  description: "Mentions légales de Bureau d'Études et Construction (BEC), Lubumbashi.",
   path: "/mentions-legales",
 });
 
@@ -13,7 +13,7 @@ export default function MentionsLegalesPage() {
   return (
     <LegalLayout
       title="Mentions légales"
-      intro="L’identité de Bureau d’Études et Constructions, l’hébergement du site et les règles d’usage des contenus."
+      intro="L’identité de Bureau d’Études et Construction, l’hébergement du site et les règles d’usage des contenus."
     >
       <section>
         <h2>Éditeur du site</h2>

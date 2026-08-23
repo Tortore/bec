@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = createMetadata({
   title: "Conditions d’utilisation",
-  description: "Conditions d’utilisation du site Bureau d'Études et Constructions.",
+  description: "Conditions d’utilisation du site Bureau d'Études et Construction.",
   path: "/conditions-utilisation",
 });
 

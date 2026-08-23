@@ -12,7 +12,7 @@ export default function NotFound() {
           <h1 className="text-6xl font-bold text-[#065b48] md:text-8xl">404</h1>
           <p className="mt-4 text-xl text-muted-foreground">Page non trouvée</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Cette adresse n&apos;existe pas sur le site de Bureau d&apos;Études et Constructions.
+            Cette adresse n&apos;existe pas sur le site de Bureau d&apos;Études et Construction.
           </p>
           <Link
             href="/"

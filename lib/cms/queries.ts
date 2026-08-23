@@ -5,6 +5,24 @@ import { listMedia } from "@/lib/cms/media";
 import { prisma } from "@/lib/prisma";
 import type { AdminAccount, Category, HomeContent, Project } from "@/types";
 
+function canonicalizeBrand<T>(value: T): T {
+  if (typeof value === "string") {
+    return value.replace(
+      /Bureau d[’']Études et Constructions/g,
+      "Bureau d’Études et Construction",
+    ) as T;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => canonicalizeBrand(item)) as T;
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, canonicalizeBrand(item)]),
+    ) as T;
+  }
+  return value;
+}
+
 export async function getAllProjects() {
   return (await getDatabase()).projects;
 }
@@ -91,7 +109,7 @@ export async function getSettings() {
 }
 
 export async function getCompany() {
-  return (await getDatabase()).company;
+  return canonicalizeBrand((await getDatabase()).company);
 }
 
 export async function getApplications() {
@@ -180,7 +198,7 @@ export async function getHome(): Promise<HomeContent> {
   await ensureSeeded();
   const row = await prisma.homePage.findUnique({ where: { id: "default" } });
   const data = (row?.data as Partial<HomeContent> | undefined) ?? {};
-  return {
+  const home = {
     ...defaultHome,
     ...data,
     stats: Array.isArray(data.stats) && data.stats.length ? data.stats : defaultHome.stats,
@@ -189,6 +207,7 @@ export async function getHome(): Promise<HomeContent> {
         ? data.ctaBenefits
         : defaultHome.ctaBenefits,
   };
+  return canonicalizeBrand(home);
 }
 
 export async function getUsers(): Promise<AdminAccount[]> {

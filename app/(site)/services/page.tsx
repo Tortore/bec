@@ -9,7 +9,7 @@ import { getServices } from "@/lib/cms/queries";
 export const metadata: Metadata = createMetadata({
   title: "Services",
   description:
-    "Services de Bureau d'Études et Constructions : conception architecturale, design d'intérieur, gestion de projet, urbanisme, études techniques et suivi de chantier.",
+    "Services de Bureau d'Études et Construction : conception architecturale, design d'intérieur, gestion de projet, urbanisme, études techniques et suivi de chantier.",
   path: "/services",
 });
 

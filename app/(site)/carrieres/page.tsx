@@ -18,7 +18,7 @@ import { SiteImage } from "@/components/site-image";
 export const metadata: Metadata = createMetadata({
   title: "Recrutement",
   description:
-    "Rejoindre Bureau d'Études et Constructions à Lubumbashi : déposez votre identité, votre CV et votre candidature en ligne.",
+    "Rejoindre Bureau d'Études et Construction à Lubumbashi : déposez votre identité, votre CV et votre candidature en ligne.",
   path: "/carrieres",
   image: "/images/chantier.jpg",
 });
@@ -66,7 +66,7 @@ export default function CareersPage() {
         <div className="absolute inset-0">
           <SiteImage
             src="/images/chantier.jpg"
-            alt="Chantier Bureau d'Études et Constructions"
+            alt="Chantier Bureau d'Études et Construction"
             fill
             priority
             sizes="100vw"
@@ -84,7 +84,7 @@ export default function CareersPage() {
             Recrutement
           </p>
           <h1 className="mt-3 max-w-3xl text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Rejoindre Bureau d&apos;Études et Constructions
+            Rejoindre Bureau d&apos;Études et Construction
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">
             Déposez votre identité, votre CV et votre lettre de motivation.

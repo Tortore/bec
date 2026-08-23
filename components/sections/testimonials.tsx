@@ -11,7 +11,7 @@ const quotes = [
   {
     quote:
       "Nous nous engageons à transformer chaque idée en une œuvre architecturale unique, alliant modernité et durabilité.",
-    author: "Bureau d'Études et Constructions",
+    author: "Bureau d'Études et Construction",
     role: "Vision du cabinet",
   },
   {
