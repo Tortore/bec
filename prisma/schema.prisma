@@ -109,6 +109,7 @@ model SiteSettings {
   linkedin    String   @default("#")
   instagram   String   @default("#")
   tagline     String
+  footer      Json     @default("{}")
   updatedAt   DateTime @updatedAt
 }
 
@@ -121,6 +122,12 @@ model CompanyProfile {
 model HomePage {
   id      String @id @default("default")
   data    Json
+  updatedAt DateTime @updatedAt
+}
+
+model LegalPages {
+  id        String   @id @default("default")
+  data      Json
   updatedAt DateTime @updatedAt
 }
 

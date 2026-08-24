@@ -17,13 +17,17 @@ import { saveServiceForm, ServiceFormError } from "@/lib/cms/service-save";
 import { teamDepartments, type Project, type TeamMember } from "@/types";
 import { deleteStoredFile } from "@/lib/cms/cv-storage";
 import { isApplicationStatus } from "@/lib/recruitment";
-import { logServerWarning } from "@/lib/server-log";
+import { logServerError, logServerWarning } from "@/lib/server-log";
+import { CompanyFormError, saveCompanyForm } from "@/lib/cms/company-save";
+import { footerFromFormData } from "@/lib/cms/footer-content";
+import { richTextToPlainText, sanitizeRichText } from "@/lib/rich-text";
 
 const attempts = new Map<string, { count: number; until: number }>();
 
 function revalidateSite() {
   revalidatePath("/", "layout");
   revalidatePath("/");
+  revalidatePath("/contact");
   revalidatePath("/admin", "layout");
 }
 
@@ -393,9 +397,18 @@ export async function saveSettingsAction(formData: FormData) {
         full: String(formData.get("full") ?? current.settings.address.full),
       },
       hours: [
-        { days: "Lundi — Vendredi", time: String(formData.get("hoursWeek") ?? "") },
-        { days: "Samedi", time: String(formData.get("hoursSaturday") ?? "") },
-        { days: "Dimanche", time: String(formData.get("hoursSunday") ?? "") },
+        {
+          days: String(formData.get("hoursWeekDays") ?? current.settings.hours[0]?.days ?? "Lundi — Vendredi"),
+          time: String(formData.get("hoursWeek") ?? ""),
+        },
+        {
+          days: String(formData.get("hoursSaturdayDays") ?? current.settings.hours[1]?.days ?? "Samedi"),
+          time: String(formData.get("hoursSaturday") ?? ""),
+        },
+        {
+          days: String(formData.get("hoursSundayDays") ?? current.settings.hours[2]?.days ?? "Dimanche"),
+          time: String(formData.get("hoursSunday") ?? ""),
+        },
       ],
       social: {
         facebook: String(formData.get("facebook") ?? ""),
@@ -403,6 +416,7 @@ export async function saveSettingsAction(formData: FormData) {
         linkedin: String(formData.get("linkedin") ?? ""),
         instagram: String(formData.get("instagram") ?? ""),
       },
+      footer: footerFromFormData(formData),
     },
   }));
   revalidateSite();
@@ -411,28 +425,18 @@ export async function saveSettingsAction(formData: FormData) {
 
 export async function saveCompanyAction(formData: FormData) {
   await requireAdmin();
-  await updateDatabase((current) => ({
-    ...current,
-    company: {
-      ...current.company,
-      history: {
-        title: String(formData.get("historyTitle") ?? current.company.history.title),
-        lead: String(formData.get("historyLead") ?? current.company.history.lead),
-        body: String(formData.get("historyBody") ?? current.company.history.body),
-      },
-      vision: String(formData.get("vision") ?? current.company.vision),
-      mission: {
-        lead: String(formData.get("missionLead") ?? current.company.mission.lead),
-        items: parseLines(formData.get("missionItems")),
-      },
-      values: parseLines(formData.get("values")).map((line) => {
-        const [name, ...rest] = line.split("|");
-        return { name: name.trim(), description: rest.join("|").trim() };
-      }),
-      commitments: parseLines(formData.get("commitments")),
-    },
-  }));
+  try {
+    await saveCompanyForm(formData);
+  } catch (error) {
+    if (error instanceof CompanyFormError) {
+      redirect("/admin/cabinet?error=INVALID_COMPANY");
+    }
+    logServerError("admin.company.save", error);
+    redirect("/admin/cabinet?error=COMPANY_SAVE_FAILED");
+  }
   revalidateSite();
+  revalidatePath("/a-propos");
+  revalidatePath("/admin/cabinet");
   redirect("/admin/cabinet?ok=1");
 }
 
@@ -534,15 +538,16 @@ export async function saveHomeAction(formData: FormData) {
     label: String(formData.get(`statLabel${index}`) ?? current.stats[index]?.label ?? ""),
     description: String(formData.get(`statDescription${index}`) ?? current.stats[index]?.description ?? ""),
   }));
+  const heroTitle = sanitizeRichText(String(formData.get("heroTitle") ?? ""), 8_000);
   const data = {
     ...defaultHome,
     ...current,
     heroBadge: String(formData.get("heroBadge") ?? current.heroBadge),
-    heroTitle: String(formData.get("heroTitle") ?? current.heroTitle),
+    heroTitle: richTextToPlainText(heroTitle) ? heroTitle : current.heroTitle,
     heroAccent: String(formData.get("heroAccent") ?? current.heroAccent),
     heroSubtitle: String(formData.get("heroSubtitle") ?? current.heroSubtitle),
     heroLocation: String(formData.get("heroLocation") ?? current.heroLocation),
-    heroImage: asMediaSrc(formData.get("heroImage"), current.heroImage) || current.heroImage,
+    heroImage: formData.has("heroImage") ? asMediaSrc(formData.get("heroImage"), "") : current.heroImage,
     heroVideo: formData.has("heroVideo") ? asMediaSrc(formData.get("heroVideo"), "") : current.heroVideo,
     heroPrimaryLabel: String(formData.get("heroPrimaryLabel") ?? current.heroPrimaryLabel),
     heroSecondaryLabel: String(formData.get("heroSecondaryLabel") ?? current.heroSecondaryLabel),

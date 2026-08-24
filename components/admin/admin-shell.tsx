@@ -16,12 +16,13 @@ import {
   PencilRuler,
   Settings,
   Tags,
+  Scale,
   UserCog,
   Users,
   X,
 } from "lucide-react";
 import { logoutAction } from "@/lib/cms/actions";
-import { SiteImage } from "@/components/site-image";
+import { BrandLogo } from "@/components/layout/brand-logo";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -35,6 +36,7 @@ const links = [
   { href: "/admin/recrutement", label: "Recrutement", icon: Briefcase },
   { href: "/admin/medias", label: "Médias", icon: ImageIcon },
   { href: "/admin/cabinet", label: "Cabinet", icon: Building2 },
+  { href: "/admin/legal", label: "Légal", icon: Scale },
   { href: "/admin/utilisateurs", label: "Utilisateurs", icon: UserCog },
   { href: "/admin/parametres", label: "Paramètres", icon: Settings },
 ] as const;
@@ -44,12 +46,18 @@ export function AdminShell({
   unread,
   unreadApplications = 0,
   unreadReviews = 0,
+  logo,
+  brandName = "BEC",
+  brandSubtitle = "Bureau d’Études et Construction",
   children,
 }: {
   user: string;
   unread: number;
   unreadApplications?: number;
   unreadReviews?: number;
+  logo?: string;
+  brandName?: string;
+  brandSubtitle?: string;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -73,16 +81,10 @@ export function AdminShell({
       >
         <div className="flex items-center gap-3 px-5 py-6">
           <span className="relative flex h-11 w-11 overflow-hidden rounded-xl bg-white/10">
-            <SiteImage
-              src="/images/logo/LOGOBLANC.png.jpg"
-              alt=""
-              fill
-              className="object-contain mix-blend-screen scale-125"
-              sizes="44px"
-            />
+            <BrandLogo src={logo} sizes="44px" />
           </span>
           <div>
-            <p className="text-sm font-semibold tracking-wide">BEC Admin</p>
+            <p className="text-sm font-semibold tracking-wide">{brandName} Admin</p>
             <p className="text-xs text-white/60">Espace de gestion</p>
           </div>
           <button
@@ -149,7 +151,7 @@ export function AdminShell({
           >
             <Menu className="h-5 w-5" />
           </button>
-          <p className="hidden text-sm text-slate-500 lg:block">Bureau d’Études et Construction</p>
+          <p className="hidden text-sm text-slate-500 lg:block">{brandSubtitle}</p>
           <Link
             href="/"
             target="_blank"

@@ -19,21 +19,15 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { getCompany } from "@/lib/cms/queries";
+import { getCompany, getSettings } from "@/lib/cms/queries";
 import { createMetadata } from "@/lib/seo";
+import { formatPublicAddress } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { CtaBand } from "@/components/sections/cta-band";
 import { TeamDirectory } from "@/components/team/team-directory";
 import { SiteImage } from "@/components/site-image";
-
-export const metadata: Metadata = createMetadata({
-  title: "À propos",
-  description:
-    "Fondé en 2022 à Lubumbashi par Caleb Tshileu et Fidèle Djese, BEC réunit architecture, ingénierie et construction.",
-  path: "/a-propos",
-});
-
-const cities = ["Kinshasa", "Kolwezi", "Goma", "Bukavu"];
+import { RichText } from "@/components/rich-text";
+import { richTextToPlainText } from "@/lib/rich-text";
 
 const valueIcons = [Sparkles, Lightbulb, Shield, Heart];
 const timelineIcons = [Sparkles, TrendingUp, Award, Compass];
@@ -41,15 +35,29 @@ const strengthIcons = [Users, Award, MapPin];
 const achievementIcons = [Home, Sofa, Building2, Building];
 const commitmentIcons = [Clock, Award, HardHat, Heart];
 
-export default async function AboutPage() {
+function pickIcon<T>(icons: T[], index: number) {
+  return icons[index % icons.length];
+}
+
+export async function generateMetadata(): Promise<Metadata> {
   const company = await getCompany();
+  return createMetadata({
+    title: company.history.title || "À propos",
+    description: company.page.heroSubtitle || richTextToPlainText(company.history.founding),
+    path: "/a-propos",
+  });
+}
+
+export default async function AboutPage() {
+  const [company, settings] = await Promise.all([getCompany(), getSettings()]);
+  const address = formatPublicAddress(settings.address);
   return (
     <div>
       <section className="relative flex min-h-[22rem] items-end overflow-hidden md:min-h-[26rem]">
         <div className="absolute inset-0">
           <SiteImage
-            src="/images/chantier.jpg"
-            alt="Chantier Bureau d'Études et Construction"
+            src={company.page.heroImage}
+            alt={company.history.title}
             fill
             priority
             sizes="100vw"
@@ -66,10 +74,7 @@ export default async function AboutPage() {
           <h1 className="mt-6 max-w-3xl text-3xl font-bold text-white sm:text-4xl md:text-5xl">
             {company.history.title}
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/80">
-            Histoire, valeurs et équipe de Bureau d&apos;Études et Construction,
-            fondé à Lubumbashi en 2022.
-          </p>
+          <p className="mt-4 max-w-2xl text-lg text-white/80">{company.page.heroSubtitle}</p>
         </div>
       </section>
 
@@ -77,35 +82,35 @@ export default async function AboutPage() {
         <div className="container-site grid items-center gap-12 lg:grid-cols-2">
           <div>
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Notre histoire
+              {company.page.historyEyebrow}
             </span>
             <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Un cabinet ancré à Lubumbashi
+              {company.page.historyHeading}
             </h2>
             <div className="mt-6 space-y-4 leading-relaxed text-muted-foreground">
-              <p>
-                <strong className="text-[#065b48]">
-                  Bureau d&apos;Études et Construction (BEC)
-                </strong>{" "}
-                a été fondé en 2022 par{" "}
-                <strong className="text-[#00af84]">Caleb Tshileu</strong> et{" "}
-                <strong className="text-[#00af84]">Fidèle Djese</strong>.
-              </p>
-              <p>{company.history.lead}</p>
-              <p>{company.history.body}</p>
+              <RichText
+                content={company.history.founding}
+                className="[&_strong]:font-bold [&_strong]:text-[#00af84]"
+              />
+              <RichText content={company.history.lead} />
+              <RichText content={company.history.body} />
             </div>
             <div className="mt-8 rounded-2xl border border-[#00af84]/20 bg-[#00af84]/5 p-6">
               <div className="flex items-start gap-3">
                 <MapPin className="mt-1 h-6 w-6 shrink-0 text-[#00af84]" aria-hidden />
                 <div>
-                  <h3 className="font-bold text-[#065b48]">Siège</h3>
+                  <h3 className="font-bold text-[#065b48]">{company.page.hqTitle}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Avenue de la Moto, Quartier Gambela 2
-                    <br />
-                    Commune de Lubumbashi, RDC
+                    {address.line1}
+                    {address.line2 ? (
+                      <>
+                        <br />
+                        {address.line2}
+                      </>
+                    ) : null}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {cities.map((city) => (
+                    {company.page.cities.map((city) => (
                       <span
                         key={city}
                         className="inline-flex items-center gap-1.5 rounded-full border border-[#00af84]/20 bg-white px-3 py-1 text-xs font-medium text-[#065b48]"
@@ -122,8 +127,8 @@ export default async function AboutPage() {
           <div className="relative pb-12">
             <div className="relative h-56 overflow-hidden rounded-2xl shadow-xl sm:h-72 md:h-96">
               <SiteImage
-                src="/images/img2.jpg"
-                alt="Réalisation architecturale BEC"
+                src={company.page.historyImage}
+                alt={company.page.historyHeading}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
@@ -131,9 +136,9 @@ export default async function AboutPage() {
             </div>
             <div className="absolute -bottom-5 left-3 right-3 max-w-xs rounded-2xl bg-white p-4 shadow-xl sm:left-4 sm:right-auto sm:p-5 md:left-6">
               <p className="text-xs font-semibold uppercase tracking-wider text-[#00af84]">
-                Depuis 2022
+                {company.page.historyBadge}
               </p>
-              <p className="mt-1 font-semibold text-[#065b48]">Lubumbashi, RDC</p>
+              <p className="mt-1 font-semibold text-[#065b48]">{company.page.historyLocation}</p>
             </div>
           </div>
         </div>
@@ -143,10 +148,10 @@ export default async function AboutPage() {
         <div className="container-site">
           <div className="mb-12 text-center">
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Notre raison d&apos;être
+              {company.page.visionEyebrow}
             </span>
             <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Vision et mission
+              {company.page.visionHeading}
             </h2>
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
@@ -154,15 +159,15 @@ export default async function AboutPage() {
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#065b48] text-white shadow-md">
                 <Eye className="h-7 w-7" aria-hidden />
               </span>
-              <h3 className="mt-6 text-2xl font-bold text-[#065b48]">Notre vision</h3>
-              <p className="mt-4 leading-relaxed text-muted-foreground">{company.vision}</p>
+              <h3 className="mt-6 text-2xl font-bold text-[#065b48]">{company.page.visionTitle}</h3>
+              <RichText content={company.vision} className="mt-4 text-muted-foreground" />
             </article>
             <article className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-8 md:p-10">
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#00af84] text-white shadow-md">
                 <Target className="h-7 w-7" aria-hidden />
               </span>
-              <h3 className="mt-6 text-2xl font-bold text-[#065b48]">Notre mission</h3>
-              <p className="mt-4 leading-relaxed text-muted-foreground">{company.mission.lead}</p>
+              <h3 className="mt-6 text-2xl font-bold text-[#065b48]">{company.page.missionTitle}</h3>
+              <RichText content={company.mission.lead} className="mt-4 text-muted-foreground" />
               <ul className="mt-6 space-y-3">
                 {company.mission.items.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm">
@@ -180,18 +185,16 @@ export default async function AboutPage() {
         <div className="container-site">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Nos valeurs
+              {company.page.valuesEyebrow}
             </span>
             <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Ce qui nous guide
+              {company.page.valuesHeading}
             </h2>
-            <p className="mt-3 text-muted-foreground">
-              Quatre piliers animent le travail du cabinet au quotidien.
-            </p>
+            <p className="mt-3 text-muted-foreground">{company.page.valuesIntro}</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {company.values.map((value, index) => {
-              const Icon = valueIcons[index];
+              const Icon = pickIcon(valueIcons, index);
               return (
                 <article
                   key={value.name}
@@ -215,17 +218,17 @@ export default async function AboutPage() {
         <div className="container-site">
           <div className="mb-12 text-center">
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Notre parcours
+              {company.page.timelineEyebrow}
             </span>
-            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">Chronologie</h2>
+            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">{company.page.timelineHeading}</h2>
           </div>
           <ol className="relative space-y-8 before:absolute before:left-6 before:top-3 before:h-[calc(100%-1.5rem)] before:w-px before:bg-[#00af84]/25 lg:before:left-1/2 lg:before:-translate-x-px">
             {company.timeline.map((item, index) => {
-              const Icon = timelineIcons[index];
+              const Icon = pickIcon(timelineIcons, index);
               const left = index % 2 === 0;
               return (
                 <li
-                  key={item.year}
+                  key={`${item.year}-${item.title}`}
                   className={`relative flex items-start gap-6 lg:items-center ${
                     left ? "lg:flex-row" : "lg:flex-row-reverse"
                   }`}
@@ -254,15 +257,15 @@ export default async function AboutPage() {
         <div className="container-site">
           <div className="mb-12 text-center">
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Nos atouts
+              {company.page.strengthsEyebrow}
             </span>
             <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Pourquoi BEC
+              {company.page.strengthsHeading}
             </h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {company.certifications.map((item, index) => {
-              const Icon = strengthIcons[index];
+              const Icon = pickIcon(strengthIcons, index);
               return (
                 <article
                   key={item.title}
@@ -291,15 +294,15 @@ export default async function AboutPage() {
         <div className="container-site">
           <div className="mb-12 text-center">
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Nos domaines
+              {company.page.domainsEyebrow}
             </span>
             <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Types de projets
+              {company.page.domainsHeading}
             </h2>
           </div>
           <div className="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {company.achievements.map((item, index) => {
-              const Icon = achievementIcons[index];
+              const Icon = pickIcon(achievementIcons, index);
               return (
                 <article
                   key={item.title}
@@ -317,12 +320,12 @@ export default async function AboutPage() {
 
           <div className="rounded-3xl bg-[#065b48] p-5 text-white sm:p-8 md:p-12">
             <div className="mb-8 text-center">
-              <h2 className="text-2xl font-bold md:text-3xl">Nos engagements</h2>
-              <p className="mt-2 text-white/75">Quatre engagements concrets pour chaque projet.</p>
+              <h2 className="text-2xl font-bold md:text-3xl">{company.page.commitmentsHeading}</h2>
+              <p className="mt-2 text-white/75">{company.page.commitmentsIntro}</p>
             </div>
             <ul className="grid gap-6 md:grid-cols-2">
               {company.commitments.map((item, index) => {
-                const Icon = commitmentIcons[index];
+                const Icon = pickIcon(commitmentIcons, index);
                 return (
                   <li key={item} className="flex items-center gap-4">
                     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">

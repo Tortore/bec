@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { organizationJsonLd } from "@/lib/seo";
+import { getSettings } from "@/lib/cms/queries";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -68,17 +69,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettings();
   return (
     <html lang="fr" className={GeistSans.variable}>
       <body className={`${GeistSans.className} min-h-screen bg-background antialiased`}>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              organizationJsonLd({
+                logo: settings.footer.logo,
+                name: settings.footer.brandSubtitle,
+                shortName: settings.footer.brandName,
+                legalName: settings.footer.legalName,
+              }),
+            ),
+          }}
         />
         {children}
       </body>

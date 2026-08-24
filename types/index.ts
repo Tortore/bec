@@ -80,6 +80,36 @@ export interface ContactMessage {
   read: boolean;
 }
 
+export interface FooterContent {
+  logo: string;
+  brandName: string;
+  brandSubtitle: string;
+  watermark: string;
+  navigationTitle: string;
+  legalTitle: string;
+  contactTitle: string;
+  contactIntro: string;
+  ctaLabel: string;
+  legalName: string;
+  copyrightSuffix: string;
+  adminLabel: string;
+  cookiesLabel: string;
+  nav: {
+    home: string;
+    about: string;
+    services: string;
+    projects: string;
+    careers: string;
+    contact: string;
+  };
+  legal: {
+    mentions: string;
+    privacy: string;
+    cookies: string;
+    terms: string;
+  };
+}
+
 export interface CmsSettings {
   email: string;
   phones: string[];
@@ -102,6 +132,7 @@ export interface CmsSettings {
     instagram: string;
   };
   tagline: string;
+  footer: FooterContent;
 }
 
 export interface Article {

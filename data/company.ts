@@ -1,6 +1,8 @@
 export const company = {
   history: {
     title: "Qui sommes-nous ?",
+    founding:
+      "<p><strong>Bureau d'Études et Construction (BEC)</strong> a été fondé en 2022 par <strong>Caleb Tshileu</strong> et <strong>Fidèle Djese</strong>.</p>",
     lead: "Fondé en 2022 en République Démocratique du Congo (RDC) par deux architectes visionnaires, Caleb Tshileu et Fidèle Djese, le Bureau d'Études et Construction (BEC) est une entreprise qui révolutionne l'architecture contemporaine.",
     body: "De la conception de bâtiments résidentiels aux projets d'envergure urbanistique, nous nous engageons à transformer chaque idée en une œuvre architecturale unique, alliant modernité et durabilité.",
   },
@@ -142,4 +144,33 @@ export const company = {
         "Une pratique fondée à Lubumbashi, active à Kinshasa, Kolwezi, Goma et Bukavu.",
     },
   ],
+  page: {
+    heroSubtitle:
+      "Histoire, valeurs et équipe de Bureau d'Études et Construction, fondé à Lubumbashi en 2022.",
+    heroImage: "/images/chantier.jpg",
+    historyEyebrow: "Notre histoire",
+    historyHeading: "Un cabinet ancré à Lubumbashi",
+    historyImage: "/images/img2.jpg",
+    historyBadge: "Depuis 2022",
+    historyLocation: "Lubumbashi, RDC",
+    hqTitle: "Siège",
+    cities: ["Kinshasa", "Kolwezi", "Goma", "Bukavu"],
+    visionEyebrow: "Notre raison d'être",
+    visionHeading: "Vision et mission",
+    visionTitle: "Notre vision",
+    missionTitle: "Notre mission",
+    valuesEyebrow: "Nos valeurs",
+    valuesHeading: "Ce qui nous guide",
+    valuesIntro: "Quatre piliers animent le travail du cabinet au quotidien.",
+    timelineEyebrow: "Notre parcours",
+    timelineHeading: "Chronologie",
+    strengthsEyebrow: "Nos atouts",
+    strengthsHeading: "Pourquoi BEC",
+    teamEyebrow: "Notre équipe",
+    teamHeading: "Les personnes de BEC",
+    domainsEyebrow: "Nos domaines",
+    domainsHeading: "Types de projets",
+    commitmentsHeading: "Nos engagements",
+    commitmentsIntro: "Quatre engagements concrets pour chaque projet.",
+  },
 };

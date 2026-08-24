@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getAdminSession } from "@/lib/cms/auth";
-import { getPendingReviewsCount, getUnreadApplicationsCount } from "@/lib/cms/queries";
+import { getPendingReviewsCount, getSettings, getUnreadApplicationsCount } from "@/lib/cms/queries";
 import { getMessages } from "@/lib/cms/store";
 import { AdminShell } from "@/components/admin/admin-shell";
 
@@ -17,15 +17,22 @@ export const dynamic = "force-dynamic";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getAdminSession();
   if (!session) return children;
-  const unread = (await getMessages()).filter((item) => !item.read).length;
-  const unreadApplications = await getUnreadApplicationsCount();
-  const unreadReviews = await getPendingReviewsCount();
+  const [unreadMessages, unreadApplications, unreadReviews, settings] = await Promise.all([
+    getMessages(),
+    getUnreadApplicationsCount(),
+    getPendingReviewsCount(),
+    getSettings(),
+  ]);
+  const unread = unreadMessages.filter((item) => !item.read).length;
   return (
     <AdminShell
       user={session.user}
       unread={unread}
       unreadApplications={unreadApplications}
       unreadReviews={unreadReviews}
+      logo={settings.footer.logo}
+      brandName={settings.footer.brandName}
+      brandSubtitle={settings.footer.brandSubtitle}
     >
       {children}
     </AdminShell>

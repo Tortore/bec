@@ -32,7 +32,7 @@ const faqs = [
   },
 ];
 
-export function ContactFaq() {
+export function ContactFaq({ email = siteConfig.email }: { email?: string }) {
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="container-site max-w-3xl">
@@ -70,11 +70,11 @@ export function ContactFaq() {
             Écrivez-nous, nous vous répondons aux horaires d&apos;ouverture.
           </p>
           <a
-            href={`mailto:${siteConfig.email}`}
+            href={`mailto:${email}`}
             className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#065b48] px-5 py-3 text-sm font-semibold text-white hover:bg-[#00af84]"
           >
             <Mail className="h-4 w-4" />
-            {siteConfig.email}
+            {email}
           </a>
         </div>
       </div>

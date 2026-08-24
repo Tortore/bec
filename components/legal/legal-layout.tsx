@@ -6,10 +6,12 @@ import { LegalNav } from "@/components/legal/legal-nav";
 export function LegalLayout({
   title,
   intro,
+  updatedLabel,
   children,
 }: {
   title: string;
   intro: string;
+  updatedLabel?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -28,9 +30,11 @@ export function LegalLayout({
           </p>
           <h1 className="mt-5 max-w-3xl text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">{title}</h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">{intro}</p>
-          <p className="mt-6 inline-flex rounded-full bg-black/20 px-3 py-1 text-xs font-medium text-white/70">
-            Mise à jour le 20 août 2026
-          </p>
+          {updatedLabel ? (
+            <p className="mt-6 inline-flex rounded-full bg-black/20 px-3 py-1 text-xs font-medium text-white/70">
+              Mise à jour le {updatedLabel}
+            </p>
+          ) : null}
         </div>
       </section>
 

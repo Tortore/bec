@@ -12,12 +12,27 @@ export async function TeamDirectory({ members }: { members?: TeamMember[] }) {
       <div className="container-site">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-            Notre équipe
+            {company.page.teamEyebrow}
           </span>
           <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-            Les personnes de BEC
+            {company.page.teamHeading}
           </h2>
           <p className="mt-3 text-muted-foreground">{company.teamIntro.lead}</p>
+          {company.teamIntro.philosophy ? (
+            <p className="mt-2 text-sm text-muted-foreground">{company.teamIntro.philosophy}</p>
+          ) : null}
+          {company.teamIntro.profiles.length ? (
+            <ul className="mt-4 flex flex-wrap justify-center gap-2">
+              {company.teamIntro.profiles.map((profile) => (
+                <li
+                  key={profile}
+                  className="rounded-full border border-[#00af84]/20 bg-white px-3 py-1 text-xs font-medium text-[#065b48]"
+                >
+                  {profile}
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

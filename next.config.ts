@@ -86,7 +86,7 @@ const nextConfig: NextConfig = {
       { source: "/apple-touch-icon.png", headers: images },
     ];
   },
-  serverExternalPackages: ["@prisma/client", "prisma"],
+  serverExternalPackages: ["@prisma/client", "prisma", "sanitize-html"],
   experimental: {
     middlewareClientMaxBodySize: "55mb",
     serverActions: {

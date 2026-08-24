@@ -21,7 +21,12 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       >
         Aller au contenu
       </a>
-      <Header categories={categories} />
+      <Header
+        categories={categories}
+        logo={settings.footer.logo}
+        brandName={settings.footer.brandName}
+        brandSubtitle={settings.footer.brandSubtitle}
+      />
       <main id="contenu">{children}</main>
       <Footer settings={settings} />
       <WhatsAppButton whatsapp={settings.whatsapp} />

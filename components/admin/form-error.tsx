@@ -6,6 +6,8 @@ const messages: Record<string, string> = {
   USERNAME_TAKEN: "Cet identifiant est déjà utilisé par un autre compte.",
   WEAK_PASSWORD: "Le mot de passe doit contenir au moins 8 caractères.",
   INVALID_SETTINGS: "Vérifiez l’adresse e-mail et les coordonnées renseignées.",
+  INVALID_COMPANY: "Vérifiez le titre et les textes de la page À propos.",
+  COMPANY_SAVE_FAILED: "Les textes n’ont pas pu être enregistrés. Réessayez dans un instant.",
 };
 
 export function AdminFormError({ code }: { code?: string }) {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArrowRight, Clock, Mail, MapPin, Phone, PhoneCall } from "lucide-react";
 import { getApprovedReviews, getSettings } from "@/lib/cms/queries";
 import { createMetadata } from "@/lib/seo";
-import { whatsappLink } from "@/lib/utils";
+import { formatPublicAddress, whatsappLink } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ContactForm } from "@/components/contact-form";
 import { ContactFaq } from "@/components/contact-faq";
@@ -10,17 +10,21 @@ import { MapEmbed } from "@/components/consent/map-embed";
 import { SiteImage } from "@/components/site-image";
 import { ReviewsSection } from "@/components/sections/reviews-section";
 
-export const metadata: Metadata = createMetadata({
-  title: "Contact",
-  description:
-    "Contactez Bureau d'Études et Construction à Lubumbashi : Avenue de la Moto, Gambela 2. Téléphone, e-mail, WhatsApp et devis.",
-  path: "/contact",
-  image: "/images/contact.jpg",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  const address = formatPublicAddress(settings.address);
+  return createMetadata({
+    title: "Contact",
+    description: `Contactez Bureau d'Études et Construction à ${settings.address.city} : ${address.full}. Téléphone, e-mail, WhatsApp et devis.`,
+    path: "/contact",
+    image: "/images/contact.jpg",
+  });
+}
 
 export default async function ContactPage() {
   const [settings, reviews] = await Promise.all([getSettings(), getApprovedReviews()]);
   const whatsapp = whatsappLink(settings.whatsapp, "Bonjour BEC, je souhaite un devis.");
+  const address = formatPublicAddress(settings.address);
 
   return (
     <div>
@@ -87,9 +91,13 @@ export default async function ContactPage() {
                   <div>
                     <h3 className="font-bold text-[#065b48]">Adresse</h3>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {settings.address.street}, {settings.address.neighborhood}
-                      <br />
-                      {settings.address.city}, RDC
+                      {address.line1}
+                      {address.line2 ? (
+                        <>
+                          <br />
+                          {address.line2}
+                        </>
+                      ) : null}
                     </p>
                     <a
                       href={settings.mapsUrl}
@@ -201,20 +209,20 @@ export default async function ContactPage() {
               Où nous trouver
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              Avenue de la Moto, Quartier Gambela 2, Commune de Lubumbashi.
+              {address.full}
             </p>
           </div>
           <div className="relative overflow-hidden rounded-3xl shadow-xl">
             <MapEmbed
               src={settings.mapsEmbed}
               mapsUrl={settings.mapsUrl}
-              address={`${settings.address.street}, ${settings.address.neighborhood}, ${settings.address.city}, RDC`}
+              address={address.full}
             />
           </div>
         </div>
       </section>
 
-      <ContactFaq />
+      <ContactFaq email={settings.email} />
     </div>
   );
 }

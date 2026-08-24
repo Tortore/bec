@@ -1,5 +1,6 @@
 import { ImageField } from "@/components/admin/image-field";
 import { VideoField } from "@/components/admin/video-field";
+import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,9 +23,16 @@ export function HomeForm({
         <h2 className="text-lg font-semibold text-[#065b48]">Bannière (hero)</h2>
         <p className="text-sm text-slate-500">
           Téléversez une image ou une vidéo (MP4/WebM), puis cliquez sur « Enregistrer l’accueil »
-          tout en bas pour publier.
+          tout en bas pour publier. Avec une vidéo, vous pouvez supprimer l’image pour ne garder que
+          la vidéo.
         </p>
-        <Field id="heroTitle" label="Titre" defaultValue={home.heroTitle} />
+        <RichTextEditor
+          name="heroTitle"
+          label="Titre"
+          preset="title"
+          defaultValue={home.heroTitle}
+          description="Sélectionnez un mot, puis changez la couleur, le gras ou l’alignement."
+        />
         <div className="space-y-2">
           <Label htmlFor="heroSubtitle">Texte d’introduction</Label>
           <Textarea id="heroSubtitle" name="heroSubtitle" rows={3} defaultValue={home.heroSubtitle} />
@@ -39,6 +47,7 @@ export function HomeForm({
           label="Image de fond et aperçu de secours"
           defaultValue={home.heroImage}
           media={media}
+          clearable
         />
         <VideoField name="heroVideo" defaultValue={home.heroVideo} videos={videos} />
       </section>

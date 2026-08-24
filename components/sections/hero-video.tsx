@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 import { runtimeMediaUrl } from "@/lib/media-url";
 
-export function HeroVideo({ src, poster }: { src: string; poster: string }) {
+export function HeroVideo({ src, poster }: { src: string; poster?: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const videoSrc = runtimeMediaUrl(src);
-  const posterSrc = runtimeMediaUrl(poster);
+  const posterSrc = poster?.startsWith("/") ? runtimeMediaUrl(poster) : undefined;
 
   useEffect(() => {
     const node = ref.current;

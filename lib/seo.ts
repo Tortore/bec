@@ -45,15 +45,29 @@ export function createMetadata({
   };
 }
 
-export function organizationJsonLd() {
+export function organizationJsonLd({
+  logo,
+  name = siteConfig.name,
+  shortName = siteConfig.shortName,
+  legalName = siteConfig.legalName,
+}: {
+  logo?: string;
+  name?: string;
+  shortName?: string;
+  legalName?: string;
+} = {}) {
+  const logoPath = logo?.trim() || "/images/logo/LOGO VERT.png.jpg";
+  const logoUrl = logoPath.startsWith("http")
+    ? logoPath
+    : new URL(logoPath, siteConfig.url).toString();
   return {
     "@context": "https://schema.org",
     "@type": ["ProfessionalService", "LocalBusiness"],
-    name: siteConfig.name,
-    alternateName: siteConfig.shortName,
-    legalName: siteConfig.legalName,
+    name,
+    alternateName: shortName,
+    legalName,
     url: siteConfig.url,
-    logo: `${siteConfig.url}/images/logo/LOGO%20VERT.png.jpg`,
+    logo: logoUrl,
     image: `${siteConfig.url}${siteConfig.ogImage}`,
     email: siteConfig.email,
     telephone: siteConfig.phones,

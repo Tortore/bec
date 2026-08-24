@@ -3,6 +3,9 @@ import { getDatabase, getMessages, ensureSeeded } from "@/lib/cms/store";
 import { defaultHome, labelsFrom } from "@/lib/cms/defaults";
 import { listMedia } from "@/lib/cms/media";
 import { prisma } from "@/lib/prisma";
+import { company as seedCompany } from "@/data/company";
+import { normalizeCompany } from "@/lib/cms/company-content";
+import { sanitizeRichText } from "@/lib/rich-text";
 import type { AdminAccount, Category, HomeContent, Project } from "@/types";
 
 function canonicalizeBrand<T>(value: T): T {
@@ -105,11 +108,27 @@ export async function getTeamMember(id: string) {
 }
 
 export async function getSettings() {
+  noStore();
   return (await getDatabase()).settings;
 }
 
 export async function getCompany() {
-  return canonicalizeBrand((await getDatabase()).company);
+  noStore();
+  const company = normalizeCompany(canonicalizeBrand((await getDatabase()).company));
+  return {
+    ...company,
+    history: {
+      ...company.history,
+      founding: sanitizeRichText(company.history.founding || seedCompany.history.founding),
+      lead: sanitizeRichText(company.history.lead),
+      body: sanitizeRichText(company.history.body),
+    },
+    vision: sanitizeRichText(company.vision),
+    mission: {
+      ...company.mission,
+      lead: sanitizeRichText(company.mission.lead),
+    },
+  };
 }
 
 export async function getApplications() {
@@ -201,6 +220,13 @@ export async function getHome(): Promise<HomeContent> {
   const home = {
     ...defaultHome,
     ...data,
+    heroImage: typeof data.heroImage === "string" ? data.heroImage : defaultHome.heroImage,
+    heroTitle: sanitizeRichText(
+      typeof data.heroTitle === "string" && data.heroTitle.trim()
+        ? data.heroTitle
+        : defaultHome.heroTitle,
+      8_000,
+    ),
     stats: Array.isArray(data.stats) && data.stats.length ? data.stats : defaultHome.stats,
     ctaBenefits:
       Array.isArray(data.ctaBenefits) && data.ctaBenefits.length

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Trash2, Upload } from "lucide-react";
 import { validateImageFile } from "@/lib/cms/image-file";
 import { uploadAdminImage } from "@/lib/cms/upload-client";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { Label } from "@/components/ui/label";
 import { SiteImage } from "@/components/site-image";
 import { mediaFileName } from "@/lib/utils";
@@ -24,6 +25,7 @@ export function GalleryField({
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [toRemove, setToRemove] = useState("");
 
   function add(src: string) {
     const next = src.trim();
@@ -118,7 +120,7 @@ export function GalleryField({
                 <button
                   type="button"
                   className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
-                  onClick={() => remove(src)}
+                  onClick={() => setToRemove(src)}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Retirer
@@ -180,6 +182,17 @@ export function GalleryField({
       </div>
       {ok ? <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{ok}</p> : null}
       {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+      <ConfirmDialog
+        open={Boolean(toRemove)}
+        title="Retirer cette photo ?"
+        description="Cette vue sera retirée de la galerie du projet. Enregistrez ensuite le formulaire pour confirmer."
+        confirmLabel="Retirer"
+        onCancel={() => setToRemove("")}
+        onConfirm={() => {
+          remove(toRemove);
+          setToRemove("");
+        }}
+      />
     </div>
   );
 }

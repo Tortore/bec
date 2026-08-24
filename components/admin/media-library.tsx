@@ -6,6 +6,7 @@ import { Upload } from "lucide-react";
 import { deleteMediaAction } from "@/lib/cms/actions";
 import { validateImageFile } from "@/lib/cms/image-file";
 import { uploadAdminImage } from "@/lib/cms/upload-client";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { SiteImage } from "@/components/site-image";
 import { mediaFileName } from "@/lib/utils";
@@ -40,6 +41,7 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [pending, setPending] = useState(false);
   const [deleting, setDeleting] = useState("");
+  const [toDelete, setToDelete] = useState<MediaItem | null>(null);
   const [notice, setNotice] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
 
   async function onUpload(formData: FormData) {
@@ -68,10 +70,6 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
   }
 
   async function onDelete(item: MediaItem) {
-    const used = item.usedBy.length
-      ? `\n\nElle est utilisée ici :\n• ${item.usedBy.join("\n• ")}`
-      : "";
-    if (!window.confirm(`Supprimer « ${mediaFileName(item.src)} » ?${used}`)) return;
     setDeleting(item.src);
     setNotice(null);
     try {
@@ -81,6 +79,7 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
         return;
       }
       setNotice({ tone: "ok", text: `L’image « ${mediaFileName(item.src)} » a été supprimée.` });
+      setToDelete(null);
       router.refresh();
     } catch {
       setNotice({ tone: "error", text: "La suppression a échoué. Réessayez." });
@@ -142,7 +141,7 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
                   type="button"
                   disabled={deleting === item.src}
                   className="text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50"
-                  onClick={() => onDelete(item)}
+                  onClick={() => setToDelete(item)}
                 >
                   {deleting === item.src ? "Suppression…" : "Supprimer"}
                 </button>
@@ -151,6 +150,25 @@ export function MediaLibrary({ items }: { items: MediaItem[] }) {
           </figure>
         ))}
       </div>
+      <ConfirmDialog
+        open={Boolean(toDelete)}
+        title="Supprimer cette image ?"
+        description={
+          toDelete
+            ? toDelete.usedBy.length
+              ? `« ${mediaFileName(toDelete.src)} » sera définitivement supprimée.\n\nElle est utilisée ici :\n• ${toDelete.usedBy.join("\n• ")}`
+              : `« ${mediaFileName(toDelete.src)} » sera définitivement supprimée.`
+            : ""
+        }
+        confirmLabel="Supprimer"
+        pending={Boolean(toDelete && deleting === toDelete.src)}
+        onCancel={() => {
+          if (!deleting) setToDelete(null);
+        }}
+        onConfirm={() => {
+          if (toDelete) void onDelete(toDelete);
+        }}
+      />
     </div>
   );
 }

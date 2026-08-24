@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { Label } from "@/components/ui/label";
 import { mediaFileName, runtimeMediaUrl } from "@/lib/media-url";
 import { fetchWithTimeout, RequestTimeoutError } from "@/lib/fetch-with-timeout";
@@ -21,6 +22,7 @@ export function VideoField({
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const playbackSrc = value.startsWith("/") ? runtimeMediaUrl(value) : "";
 
   function choose(src: string, message: string) {
@@ -70,6 +72,7 @@ export function VideoField({
 
   function removeVideo() {
     choose("", "La vidéo sera retirée après l’enregistrement. L’image sera affichée à sa place.");
+    setConfirmOpen(false);
   }
 
   return (
@@ -110,7 +113,7 @@ export function VideoField({
           <button
             type="button"
             className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
-            onClick={removeVideo}
+            onClick={() => setConfirmOpen(true)}
           >
             Retirer la vidéo
           </button>
@@ -151,6 +154,14 @@ export function VideoField({
       ) : null}
       {ok ? <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{ok}</p> : null}
       {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Retirer la vidéo ?"
+        description="La vidéo sera retirée de la bannière après l’enregistrement. L’image sera affichée à sa place."
+        confirmLabel="Retirer la vidéo"
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={removeVideo}
+      />
     </div>
   );
 }

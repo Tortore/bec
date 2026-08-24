@@ -18,8 +18,9 @@ import {
 } from "lucide-react";
 import { navigation } from "@/data/navigation";
 import { siteConfig } from "@/lib/site";
+import { defaultFooter } from "@/lib/cms/footer-content";
 import { cn } from "@/lib/utils";
-import { SiteImage } from "@/components/site-image";
+import { BrandLogo } from "@/components/layout/brand-logo";
 import type { Category } from "@/types";
 
 const navIcons = {
@@ -31,7 +32,17 @@ const navIcons = {
   "/carrieres": Briefcase,
 } as const;
 
-export function Header({ categories = [] }: { categories?: Category[] }) {
+export function Header({
+  categories = [],
+  logo = defaultFooter.logo,
+  brandName = siteConfig.shortName,
+  brandSubtitle = siteConfig.name,
+}: {
+  categories?: Category[];
+  logo?: string;
+  brandName?: string;
+  brandSubtitle?: string;
+}) {
   const pathname = usePathname();
   const [isMounted, setIsMounted] = useState(false);
   const [open, setOpen] = useState(false);
@@ -107,24 +118,17 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
               href="/"
               onClick={() => setOpen(false)}
               className="inline-flex min-w-0 items-center gap-2 sm:gap-3"
-              aria-label="Retour à l’accueil BEC"
+              aria-label={`Retour à l’accueil ${brandName}`}
             >
               <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white/10 sm:h-12 sm:w-12">
-                <SiteImage
-                  src="/images/logo/LOGOBLANC.png.jpg"
-                  alt=""
-                  fill
-                  className="object-contain mix-blend-screen scale-125"
-                  sizes="48px"
-                  priority
-                />
+                <BrandLogo src={logo} sizes="48px" priority />
               </span>
               <span className="min-w-0">
                 <span className="block text-lg font-bold leading-tight text-white sm:text-xl">
-                  {siteConfig.shortName}
+                  {brandName}
                 </span>
                 <span className="block truncate text-[10px] leading-tight text-white/70 sm:text-xs">
-                  Bureau d&apos;Études et Construction
+                  {brandSubtitle}
                 </span>
               </span>
             </Link>
@@ -232,10 +236,17 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
             href="/"
             onClick={() => setOpen(false)}
             className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            aria-label="Retour à l’accueil BEC"
+            aria-label={`Retour à l’accueil ${brandName}`}
           >
-            <span className="block text-xl font-bold">BEC</span>
-            <span className="text-xs text-white/75">Bureau d&apos;Études et Construction</span>
+            <span className="flex items-center gap-3">
+              <span className="relative flex h-10 w-10 overflow-hidden rounded-xl bg-white/10">
+                <BrandLogo src={logo} sizes="40px" />
+              </span>
+              <span>
+                <span className="block text-xl font-bold">{brandName}</span>
+                <span className="text-xs text-white/75">{brandSubtitle}</span>
+              </span>
+            </span>
           </Link>
           <button
             type="button"

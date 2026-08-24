@@ -28,3 +28,18 @@ export function whatsappLink(phone: string, message?: string) {
   if (!message) return base;
   return `${base}?text=${encodeURIComponent(message)}`;
 }
+
+export function formatPublicAddress(address: {
+  street: string;
+  neighborhood: string;
+  commune?: string;
+  city: string;
+  country: string;
+  full?: string;
+}) {
+  const line1 = [address.street, address.neighborhood].filter(Boolean).join(", ");
+  const line2 = [address.commune, address.city, address.country].filter(Boolean).join(", ");
+  const cityCountry = [address.city, address.country].filter(Boolean).join(", ");
+  const full = address.full?.trim() || [line1, line2].filter(Boolean).join(", ");
+  return { line1, line2, cityCountry, full };
+}

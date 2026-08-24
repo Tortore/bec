@@ -7,8 +7,10 @@ import { projects as seedProjects } from "@/data/projects";
 import { servicesCatalog as seedServices } from "@/data/services";
 import { team as seedTeam } from "@/data/team";
 import { defaultHome, seedCategories } from "@/lib/cms/defaults";
+import { defaultLegalPages } from "@/data/legal";
 import { ensureAdminUser } from "@/lib/cms/auth";
 import { siteConfig } from "@/lib/site";
+import { defaultFooter, normalizeFooter } from "@/lib/cms/footer-content";
 import type { Article, CmsSettings, ContactMessage, Project, ProjectCategory, ServiceItem, TeamMember } from "@/types";
 
 export type CompanyContent = typeof seedCompany;
@@ -32,6 +34,7 @@ export const defaultSettings: CmsSettings = {
   mapsUrl: siteConfig.mapsUrl,
   social: { ...siteConfig.social },
   tagline: siteConfig.tagline,
+  footer: structuredClone(defaultFooter),
 };
 
 function seedDatabase(): CmsDatabase {
@@ -159,6 +162,7 @@ function toSettings(row: {
   linkedin: string;
   instagram: string;
   tagline: string;
+  footer?: Prisma.JsonValue | null;
 }): CmsSettings {
   const hours = Array.isArray(row.hours)
     ? row.hours.map((item) => {
@@ -189,6 +193,7 @@ function toSettings(row: {
       instagram: row.instagram,
     },
     tagline: row.tagline,
+    footer: normalizeFooter(row.footer),
   };
 }
 
@@ -215,6 +220,7 @@ async function persistDatabase(next: CmsDatabase) {
         linkedin: next.settings.social.linkedin,
         instagram: next.settings.social.instagram,
         tagline: next.settings.tagline,
+        footer: next.settings.footer as unknown as Prisma.InputJsonValue,
       },
       update: {
         email: next.settings.email,
@@ -234,6 +240,7 @@ async function persistDatabase(next: CmsDatabase) {
         linkedin: next.settings.social.linkedin,
         instagram: next.settings.social.instagram,
         tagline: next.settings.tagline,
+        footer: next.settings.footer as unknown as Prisma.InputJsonValue,
       },
     });
 
@@ -371,6 +378,7 @@ export async function ensureSeeded() {
           linkedin: defaultSettings.social.linkedin,
           instagram: defaultSettings.social.instagram,
           tagline: defaultSettings.tagline,
+          footer: defaultSettings.footer as unknown as Prisma.InputJsonValue,
         },
         update: {},
       });
@@ -396,6 +404,12 @@ export async function ensureSeeded() {
   await prisma.homePage.upsert({
     where: { id: "default" },
     create: { id: "default", data: defaultHome as Prisma.InputJsonValue },
+    update: {},
+  });
+
+  await prisma.legalPages.upsert({
+    where: { id: "default" },
+    create: { id: "default", data: defaultLegalPages as Prisma.InputJsonValue },
     update: {},
   });
 }
