@@ -30,12 +30,10 @@ export function normalizeLegalPages(stored: Partial<LegalPagesContent> | undefin
 }
 
 async function ensureLegalPages() {
-  const existing = await prisma.legalPages.findUnique({ where: { id: "default" } });
-  if (!existing) {
-    await prisma.legalPages.create({
-      data: { id: "default", data: defaultLegalPages as Prisma.InputJsonValue },
-    });
-  }
+  await prisma.legalPages.createMany({
+    data: [{ id: "default", data: defaultLegalPages as Prisma.InputJsonValue }],
+    skipDuplicates: true,
+  });
 }
 
 export async function getLegalPages(): Promise<LegalPagesContent> {

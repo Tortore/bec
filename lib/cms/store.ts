@@ -401,16 +401,14 @@ export async function ensureSeeded() {
     });
   }
 
-  await prisma.homePage.upsert({
-    where: { id: "default" },
-    create: { id: "default", data: defaultHome as Prisma.InputJsonValue },
-    update: {},
+  await prisma.homePage.createMany({
+    data: [{ id: "default", data: defaultHome as Prisma.InputJsonValue }],
+    skipDuplicates: true,
   });
 
-  await prisma.legalPages.upsert({
-    where: { id: "default" },
-    create: { id: "default", data: defaultLegalPages as Prisma.InputJsonValue },
-    update: {},
+  await prisma.legalPages.createMany({
+    data: [{ id: "default", data: defaultLegalPages as Prisma.InputJsonValue }],
+    skipDuplicates: true,
   });
 }
 
