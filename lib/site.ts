@@ -5,7 +5,7 @@ export const siteConfig = {
   tagline: "Architecture contemporaine, études et construction en RDC",
   description:
     "Bureau d'Études et Construction (BEC) est un cabinet d'architecture, d'ingénierie et de construction fondé à Lubumbashi en 2022. Conception, études techniques, suivi de chantier et urbanisme.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bec-rdc.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://bec-rdc.com",
   locale: "fr_CD",
   founded: 2022,
   founders: ["Caleb Tshileu", "Fidèle Djese"],

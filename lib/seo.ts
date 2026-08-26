@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site";
+import type { CmsSettings } from "@/types";
 
 export function createMetadata({
   title,
@@ -50,11 +51,13 @@ export function organizationJsonLd({
   name = siteConfig.name,
   shortName = siteConfig.shortName,
   legalName = siteConfig.legalName,
+  contact,
 }: {
   logo?: string;
   name?: string;
   shortName?: string;
   legalName?: string;
+  contact?: CmsSettings;
 } = {}) {
   const logoPath = logo?.trim() || "/images/logo/LOGO VERT.png.jpg";
   const logoUrl = logoPath.startsWith("http")
@@ -63,14 +66,16 @@ export function organizationJsonLd({
   return {
     "@context": "https://schema.org",
     "@type": ["ProfessionalService", "LocalBusiness"],
+    "@id": `${siteConfig.url}/#organization`,
     name,
     alternateName: shortName,
     legalName,
     url: siteConfig.url,
     logo: logoUrl,
     image: `${siteConfig.url}${siteConfig.ogImage}`,
-    email: siteConfig.email,
-    telephone: siteConfig.phones,
+    description: siteConfig.description,
+    email: contact?.email || siteConfig.email,
+    telephone: contact?.phones?.length ? contact.phones : siteConfig.phones,
     foundingDate: String(siteConfig.founded),
     founder: siteConfig.founders.map((name) => ({
       "@type": "Person",
@@ -78,8 +83,10 @@ export function organizationJsonLd({
     })),
     address: {
       "@type": "PostalAddress",
-      streetAddress: `${siteConfig.address.street}, ${siteConfig.address.neighborhood}`,
-      addressLocality: siteConfig.address.city,
+      streetAddress: contact
+        ? [contact.address.street, contact.address.neighborhood, contact.address.commune].filter(Boolean).join(", ")
+        : `${siteConfig.address.street}, ${siteConfig.address.neighborhood}`,
+      addressLocality: contact?.address.city || siteConfig.address.city,
       addressCountry: siteConfig.address.countryCode,
     },
     geo: {
@@ -102,6 +109,34 @@ export function organizationJsonLd({
       },
     ],
     areaServed: ["Lubumbashi", "Kinshasa", "Kolwezi", "Goma", "Bukavu", "RDC"],
-    sameAs: Object.values(siteConfig.social).filter((url) => url !== "#"),
+    hasMap: contact?.mapsUrl || siteConfig.mapsUrl,
+    knowsAbout: [
+      "Architecture",
+      "Construction",
+      "Études techniques",
+      "Génie civil",
+      "Suivi de chantier",
+      "Urbanisme",
+    ],
+    sameAs: Object.values(contact?.social || siteConfig.social).filter((url) => /^https?:\/\//.test(url)),
+  };
+}
+
+export function websiteJsonLd({
+  name = siteConfig.name,
+  shortName = siteConfig.shortName,
+}: {
+  name?: string;
+  shortName?: string;
+} = {}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteConfig.url}/#website`,
+    url: siteConfig.url,
+    name,
+    alternateName: [shortName, "BEC RDC", "BEC Lubumbashi"],
+    inLanguage: "fr-CD",
+    publisher: { "@id": `${siteConfig.url}/#organization` },
   };
 }

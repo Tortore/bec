@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
-import { organizationJsonLd } from "@/lib/seo";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { getSettings } from "@/lib/cms/queries";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
@@ -67,6 +67,9 @@ export const metadata: Metadata = {
     icon: "/favicon.png",
     apple: "/apple-touch-icon.png",
   },
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const dynamic = "force-dynamic";
@@ -89,6 +92,18 @@ export default async function RootLayout({
                 name: settings.footer.brandSubtitle,
                 shortName: settings.footer.brandName,
                 legalName: settings.footer.legalName,
+                contact: settings,
+              }),
+            ),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              websiteJsonLd({
+                name: settings.footer.brandSubtitle,
+                shortName: settings.footer.brandName,
               }),
             ),
           }}

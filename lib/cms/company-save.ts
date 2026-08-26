@@ -30,37 +30,6 @@ function mediaSrc(formData: FormData, name: string, fallback: string) {
   return fallback;
 }
 
-function parseNamed(value: FormDataEntryValue | null) {
-  return parseLines(value)
-    .map((line) => {
-      const [name, ...rest] = line.split("|");
-      return { name: name.trim().slice(0, 80), description: rest.join("|").trim().slice(0, 500) };
-    })
-    .filter((item) => item.name && item.description);
-}
-
-function parseTitled(value: FormDataEntryValue | null) {
-  return parseLines(value)
-    .map((line) => {
-      const [title, ...rest] = line.split("|");
-      return { title: title.trim().slice(0, 120), description: rest.join("|").trim().slice(0, 500) };
-    })
-    .filter((item) => item.title && item.description);
-}
-
-function parseTimeline(value: FormDataEntryValue | null) {
-  return parseLines(value)
-    .map((line) => {
-      const [year, title, ...rest] = line.split("|");
-      return {
-        year: year.trim().slice(0, 40),
-        title: (title ?? "").trim().slice(0, 120),
-        description: rest.join("|").trim().slice(0, 500),
-      };
-    })
-    .filter((item) => item.year && item.title && item.description);
-}
-
 export async function saveCompanyForm(formData: FormData) {
   const current = normalizeCompany((await getDatabase()).company);
   const defaults = seedCompany;
@@ -71,11 +40,6 @@ export async function saveCompanyForm(formData: FormData) {
   const vision = sanitizeRichText(String(formData.get("vision") ?? ""));
   const missionLead = sanitizeRichText(String(formData.get("missionLead") ?? ""));
   const missionItems = parseLines(formData.get("missionItems")).map((item) => item.slice(0, 500));
-  const values = parseNamed(formData.get("values"));
-  const commitments = parseLines(formData.get("commitments")).map((item) => item.slice(0, 500));
-  const timeline = parseTimeline(formData.get("timeline"));
-  const certifications = parseTitled(formData.get("certifications"));
-  const achievements = parseTitled(formData.get("achievements"));
   const cities = parseLines(formData.get("cities")).map((item) => item.slice(0, 80));
   const teamProfiles = parseLines(formData.get("teamProfiles")).map((item) => item.slice(0, 120));
 
@@ -100,32 +64,11 @@ export async function saveCompanyForm(formData: FormData) {
   if (missionItems.length === 0) {
     throw new CompanyFormError("Ajoutez au moins un point de mission (un par ligne).");
   }
-  if (values.length === 0) {
-    throw new CompanyFormError("Ajoutez au moins une valeur au format Nom | Description.");
-  }
-  if (commitments.length === 0) {
-    throw new CompanyFormError("Ajoutez au moins un engagement (un par ligne).");
-  }
-  if (timeline.length === 0) {
-    throw new CompanyFormError("Ajoutez au moins une étape de chronologie (Année | Titre | Description).");
-  }
-  if (certifications.length === 0) {
-    throw new CompanyFormError("Ajoutez au moins un atout au format Titre | Description.");
-  }
-  if (achievements.length === 0) {
-    throw new CompanyFormError("Ajoutez au moins un type de projet au format Titre | Description.");
-  }
-
   const company = {
     ...current,
     history: { title: historyTitle, founding: historyFounding, lead: historyLead, body: historyBody },
     vision,
     mission: { lead: missionLead, items: missionItems },
-    values,
-    commitments,
-    timeline,
-    certifications,
-    achievements,
     teamIntro: {
       lead: text(formData, "teamLead", 500, defaults.teamIntro.lead),
       profiles: teamProfiles.length ? teamProfiles : defaults.teamIntro.profiles,
@@ -146,19 +89,8 @@ export async function saveCompanyForm(formData: FormData) {
       visionHeading: text(formData, "visionHeading", 160, defaults.page.visionHeading),
       visionTitle: text(formData, "visionTitle", 80, defaults.page.visionTitle),
       missionTitle: text(formData, "missionTitle", 80, defaults.page.missionTitle),
-      valuesEyebrow: text(formData, "valuesEyebrow", 80, defaults.page.valuesEyebrow),
-      valuesHeading: text(formData, "valuesHeading", 160, defaults.page.valuesHeading),
-      valuesIntro: text(formData, "valuesIntro", 300, defaults.page.valuesIntro),
-      timelineEyebrow: text(formData, "timelineEyebrow", 80, defaults.page.timelineEyebrow),
-      timelineHeading: text(formData, "timelineHeading", 160, defaults.page.timelineHeading),
-      strengthsEyebrow: text(formData, "strengthsEyebrow", 80, defaults.page.strengthsEyebrow),
-      strengthsHeading: text(formData, "strengthsHeading", 160, defaults.page.strengthsHeading),
       teamEyebrow: text(formData, "teamEyebrow", 80, defaults.page.teamEyebrow),
       teamHeading: text(formData, "teamHeading", 160, defaults.page.teamHeading),
-      domainsEyebrow: text(formData, "domainsEyebrow", 80, defaults.page.domainsEyebrow),
-      domainsHeading: text(formData, "domainsHeading", 160, defaults.page.domainsHeading),
-      commitmentsHeading: text(formData, "commitmentsHeading", 160, defaults.page.commitmentsHeading),
-      commitmentsIntro: text(formData, "commitmentsIntro", 300, defaults.page.commitmentsIntro),
     },
   };
 

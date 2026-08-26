@@ -66,6 +66,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.bec-rdc.com" }],
+        destination: "https://bec-rdc.com/:path*",
+        permanent: true,
+      },
       { source: "/actualites", destination: "/", permanent: true },
       { source: "/actualites/:path*", destination: "/", permanent: true },
       { source: "/admin/actualites", destination: "/admin", permanent: false },

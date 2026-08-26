@@ -49,17 +49,33 @@ export function CompanyForm({ company, media }: { company: CompanyContent; media
   return (
     <form onSubmit={onSubmit} className="space-y-8">
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Bannière</h2>
-        <Field id="historyTitle" label="Titre" defaultValue={company.history.title} />
-        <Lines id="heroSubtitle" label="Sous-titre" rows={2} defaultValue={company.page.heroSubtitle} />
+        <h2 className="text-lg font-semibold text-[#065b48]">Image de bannière</h2>
+        <p className="text-sm text-slate-500">
+          Ces deux textes apparaissent directement sur la grande image en haut de la page À propos.
+        </p>
+        <Field id="historyTitle" label="Titre affiché sur l’image" defaultValue={company.history.title} />
+        <Lines
+          id="heroSubtitle"
+          label="Texte affiché sous le titre sur l’image"
+          rows={2}
+          defaultValue={company.page.heroSubtitle}
+        />
         <ImageField name="heroImage" label="Image de bannière" defaultValue={company.page.heroImage} media={media} />
       </section>
 
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Histoire</h2>
+        <h2 className="text-lg font-semibold text-[#065b48]">Contenu après la bannière</h2>
         <div className="grid gap-5 md:grid-cols-2">
-          <Field id="historyEyebrow" label="Pastille" defaultValue={company.page.historyEyebrow} />
-          <Field id="historyHeading" label="Titre de section" defaultValue={company.page.historyHeading} />
+          <Field
+            id="historyEyebrow"
+            label="Pastille avant le titre"
+            defaultValue={company.page.historyEyebrow}
+          />
+          <Field
+            id="historyHeading"
+            label="Titre affiché après l’image de bannière"
+            defaultValue={company.page.historyHeading}
+          />
         </div>
         <RichTextEditor
           name="historyFounding"
@@ -110,53 +126,6 @@ export function CompanyForm({ company, media }: { company: CompanyContent; media
       </section>
 
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Valeurs</h2>
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field id="valuesEyebrow" label="Pastille" defaultValue={company.page.valuesEyebrow} />
-          <Field id="valuesHeading" label="Titre de section" defaultValue={company.page.valuesHeading} />
-        </div>
-        <Lines id="valuesIntro" label="Texte d’introduction" rows={2} defaultValue={company.page.valuesIntro} />
-        <Lines
-          id="values"
-          label="Valeurs (Nom | Description)"
-          rows={5}
-          defaultValue={company.values.map((item) => `${item.name} | ${item.description}`).join("\n")}
-        />
-      </section>
-
-      <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Chronologie</h2>
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field id="timelineEyebrow" label="Pastille" defaultValue={company.page.timelineEyebrow} />
-          <Field id="timelineHeading" label="Titre de section" defaultValue={company.page.timelineHeading} />
-        </div>
-        <Lines
-          id="timeline"
-          label="Étapes (Année | Titre | Description)"
-          rows={6}
-          defaultValue={company.timeline
-            .map((item) => `${item.year} | ${item.title} | ${item.description}`)
-            .join("\n")}
-        />
-      </section>
-
-      <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Atouts</h2>
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field id="strengthsEyebrow" label="Pastille" defaultValue={company.page.strengthsEyebrow} />
-          <Field id="strengthsHeading" label="Titre de section" defaultValue={company.page.strengthsHeading} />
-        </div>
-        <Lines
-          id="certifications"
-          label="Atouts (Titre | Description)"
-          rows={5}
-          defaultValue={company.certifications
-            .map((item) => `${item.title} | ${item.description}`)
-            .join("\n")}
-        />
-      </section>
-
-      <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-[#065b48]">Équipe (textes de la page À propos)</h2>
         <p className="text-sm text-slate-500">Les fiches collaborateurs se gèrent dans le menu Équipe.</p>
         <div className="grid gap-5 md:grid-cols-2">
@@ -171,34 +140,6 @@ export function CompanyForm({ company, media }: { company: CompanyContent; media
           defaultValue={company.teamIntro.profiles.join("\n")}
         />
         <Lines id="teamPhilosophy" label="Philosophie" rows={3} defaultValue={company.teamIntro.philosophy} />
-      </section>
-
-      <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Types de projets</h2>
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field id="domainsEyebrow" label="Pastille" defaultValue={company.page.domainsEyebrow} />
-          <Field id="domainsHeading" label="Titre de section" defaultValue={company.page.domainsHeading} />
-        </div>
-        <Lines
-          id="achievements"
-          label="Types (Titre | Description)"
-          rows={5}
-          defaultValue={company.achievements
-            .map((item) => `${item.title} | ${item.description}`)
-            .join("\n")}
-        />
-      </section>
-
-      <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Engagements</h2>
-        <Field id="commitmentsHeading" label="Titre" defaultValue={company.page.commitmentsHeading} />
-        <Lines id="commitmentsIntro" label="Sous-titre" rows={2} defaultValue={company.page.commitmentsIntro} />
-        <Lines
-          id="commitments"
-          label="Engagements (un par ligne)"
-          rows={5}
-          defaultValue={company.commitments.join("\n")}
-        />
       </section>
 
       {error ? (
