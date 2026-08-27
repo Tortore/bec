@@ -85,10 +85,10 @@ export async function saveVideoUpload(file: File) {
     "application/octet-stream",
     "",
   ]);
-  if (!videoExt.test(file.name) && !(file.type && file.type.startsWith("video/"))) {
+  if (!videoExt.test(file.name) && !allowedTypes.has(file.type)) {
     throw new Error("FORMAT");
   }
-  if (file.type && !allowedTypes.has(file.type) && !file.type.startsWith("video/")) {
+  if (!allowedTypes.has(file.type)) {
     throw new Error("FORMAT");
   }
   if (!ext || !videoExt.test(ext === ".mp4" ? ".mp4" : ext)) {
@@ -99,11 +99,21 @@ export async function saveVideoUpload(file: File) {
   if (file.size > 50 * 1024 * 1024) {
     throw new Error("SIZE");
   }
+  if (file.size === 0) {
+    throw new Error("FORMAT");
+  }
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const isWebm = bytes.length >= 4 && bytes.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
+  const isIsoMedia = bytes.length >= 12 && bytes.subarray(4, 8).toString("ascii") === "ftyp";
+  if (!isWebm && !isIsoMedia) {
+    throw new Error("FORMAT");
+  }
+  ext = isWebm ? ".webm" : ext === ".mov" ? ".mov" : ".mp4";
   const dir = path.join(process.cwd(), "public", "uploads");
   await fs.mkdir(dir, { recursive: true });
   const base = slugify(path.basename(file.name, originalExt || ext)) || "video";
   const name = `${base}-${Date.now()}${ext}`;
-  await fs.writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()));
+  await fs.writeFile(path.join(dir, name), bytes);
   return `/uploads/${name}`;
 }
 

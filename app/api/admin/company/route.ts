@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     if (error instanceof CompanyFormError) {
       return NextResponse.json({ ok: false, error: error.message }, { status: 400, headers: { "X-Request-Id": id } });
     }
-    logServerError("api.admin.company", error, { requestId: id });
+    await logServerError("api.admin.company", error, { requestId: id });
     return NextResponse.json(
       { ok: false, error: "Une erreur technique empêche l’enregistrement. Réessayez dans un instant." },
       { status: 500, headers: { "X-Request-Id": id } },

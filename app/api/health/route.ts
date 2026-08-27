@@ -13,7 +13,7 @@ export async function GET(request: Request) {
       { headers: { "Cache-Control": "no-store", "X-Request-Id": id } },
     );
   } catch (error) {
-    logServerError("api.health", error, { requestId: id });
+    await logServerError("api.health", error, { requestId: id });
     return NextResponse.json(
       { ok: false, database: "unavailable", error: "Service temporairement indisponible." },
       { status: 503, headers: { "Cache-Control": "no-store", "Retry-After": "30", "X-Request-Id": id } },

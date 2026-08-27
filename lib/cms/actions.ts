@@ -190,6 +190,7 @@ const projectSchema = z.object({
   client: z.string().optional(),
   duration: z.string().optional(),
   price: z.string().optional(),
+  video: z.string().optional(),
   featured: z.boolean(),
   published: z.boolean(),
 });
@@ -216,6 +217,7 @@ export async function saveProjectAction(formData: FormData) {
     client: String(formData.get("client") ?? "") || undefined,
     duration: String(formData.get("duration") ?? "") || undefined,
     price: String(formData.get("price") ?? "") || undefined,
+    video: String(formData.get("video") ?? "") || undefined,
     featured: bool(formData.get("featured")),
     published: bool(formData.get("published")),
   });
@@ -415,6 +417,7 @@ export async function saveSettingsAction(formData: FormData) {
         twitter: String(formData.get("twitter") ?? ""),
         linkedin: String(formData.get("linkedin") ?? ""),
         instagram: String(formData.get("instagram") ?? ""),
+        tiktok: String(formData.get("tiktok") ?? ""),
       },
       footer: footerFromFormData(formData),
     },
@@ -431,7 +434,7 @@ export async function saveCompanyAction(formData: FormData) {
     if (error instanceof CompanyFormError) {
       redirect("/admin/cabinet?error=INVALID_COMPANY");
     }
-    logServerError("admin.company.save", error);
+    await logServerError("admin.company.save", error);
     redirect("/admin/cabinet?error=COMPANY_SAVE_FAILED");
   }
   revalidateSite();
@@ -628,11 +631,49 @@ export async function deleteApplicationAction(id: string) {
     ]);
     for (const result of cleanup) {
       if (result.status === "rejected") {
-        logServerWarning("admin.recruitment.cleanup", result.reason, { applicationId: id });
+        await logServerWarning("admin.recruitment.cleanup", result.reason, { applicationId: id });
       }
     }
   }
   revalidatePath("/admin/recrutement");
   revalidatePath("/admin");
   redirect("/admin/recrutement");
+}
+
+export async function resolveAppLogAction(id: string) {
+  await requireAdmin();
+  await prisma.appLog.updateMany({ where: { id }, data: { resolvedAt: new Date() } });
+  revalidatePath("/admin/logs");
+  revalidatePath(`/admin/logs/${id}`);
+  revalidatePath("/admin");
+}
+
+export async function reopenAppLogAction(id: string) {
+  await requireAdmin();
+  await prisma.appLog.updateMany({ where: { id }, data: { resolvedAt: null } });
+  revalidatePath("/admin/logs");
+  revalidatePath(`/admin/logs/${id}`);
+  revalidatePath("/admin");
+}
+
+export async function deleteAppLogAction(id: string) {
+  await requireAdmin();
+  await prisma.appLog.deleteMany({ where: { id } });
+  revalidatePath("/admin/logs");
+  revalidatePath(`/admin/logs/${id}`);
+  revalidatePath("/admin");
+}
+
+export async function resolveAllLogsAction() {
+  await requireAdmin();
+  await prisma.appLog.updateMany({ where: { resolvedAt: null }, data: { resolvedAt: new Date() } });
+  revalidatePath("/admin/logs");
+  revalidatePath("/admin");
+}
+
+export async function purgeResolvedLogsAction() {
+  await requireAdmin();
+  await prisma.appLog.deleteMany({ where: { resolvedAt: { not: null } } });
+  revalidatePath("/admin/logs");
+  revalidatePath("/admin");
 }

@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GalleryField } from "@/components/admin/gallery-field";
 import { ImageField } from "@/components/admin/image-field";
+import { ProjectVideoField } from "@/components/admin/project-video-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,18 +15,25 @@ import { fetchWithTimeout, RequestTimeoutError } from "@/lib/fetch-with-timeout"
 export function ProjectForm({
   project,
   media,
+  videos = [],
   categories,
 }: {
   project?: Project;
   media: string[];
+  videos?: string[];
   categories: Category[];
 }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [error, setError] = useState("");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (uploadingVideo) {
+      setError("Attendez la fin de l’envoi de la vidéo avant d’enregistrer le projet.");
+      return;
+    }
     setSaving(true);
     setError("");
     try {
@@ -87,6 +95,12 @@ export function ProjectForm({
         defaultValue={(project?.images ?? []).filter((src) => src && src !== project?.cover)}
         media={media}
       />
+      <ProjectVideoField
+        name="video"
+        defaultValue={project?.video ?? ""}
+        videos={videos}
+        onUploadingChange={setUploadingVideo}
+      />
       <div className="space-y-2">
         <Label htmlFor="description">Description</Label>
         <Textarea id="description" name="description" rows={6} required defaultValue={project?.description} />
@@ -133,8 +147,14 @@ export function ProjectForm({
           {error}
         </p>
       ) : null}
-      <Button type="submit" disabled={saving}>
-        {saving ? "Enregistrement…" : project ? "Enregistrer le projet" : "Créer le projet"}
+      <Button type="submit" disabled={saving || uploadingVideo}>
+        {uploadingVideo
+          ? "Envoi de la vidéo…"
+          : saving
+            ? "Enregistrement…"
+            : project
+              ? "Enregistrer le projet"
+              : "Créer le projet"}
       </Button>
     </form>
   );

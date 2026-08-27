@@ -6,8 +6,12 @@ import { createMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectGallery } from "@/components/projects/project-gallery";
+import { ProjectVideo } from "@/components/projects/project-video";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { normalizeProjectVideo, parseYouTube, youtubeEmbedUrl } from "@/lib/cms/youtube";
+import { runtimeMediaUrl } from "@/lib/media-url";
+import { siteConfig } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -28,6 +32,16 @@ export default async function ProjectDetailPage({ params }: Props) {
   const project = await getProject(slug);
   if (!project) notFound();
   const [related, labels] = await Promise.all([getRelatedProjects(project.slug), getCategoryLabels()]);
+  const projectVideo = normalizeProjectVideo(project.video ?? "") || "";
+  const youtube = projectVideo ? parseYouTube(projectVideo) : null;
+  const videoUrl = projectVideo
+    ? youtube
+      ? youtubeEmbedUrl(youtube)
+      : new URL(runtimeMediaUrl(projectVideo), siteConfig.url).toString()
+    : "";
+  const thumbnailUrl = project.cover.startsWith("http")
+    ? project.cover
+    : new URL(runtimeMediaUrl(project.cover), siteConfig.url).toString();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -40,6 +54,17 @@ export default async function ProjectDetailPage({ params }: Props) {
       "@type": "Place",
       name: `${project.city}, ${project.country}`,
     },
+    ...(projectVideo
+      ? {
+          video: {
+            "@type": "VideoObject",
+            name: `${project.title} — réalisation`,
+            description: project.excerpt,
+            thumbnailUrl,
+            ...(youtube ? { embedUrl: videoUrl } : { contentUrl: videoUrl }),
+          },
+        }
+      : {}),
   };
 
   return (
@@ -60,7 +85,9 @@ export default async function ProjectDetailPage({ params }: Props) {
       <ProjectGallery
         title={project.title}
         images={[project.cover, ...project.images.filter((src) => src !== project.cover)]}
+        hasVideo={Boolean(projectVideo)}
       />
+      {projectVideo ? <ProjectVideo title={project.title} video={projectVideo} poster={project.cover} /> : null}
       <div className="container-site mt-10">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
           <div>

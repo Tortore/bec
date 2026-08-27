@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   Briefcase,
   Building2,
   FolderKanban,
@@ -14,6 +15,7 @@ import {
   Mail,
   Menu,
   PencilRuler,
+  ScrollText,
   Settings,
   Tags,
   Scale,
@@ -27,6 +29,8 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/admin", label: "Tableau de bord", icon: LayoutDashboard },
+  { href: "/admin/statistiques", label: "Statistiques", icon: BarChart3 },
+  { href: "/admin/logs", label: "Logs", icon: ScrollText },
   { href: "/admin/accueil", label: "Accueil", icon: Home },
   { href: "/admin/projets", label: "Projets", icon: FolderKanban },
   { href: "/admin/categories", label: "Catégories", icon: Tags },
@@ -46,6 +50,7 @@ export function AdminShell({
   unread,
   unreadApplications = 0,
   unreadReviews = 0,
+  openLogs = 0,
   logo,
   brandName = "BEC",
   brandSubtitle = "Bureau d’Études et Construction",
@@ -55,6 +60,7 @@ export function AdminShell({
   unread: number;
   unreadApplications?: number;
   unreadReviews?: number;
+  openLogs?: number;
   logo?: string;
   brandName?: string;
   brandSubtitle?: string;
@@ -121,6 +127,11 @@ export function AdminShell({
                 {item.href === "/admin/recrutement" && unreadApplications > 0 ? (
                   <span className="rounded-full bg-[#00af84] px-2 py-0.5 text-[11px] font-semibold text-white">
                     {unreadApplications}
+                  </span>
+                ) : null}
+                {item.href === "/admin/logs" && openLogs > 0 ? (
+                  <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[11px] font-semibold text-white">
+                    {openLogs}
                   </span>
                 ) : null}
               </Link>

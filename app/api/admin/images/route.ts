@@ -42,7 +42,7 @@ export async function POST(request: Request) {
         { status: 413, headers: { "X-Request-Id": id } },
       );
     }
-    logServerError("api.admin.images", error, { requestId: id });
+    await logServerError("api.admin.images", error, { requestId: id });
     return NextResponse.json(
       { ok: false, error: "Une erreur technique empêche l’enregistrement de l’image." },
       { status: 500, headers: { "X-Request-Id": id } },

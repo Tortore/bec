@@ -135,11 +135,15 @@ export function SettingsForm({ settings, media }: { settings: CmsSettings; media
         </div>
       </Section>
 
-      <Section title="Réseaux sociaux" description="Icônes affichées dans le pied de page (laisser vide ou « # » pour masquer).">
+      <Section
+        title="Réseaux sociaux"
+        description="Collez l’adresse complète de chaque profil (https://…). Laissez vide ou mettez « # » pour masquer l’icône."
+      >
         <Field id="facebook" label="Facebook" defaultValue={settings.social.facebook} />
         <Field id="linkedin" label="LinkedIn" defaultValue={settings.social.linkedin} />
-        <Field id="twitter" label="Twitter / X" defaultValue={settings.social.twitter} />
+        <Field id="twitter" label="X (anciennement Twitter)" defaultValue={settings.social.twitter} />
         <Field id="instagram" label="Instagram" defaultValue={settings.social.instagram} />
+        <Field id="tiktok" label="TikTok" defaultValue={settings.social.tiktok} />
       </Section>
 
       <Button type="submit">Enregistrer les paramètres</Button>

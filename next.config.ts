@@ -33,7 +33,7 @@ const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), autoplay=(self)",
+    value: 'camera=(), microphone=(), geolocation=(), autoplay=(self "https://www.youtube-nocookie.com")',
   },
   {
     key: "Content-Security-Policy",
@@ -49,7 +49,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com https://www.google-analytics.com",
       "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://region1.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net",
-      "frame-src https://www.google.com https://maps.google.com",
+      "frame-src https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com",
     ].join("; "),
   },
 ];

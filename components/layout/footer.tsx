@@ -7,9 +7,9 @@ import {
   Mail,
   MapPin,
   MessageCircle,
+  Music2,
   Phone,
   Plus,
-  Twitter,
 } from "lucide-react";
 import { CookieSettingsButton } from "@/components/consent/cookie-settings-button";
 import { BrandLogo } from "@/components/layout/brand-logo";
@@ -26,6 +26,14 @@ type FooterSectionProps = {
   title: string;
   children: React.ReactNode;
 };
+
+function XSocialIcon({ className }: { className?: string }) {
+  return (
+    <span className={`${className ?? ""} flex items-center justify-center font-bold leading-none`} aria-hidden>
+      𝕏
+    </span>
+  );
+}
 
 function FooterSection({ id, title, children }: FooterSectionProps) {
   return (
@@ -70,15 +78,21 @@ export function Footer({ settings }: { settings?: CmsSettings }) {
   };
   const copy = settings?.footer ?? defaultFooter;
   const address = formatPublicAddress(contact.address);
+  const whatsapp = "whatsapp" in contact ? contact.whatsapp : siteConfig.whatsapp;
   const socialLinks = [
+    {
+      icon: MessageCircle,
+      href: whatsapp ? whatsappLink(whatsapp, "Bonjour BEC, je souhaite un devis.") : "",
+      label: "WhatsApp",
+    },
     { icon: Facebook, href: contact.social.facebook, label: "Facebook" },
     { icon: Linkedin, href: contact.social.linkedin, label: "LinkedIn" },
-    { icon: Twitter, href: contact.social.twitter, label: "X (Twitter)" },
+    { icon: XSocialIcon, href: contact.social.twitter, label: "X" },
     { icon: Instagram, href: contact.social.instagram, label: "Instagram" },
+    { icon: Music2, href: contact.social.tiktok, label: "TikTok" },
   ].filter(({ href }) => /^https?:\/\//.test(href));
   const mapsUrl = "mapsUrl" in contact ? contact.mapsUrl : siteConfig.mapsUrl;
   const tagline = "tagline" in contact ? contact.tagline : siteConfig.tagline;
-  const whatsapp = "whatsapp" in contact ? contact.whatsapp : siteConfig.whatsapp;
   const quickLinks = [
     { label: copy.nav.home, href: "/" },
     { label: copy.nav.about, href: "/a-propos" },

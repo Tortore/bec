@@ -114,7 +114,7 @@ export async function POST(request: Request) {
       });
     } catch (error) {
       // La candidature reste enregistrée même si l’e-mail SMTP échoue.
-      logServerWarning("api.recruitment.email", error, { requestId: id });
+      await logServerWarning("api.recruitment.email", error, { requestId: id });
     }
 
     revalidatePath("/admin/recrutement");
@@ -128,7 +128,7 @@ export async function POST(request: Request) {
       const cleanup = await Promise.allSettled([deleteStoredFile(cvStored), deleteStoredFile(idStored)]);
       for (const result of cleanup) {
         if (result.status === "rejected") {
-          logServerWarning("api.recruitment.cleanup", result.reason, { requestId: id });
+          await logServerWarning("api.recruitment.cleanup", result.reason, { requestId: id });
         }
       }
     }
@@ -159,7 +159,7 @@ export async function POST(request: Request) {
         { status: 413, headers: { "X-Request-Id": id } },
       );
     }
-    logServerError("api.recruitment", error, { requestId: id });
+    await logServerError("api.recruitment", error, { requestId: id });
     const prismaCode = error && typeof error === "object" && "code" in error ? String(error.code) : "";
     if (prismaCode.startsWith("P")) {
       return NextResponse.json(

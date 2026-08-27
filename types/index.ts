@@ -36,6 +36,8 @@ export interface Project {
   client?: string;
   duration?: string;
   price?: string;
+  /** Lien YouTube ou fichier vidéo (MP4) à lire sur la fiche projet. */
+  video?: string;
   featured?: boolean;
   /** Mettre à `false` pour masquer un projet en attente de publication. */
   published?: boolean;
@@ -130,6 +132,7 @@ export interface CmsSettings {
     twitter: string;
     linkedin: string;
     instagram: string;
+    tiktok: string;
   };
   tagline: string;
   footer: FooterContent;

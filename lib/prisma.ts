@@ -28,14 +28,23 @@ function fieldNames(client: PrismaClient, model: string) {
 
 function hasCurrentModels(client: PrismaClient) {
   const settingsFields = fieldNames(client, "SiteSettings");
-  if (settingsFields.length > 0 && !settingsFields.includes("footer")) return false;
+  const projectFields = fieldNames(client, "Project");
+  if (
+    settingsFields.length > 0 &&
+    (!settingsFields.includes("footer") || !settingsFields.includes("tiktok"))
+  ) {
+    return false;
+  }
+  if (projectFields.length > 0 && !projectFields.includes("video")) return false;
   return Boolean(
     client.adminUser &&
       client.category &&
       client.homePage &&
       client.companyProfile &&
       client.legalPages &&
-      client.application,
+      client.application &&
+      client.siteVisit &&
+      client.appLog,
   );
 }
 

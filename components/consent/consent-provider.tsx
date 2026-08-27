@@ -86,7 +86,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
             </p>
             <p id="cookie-text" className="mt-2 text-sm leading-relaxed text-slate-600">
               BEC utilise des cookies et outils similaires : indispensables au fonctionnement du
-              site, mesure d’audience (Vercel Analytics, Google Analytics) et carte Google Maps. Vous pouvez tout
+              site, mesure d’audience interne, Vercel Analytics, Google Analytics et carte Google Maps. Vous pouvez tout
               accepter, tout refuser hors cookies nécessaires, ou choisir. Détails :{" "}
               <Link href="/cookies" className="font-medium text-[#00af84] hover:text-[#065b48]">
                 politique de cookies
@@ -111,7 +111,7 @@ export function ConsentProvider({ children }: { children: React.ReactNode }) {
                   />
                   <span>
                     <span className="font-medium">Mesure d’audience</span> — statistiques de
-                    fréquentation (Vercel Analytics, Google Analytics).
+                    fréquentation interne, Vercel Analytics et Google Analytics.
                   </span>
                 </label>
                 <label className="flex items-start gap-3 text-slate-700">

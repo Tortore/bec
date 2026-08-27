@@ -4,6 +4,7 @@ import { BackToTop } from "@/components/layout/back-to-top";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { ConsentProvider } from "@/components/consent/consent-provider";
 import { AnalyticsGate } from "@/components/consent/analytics-gate";
+import { VisitTracker } from "@/components/layout/visit-tracker";
 import { getCategories, getSettings } from "@/lib/cms/queries";
 
 // Le contenu est administrable depuis le CMS : il doit être lu au moment de la
@@ -31,6 +32,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Footer settings={settings} />
       <WhatsAppButton whatsapp={settings.whatsapp} />
       <BackToTop />
+      <VisitTracker />
       <AnalyticsGate />
     </ConsentProvider>
   );

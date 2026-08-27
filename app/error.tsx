@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { ReportClientError } from "@/components/report-client-error";
 
 export default function SiteError({
   error,
@@ -16,6 +17,7 @@ export default function SiteError({
 
   return (
     <main className="flex min-h-[70vh] items-center justify-center bg-[#f7f9f8] px-6 py-16">
+      <ReportClientError error={error} source="client" />
       <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
         <p className="text-sm font-semibold uppercase tracking-wider text-[#00af84]">Erreur temporaire</p>
         <h1 className="mt-3 text-2xl font-bold text-[#065b48]">La page n’a pas pu s’afficher</h1>

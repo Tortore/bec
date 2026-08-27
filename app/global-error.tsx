@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { ReportClientError } from "@/components/report-client-error";
 
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -11,6 +12,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
     <html lang="fr">
       <body>
         <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: 24, fontFamily: "sans-serif" }}>
+          <ReportClientError error={error} source="client" />
           <div style={{ maxWidth: 520, textAlign: "center" }}>
             <h1>Une erreur inattendue est survenue</h1>
             <p>Réessayez. Si le problème continue, rechargez complètement la page.</p>

@@ -2,13 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
+  BarChart3,
   Briefcase,
   FolderKanban,
   Mail,
   PencilRuler,
+  ShieldAlert,
   Users,
 } from "lucide-react";
 import { getDashboardStats, getCategoryLabels } from "@/lib/cms/queries";
+import { getOpenLogsCount } from "@/lib/cms/logs";
+import { getTodayVisitCount } from "@/lib/cms/visits";
 import {
   applicationStatusClasses,
   applicationStatusLabels,
@@ -19,9 +23,15 @@ import { cn, formatDate } from "@/lib/utils";
 export const metadata: Metadata = { title: "Tableau de bord" };
 
 export default async function AdminHomePage() {
-  const [stats, labels] = await Promise.all([getDashboardStats(), getCategoryLabels()]);
+  const [stats, labels, todayVisits, openLogs] = await Promise.all([
+    getDashboardStats(),
+    getCategoryLabels(),
+    getTodayVisitCount(),
+    getOpenLogsCount(),
+  ]);
 
   const cards = [
+    { label: "Visites", value: todayVisits, hint: "Aujourd’hui sur le site", href: "/admin/statistiques", icon: BarChart3 },
     { label: "Projets", value: stats.projects, hint: `${stats.publishedProjects} publiés`, href: "/admin/projets", icon: FolderKanban },
     { label: "Services", value: stats.services, hint: "Offre du cabinet", href: "/admin/services", icon: PencilRuler },
     { label: "Équipe", value: stats.team, hint: "Collaborateurs", href: "/admin/equipe", icon: Users },
@@ -40,8 +50,26 @@ export default async function AdminHomePage() {
       <div className="mb-8">
         <p className="text-sm font-medium text-[#00af84]">Administration</p>
         <h1 className="mt-1 text-3xl font-semibold text-[#065b48]">Tableau de bord</h1>
-        <p className="mt-2 text-slate-500">Pilotez le contenu, les messages, les candidatures et les informations du cabinet.</p>
+        <p className="mt-2 text-slate-500">Pilotez le contenu, suivez l’audience, les logs, les messages, les candidatures et les informations du cabinet.</p>
       </div>
+
+      {openLogs > 0 ? (
+        <Link
+          href="/admin/logs"
+          className="mb-6 flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 transition hover:border-rose-300"
+        >
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-rose-600 text-white">
+            <ShieldAlert className="h-4 w-4" />
+          </span>
+          <span className="flex-1">
+            <span className="font-semibold">
+              {openLogs} incident{openLogs > 1 ? "s" : ""} à traiter
+            </span>
+            <span className="mt-0.5 block text-xs text-rose-700">Ouvrez les logs pour récupérer le diagnostic et marquer comme résolu.</span>
+          </span>
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map((card) => {

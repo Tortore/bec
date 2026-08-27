@@ -39,7 +39,7 @@ export async function POST(request: Request) {
         { status: 413, headers: { "X-Request-Id": id } },
       );
     }
-    logServerError("api.admin.videos", error, { requestId: id });
+    await logServerError("api.admin.videos", error, { requestId: id });
     return NextResponse.json(
       {
         ok: false,

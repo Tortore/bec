@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { uniqueSlug } from "@/lib/cms/slug";
+import { normalizeProjectVideo } from "@/lib/cms/youtube";
 
 const mediaPath = z
   .string()
@@ -85,6 +86,12 @@ export async function saveProjectForm(formData: FormData) {
   const gallery = lines(formData.get("images")).filter(
     (src) => src.startsWith("/") && !src.startsWith("//") && !src.includes("..") && src !== result.data.cover,
   );
+  const video = normalizeProjectVideo(String(formData.get("video") ?? ""));
+  if (video === null) {
+    throw new ProjectFormError(
+      "Le lien vidéo n’est pas reconnu. Collez une URL YouTube, ou téléversez un fichier MP4 / WebM.",
+    );
+  }
   const current = currentSlug ? existing.find((item) => item.slug === currentSlug) : undefined;
   const sortOrder = current?.sortOrder ?? (existing.length ? Math.max(...existing.map((item) => item.sortOrder)) + 1 : 0);
   const data = {
@@ -104,6 +111,7 @@ export async function saveProjectForm(formData: FormData) {
     client: optional(formData.get("client")),
     duration: optional(formData.get("duration")),
     price: optional(formData.get("price")),
+    video,
     featured: enabled(formData.get("featured")),
     published: enabled(formData.get("published")),
     sortOrder,

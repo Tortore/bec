@@ -82,7 +82,7 @@ export const defaultLegalPages: LegalPagesContent = {
   <ul>
     <li>Formulaire de contact : nom, e-mail, téléphone (facultatif), sujet et message.</li>
     <li>Candidatures envoyées par e-mail : les informations que vous choisissez de transmettre.</li>
-    <li>Données de navigation, uniquement si vous acceptez la mesure d’audience : pages consultées, date et données techniques agrégées (Vercel Analytics, éventuellement Google Analytics 4 si vous acceptez la mesure d’audience).</li>
+    <li>Données de navigation, uniquement si vous acceptez la mesure d’audience : pages consultées, date et données techniques pseudonymisées ou agrégées (mesure interne, Vercel Analytics et éventuellement Google Analytics 4).</li>
     <li>Cookies et outils similaires décrits dans la <a href="/cookies">politique de cookies</a>.</li>
   </ul>
   <p>Nous ne demandons pas de données sensibles (santé, opinions, etc.).</p>
@@ -144,7 +144,7 @@ export const defaultLegalPages: LegalPagesContent = {
   <h2>Cookies et outils utilisés</h2>
   <ul>
     <li><strong>Nécessaires</strong> — mémorisation de votre consentement (stockage local « bec-cookie-consent ») ; cookie de session d’administration si vous vous connectez à l’espace interne. Ils ne nécessitent pas de consentement.</li>
-    <li><strong>Mesure d’audience</strong> — Vercel Analytics et, si un identifiant Google Analytics est configuré, Google Analytics 4. Uniquement si vous acceptez.</li>
+    <li><strong>Mesure d’audience</strong> — statistiques internes, Vercel Analytics et, si un identifiant Google Analytics est configuré, Google Analytics 4. Uniquement si vous acceptez.</li>
     <li><strong>Carte</strong> — iframe Google Maps sur la page Contact, uniquement si vous acceptez. Google peut déposer ses propres cookies.</li>
   </ul>
 </section>

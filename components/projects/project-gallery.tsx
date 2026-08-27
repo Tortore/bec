@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteImage } from "@/components/site-image";
 
 export function ProjectGallery({
   title,
   images,
+  hasVideo = false,
 }: {
   title: string;
   images: string[];
+  hasVideo?: boolean;
 }) {
   const views = images.filter(Boolean);
   const [index, setIndex] = useState(0);
@@ -27,11 +29,22 @@ export function ProjectGallery({
           <p className="text-sm font-semibold text-[#00af84]">Galerie</p>
           <h2 className="text-xl font-semibold text-[#065b48]">L’ensemble du projet</h2>
         </div>
-        {views.length > 1 ? (
-          <p className="text-sm text-muted-foreground">
-            Vue {index + 1} / {views.length}
-          </p>
-        ) : null}
+        <div className="flex items-center gap-3">
+          {hasVideo ? (
+            <a
+              href="#video"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#065b48] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#00af84]"
+            >
+              <Play className="h-3.5 w-3.5 fill-current" />
+              Voir la vidéo
+            </a>
+          ) : null}
+          {views.length > 1 ? (
+            <p className="text-sm text-muted-foreground">
+              Vue {index + 1} / {views.length}
+            </p>
+          ) : null}
+        </div>
       </div>
       <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-neutral-900 md:aspect-[2/1]">
         <SiteImage

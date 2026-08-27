@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       await sendContactMail(fields);
     } catch (error) {
       // Le message reste enregistré même si l’e-mail SMTP échoue.
-      logServerWarning("api.contact.email", error, { requestId: id });
+      await logServerWarning("api.contact.email", error, { requestId: id });
     }
 
     revalidatePath("/admin/messages");
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
         { status: 400, headers: { "X-Request-Id": id } },
       );
     }
-    logServerError("api.contact", error, { requestId: id });
+    await logServerError("api.contact", error, { requestId: id });
     return NextResponse.json(
       { ok: false, error: "Le message n’a pas pu être enregistré. Réessayez dans un instant." },
       { status: 500, headers: { "X-Request-Id": id } },

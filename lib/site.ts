@@ -34,6 +34,7 @@ export const siteConfig = {
     twitter: "#",
     linkedin: "#",
     instagram: "#",
+    tiktok: "#",
   },
   ogImage: "/images/og-image.jpg",
 } as const;

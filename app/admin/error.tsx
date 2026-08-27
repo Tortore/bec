@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { ReportClientError } from "@/components/report-client-error";
 
 export default function AdminError({
   error,
@@ -16,6 +17,7 @@ export default function AdminError({
 
   return (
     <div className="rounded-2xl border border-red-200 bg-white p-8 shadow-sm">
+      <ReportClientError error={error} source="admin" />
       <p className="text-sm font-semibold text-red-700">Une erreur empêche l’affichage de cette rubrique.</p>
       <p className="mt-2 text-sm text-slate-600">Réessayez. Les données déjà enregistrées ne sont pas supprimées.</p>
       <div className="mt-5 flex flex-wrap gap-3">

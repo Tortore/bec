@@ -66,6 +66,7 @@ function toProject(row: {
   client: string | null;
   duration: string | null;
   price: string | null;
+  video?: string | null;
   featured: boolean;
   published: boolean;
 }): Project {
@@ -87,6 +88,7 @@ function toProject(row: {
     client: row.client ?? undefined,
     duration: row.duration ?? undefined,
     price: row.price ?? undefined,
+    video: row.video?.trim() || undefined,
     featured: row.featured,
     published: row.published,
   };
@@ -161,6 +163,7 @@ function toSettings(row: {
   twitter: string;
   linkedin: string;
   instagram: string;
+  tiktok: string;
   tagline: string;
   footer?: Prisma.JsonValue | null;
 }): CmsSettings {
@@ -191,6 +194,7 @@ function toSettings(row: {
       twitter: row.twitter,
       linkedin: row.linkedin,
       instagram: row.instagram,
+      tiktok: row.tiktok,
     },
     tagline: row.tagline,
     footer: normalizeFooter(row.footer),
@@ -219,6 +223,7 @@ async function persistDatabase(next: CmsDatabase) {
         twitter: next.settings.social.twitter,
         linkedin: next.settings.social.linkedin,
         instagram: next.settings.social.instagram,
+        tiktok: next.settings.social.tiktok,
         tagline: next.settings.tagline,
         footer: next.settings.footer as unknown as Prisma.InputJsonValue,
       },
@@ -239,6 +244,7 @@ async function persistDatabase(next: CmsDatabase) {
         twitter: next.settings.social.twitter,
         linkedin: next.settings.social.linkedin,
         instagram: next.settings.social.instagram,
+        tiktok: next.settings.social.tiktok,
         tagline: next.settings.tagline,
         footer: next.settings.footer as unknown as Prisma.InputJsonValue,
       },
@@ -270,6 +276,7 @@ async function persistDatabase(next: CmsDatabase) {
         client: project.client ?? null,
         duration: project.duration ?? null,
         price: project.price ?? null,
+        video: project.video?.trim() || "",
         featured: Boolean(project.featured),
         published: project.published !== false,
         sortOrder: index,
@@ -377,6 +384,7 @@ export async function ensureSeeded() {
           twitter: defaultSettings.social.twitter,
           linkedin: defaultSettings.social.linkedin,
           instagram: defaultSettings.social.instagram,
+          tiktok: defaultSettings.social.tiktok,
           tagline: defaultSettings.tagline,
           footer: defaultSettings.footer as unknown as Prisma.InputJsonValue,
         },
