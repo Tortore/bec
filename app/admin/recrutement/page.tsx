@@ -29,8 +29,18 @@ export default async function AdminRecruitmentPage({ searchParams }: Props) {
     <div>
       <AdminHeader
         title="Recrutement"
-        description="Candidatures reçues depuis la page Recrutement : identité, CV et pièces jointes."
+        description="Candidatures reçues depuis la page Recrutement : identité, CV et pièces jointes. Les textes de la page se modifient dans Pages."
       />
+      <Link
+        href="/admin/pages/recrutement"
+        className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-[#00af84]/25 bg-white px-5 py-4 text-sm shadow-sm transition hover:border-[#00af84]"
+      >
+        <span>
+          <span className="font-semibold text-[#065b48]">Textes de la page Recrutement</span>
+          <span className="mt-0.5 block text-slate-500">Image, titres, profils, formulaire et déroulé de candidature.</span>
+        </span>
+        <span className="shrink-0 font-medium text-[#00af84]">Modifier</span>
+      </Link>
 
       <div className="mb-6 flex flex-wrap items-center gap-2">
         <Link

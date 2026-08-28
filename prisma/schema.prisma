@@ -133,6 +133,12 @@ model LegalPages {
   updatedAt DateTime @updatedAt
 }
 
+model SitePages {
+  id        String   @id @default("default")
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
 model Category {
   id        String   @id
   label     String

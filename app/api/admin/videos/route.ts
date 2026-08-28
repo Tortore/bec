@@ -39,6 +39,15 @@ export async function POST(request: Request) {
         { status: 413, headers: { "X-Request-Id": id } },
       );
     }
+    if (code === "FAST_START") {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Cette vidéo n’est pas optimisée pour le Web. Réexportez-la en MP4 H.264 avec l’option Fast Start, puis réessayez.",
+        },
+        { status: 415, headers: { "X-Request-Id": id } },
+      );
+    }
     await logServerError("api.admin.videos", error, { requestId: id });
     return NextResponse.json(
       {

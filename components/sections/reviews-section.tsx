@@ -12,7 +12,21 @@ type PublicReview = {
   message: string;
 };
 
-export function ReviewsSection({ reviews }: { reviews: PublicReview[] }) {
+export function ReviewsSection({
+  reviews,
+  eyebrow,
+  title,
+  intro,
+  empty,
+  formTitle,
+}: {
+  reviews: PublicReview[];
+  eyebrow: string;
+  title: string;
+  intro: string;
+  empty: string;
+  formTitle: string;
+}) {
   const [rating, setRating] = useState(5);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
@@ -58,14 +72,10 @@ export function ReviewsSection({ reviews }: { reviews: PublicReview[] }) {
       <div className="container-site">
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-            Avis et opinions
+            {eyebrow}
           </span>
-          <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-            Partagez votre expérience avec BEC
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Votre opinion nous aide à améliorer nos services et à mieux accompagner chaque projet.
-          </p>
+          <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">{title}</h2>
+          <p className="mt-4 text-muted-foreground">{intro}</p>
         </div>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.05fr]">
@@ -88,7 +98,7 @@ export function ReviewsSection({ reviews }: { reviews: PublicReview[] }) {
               ))
             ) : (
               <div className="rounded-2xl border border-dashed border-[#00af84]/30 bg-white p-8 text-center text-muted-foreground">
-                Soyez la première personne à partager votre avis.
+                {empty}
               </div>
             )}
           </div>
@@ -111,7 +121,7 @@ export function ReviewsSection({ reviews }: { reviews: PublicReview[] }) {
               </div>
             ) : (
               <form onSubmit={submitReview} className="space-y-5" noValidate>
-                <h3 className="text-xl font-bold text-[#065b48]">Donnez votre avis</h3>
+                <h3 className="text-xl font-bold text-[#065b48]">{formTitle}</h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="space-y-2 text-sm font-medium text-slate-700">
                     <span>Nom complet *</span>

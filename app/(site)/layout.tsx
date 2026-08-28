@@ -5,14 +5,20 @@ import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { ConsentProvider } from "@/components/consent/consent-provider";
 import { AnalyticsGate } from "@/components/consent/analytics-gate";
 import { VisitTracker } from "@/components/layout/visit-tracker";
+import { PublicContentRefresher } from "@/components/layout/public-content-refresher";
 import { getCategories, getSettings } from "@/lib/cms/queries";
+import { getPublicContentVersion } from "@/lib/cms/public-content-version";
 
 // Le contenu est administrable depuis le CMS : il doit être lu au moment de la
 // requête. Cela évite également de nécessiter PostgreSQL pendant `next build`.
 export const dynamic = "force-dynamic";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const [settings, categories] = await Promise.all([getSettings(), getCategories()]);
+  const [settings, categories, contentVersion] = await Promise.all([
+    getSettings(),
+    getCategories(),
+    getPublicContentVersion(),
+  ]);
 
   return (
     <ConsentProvider>
@@ -32,6 +38,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Footer settings={settings} />
       <WhatsAppButton whatsapp={settings.whatsapp} />
       <BackToTop />
+      <PublicContentRefresher initialVersion={contentVersion} />
       <VisitTracker />
       <AnalyticsGate />
     </ConsentProvider>

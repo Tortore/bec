@@ -26,7 +26,17 @@ const icons: Record<string, typeof PencilRuler> = {
   "suivi-chantier": HardHat,
 };
 
-export function ServicesExplorer({ services }: { services: ServiceItem[] }) {
+export function ServicesExplorer({
+  services,
+  eyebrow,
+  title,
+  intro,
+}: {
+  services: ServiceItem[];
+  eyebrow: string;
+  title: string;
+  intro: string;
+}) {
   const [selected, setSelected] = useState<string | null>(null);
   const service = selected ? services.find((item) => item.id === selected) : undefined;
   const DetailIcon = selected ? icons[selected] ?? PencilRuler : PencilRuler;
@@ -44,14 +54,12 @@ export function ServicesExplorer({ services }: { services: ServiceItem[] }) {
         <div className="container-site">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Notre expertise
+              {eyebrow}
             </span>
             <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Des services complets
+              {title}
             </h2>
-            <p className="mt-3 text-muted-foreground">
-              De la conception au chantier, BEC accompagne chaque étape du projet.
-            </p>
+            <p className="mt-3 text-muted-foreground">{intro}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {services.map((item) => {

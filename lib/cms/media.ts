@@ -6,6 +6,31 @@ import { optimizeUpload } from "@/lib/cms/optimize-image";
 const imageExt = /\.(jpe?g|png|webp|avif|gif)$/i;
 const videoExt = /\.(mp4|webm|mov|m4v)$/i;
 
+function hasMp4FastStart(bytes: Buffer) {
+  let offset = 0;
+  while (offset + 8 <= bytes.length) {
+    let size = bytes.readUInt32BE(offset);
+    const type = bytes.toString("ascii", offset + 4, offset + 8);
+    let headerSize = 8;
+
+    if (size === 1) {
+      if (offset + 16 > bytes.length) return false;
+      const extendedSize = bytes.readBigUInt64BE(offset + 8);
+      if (extendedSize > BigInt(Number.MAX_SAFE_INTEGER)) return false;
+      size = Number(extendedSize);
+      headerSize = 16;
+    } else if (size === 0) {
+      size = bytes.length - offset;
+    }
+
+    if (size < headerSize || offset + size > bytes.length) return false;
+    if (type === "moov") return true;
+    if (type === "mdat") return false;
+    offset += size;
+  }
+  return false;
+}
+
 async function walk(dir: string, acc: string[]) {
   let entries;
   try {
@@ -107,6 +132,9 @@ export async function saveVideoUpload(file: File) {
   const isIsoMedia = bytes.length >= 12 && bytes.subarray(4, 8).toString("ascii") === "ftyp";
   if (!isWebm && !isIsoMedia) {
     throw new Error("FORMAT");
+  }
+  if (isIsoMedia && !hasMp4FastStart(bytes)) {
+    throw new Error("FAST_START");
   }
   ext = isWebm ? ".webm" : ext === ".mov" ? ".mov" : ".mp4";
   const dir = path.join(process.cwd(), "public", "uploads");

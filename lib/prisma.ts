@@ -42,6 +42,7 @@ function hasCurrentModels(client: PrismaClient) {
       client.homePage &&
       client.companyProfile &&
       client.legalPages &&
+      client.sitePages &&
       client.application &&
       client.siteVisit &&
       client.appLog,

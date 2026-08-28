@@ -153,7 +153,8 @@ function FileDrop({
   );
 }
 
-export function ApplicationForm() {
+export function ApplicationForm({ positions }: { positions?: string[] }) {
+  const options = positions?.length ? positions : [...careerPositions];
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [serverError, setServerError] = useState("");
   const {
@@ -171,7 +172,7 @@ export function ApplicationForm() {
       email: "",
       phone: "",
       city: "",
-      position: "Candidature spontanée",
+      position: options[0] ?? "Candidature spontanée",
       experience: "1 à 3 ans",
       education: "Licence / Bac+3",
       message: "",
@@ -218,7 +219,7 @@ export function ApplicationForm() {
         email: "",
         phone: "",
         city: "",
-        position: "Candidature spontanée",
+        position: options[0] ?? "Candidature spontanée",
         experience: "1 à 3 ans",
         education: "Licence / Bac+3",
         message: "",
@@ -318,7 +319,7 @@ export function ApplicationForm() {
                 className="flex h-12 w-full appearance-none rounded-md border border-input bg-card px-4 py-2 pl-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 {...register("position")}
               >
-                {careerPositions.map((item) => (
+                {options.map((item) => (
                   <option key={item} value={item}>
                     {item}
                   </option>

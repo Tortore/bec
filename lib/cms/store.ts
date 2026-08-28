@@ -8,6 +8,7 @@ import { servicesCatalog as seedServices } from "@/data/services";
 import { team as seedTeam } from "@/data/team";
 import { defaultHome, seedCategories } from "@/lib/cms/defaults";
 import { defaultLegalPages } from "@/data/legal";
+import { defaultSitePages } from "@/lib/cms/site-pages";
 import { ensureAdminUser } from "@/lib/cms/auth";
 import { siteConfig } from "@/lib/site";
 import { defaultFooter, normalizeFooter } from "@/lib/cms/footer-content";
@@ -416,6 +417,11 @@ export async function ensureSeeded() {
 
   await prisma.legalPages.createMany({
     data: [{ id: "default", data: defaultLegalPages as Prisma.InputJsonValue }],
+    skipDuplicates: true,
+  });
+
+  await prisma.sitePages.createMany({
+    data: [{ id: "default", data: defaultSitePages as Prisma.InputJsonValue }],
     skipDuplicates: true,
   });
 }

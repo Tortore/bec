@@ -30,8 +30,18 @@ export default async function AdminMessagesPage({ searchParams }: Props) {
     <div>
       <AdminHeader
         title="Messages"
-        description="Demandes de contact et avis envoyés depuis le site."
+        description="Demandes de contact et avis envoyés depuis le site. Les textes de la page Contact se modifient dans Pages."
       />
+      <Link
+        href="/admin/pages/contact"
+        className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-[#00af84]/25 bg-white px-5 py-4 text-sm shadow-sm transition hover:border-[#00af84]"
+      >
+        <span>
+          <span className="font-semibold text-[#065b48]">Textes de la page Contact</span>
+          <span className="mt-0.5 block text-slate-500">Bandeau, titres, carte et questions fréquentes.</span>
+        </span>
+        <span className="shrink-0 font-medium text-[#00af84]">Modifier</span>
+      </Link>
       <InboxTabs
         current={current}
         messagesCount={messages.length}

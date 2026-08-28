@@ -16,9 +16,19 @@ export default async function AdminServicesPage({ searchParams }: Props) {
     <div>
       <AdminHeader
         title="Services"
-        description="Les prestations affichées sur la page Services et l’accueil."
+        description="Les prestations affichées sur la page Services et l’accueil. Les titres du bandeau et de la méthode se modifient dans Pages."
         action={{ href: "/admin/services/nouveau", label: "Nouveau service" }}
       />
+      <Link
+        href="/admin/pages/services"
+        className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-[#00af84]/25 bg-white px-5 py-4 text-sm shadow-sm transition hover:border-[#00af84]"
+      >
+        <span>
+          <span className="font-semibold text-[#065b48]">Textes de la page Services</span>
+          <span className="mt-0.5 block text-slate-500">Bandeau « Nos services », catalogue et méthode de travail.</span>
+        </span>
+        <span className="shrink-0 font-medium text-[#00af84]">Modifier</span>
+      </Link>
       {saved ? (
         <p className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
           Le service a bien été enregistré.

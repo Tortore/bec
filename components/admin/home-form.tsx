@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { ImageField } from "@/components/admin/image-field";
 import { VideoField } from "@/components/admin/video-field";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
@@ -17,8 +20,16 @@ export function HomeForm({
   media: string[];
   videos: string[];
 }) {
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
   return (
-    <form action={saveHomeAction} className="space-y-8">
+    <form
+      action={saveHomeAction}
+      className="space-y-8"
+      onSubmit={(event) => {
+        if (uploadingVideo) event.preventDefault();
+      }}
+    >
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-[#065b48]">Bannière (hero)</h2>
         <p className="text-sm text-slate-500">
@@ -49,7 +60,12 @@ export function HomeForm({
           media={media}
           clearable
         />
-        <VideoField name="heroVideo" defaultValue={home.heroVideo} videos={videos} />
+        <VideoField
+          name="heroVideo"
+          defaultValue={home.heroVideo}
+          videos={videos}
+          onUploadingChange={setUploadingVideo}
+        />
       </section>
 
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -97,9 +113,25 @@ export function HomeForm({
         </div>
       </section>
 
-      <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#065b48]">Bandeau de contact</h2>
-        <Field id="ctaEyebrow" label="Pastille" defaultValue={home.ctaEyebrow} />
+      <section className="space-y-5 rounded-2xl border border-[#00af84]/25 bg-white p-6 shadow-sm">
+        <div>
+          <p className="text-sm font-medium text-[#00af84]">Bas de l’accueil</p>
+          <h2 className="text-lg font-semibold text-[#065b48]">Un projet à concevoir ou à construire ?</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            C’est le bandeau vert en bas de la page d’accueil. Modifiez ici l’accroche, le titre, le texte et le bouton.
+          </p>
+        </div>
+        <div className="overflow-hidden rounded-2xl bg-[#065b48] p-5 text-center text-white">
+          <p className="text-xs font-semibold text-white/70">Aperçu</p>
+          <p className="mt-2 text-sm font-semibold">{home.ctaEyebrow}</p>
+          <p className="mt-1 text-lg font-bold">{home.ctaTitle}</p>
+        </div>
+        <Field
+          id="ctaEyebrow"
+          label="Accroche"
+          defaultValue={home.ctaEyebrow}
+          hint="Phrase courte au-dessus du titre, actuellement « Un projet à concevoir ou à construire ? »."
+        />
         <Field id="ctaTitle" label="Titre" defaultValue={home.ctaTitle} />
         <div className="space-y-2">
           <Label htmlFor="ctaText">Texte</Label>
@@ -107,20 +139,33 @@ export function HomeForm({
         </div>
         <Field id="ctaButton" label="Bouton" defaultValue={home.ctaButton} />
         <div className="space-y-2">
-          <Label htmlFor="ctaBenefits">Points (un par ligne)</Label>
+          <Label htmlFor="ctaBenefits">Points d’avantage (un par ligne)</Label>
           <Textarea id="ctaBenefits" name="ctaBenefits" rows={3} defaultValue={home.ctaBenefits.join("\n")} />
         </div>
       </section>
 
-      <Button type="submit">Enregistrer l’accueil</Button>
+      <Button type="submit" disabled={uploadingVideo}>
+        {uploadingVideo ? "Envoi de la vidéo…" : "Enregistrer l’accueil"}
+      </Button>
     </form>
   );
 }
 
-function Field({ id, label, defaultValue }: { id: string; label: string; defaultValue?: string }) {
+function Field({
+  id,
+  label,
+  defaultValue,
+  hint,
+}: {
+  id: string;
+  label: string;
+  defaultValue?: string;
+  hint?: string;
+}) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
+      {hint ? <p className="text-xs text-slate-500">{hint}</p> : null}
       <Input id={id} name={id} defaultValue={defaultValue} />
     </div>
   );

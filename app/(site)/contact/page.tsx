@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight, Clock, Mail, MapPin, Phone, PhoneCall } from "lucide-react";
 import { getApprovedReviews, getSettings } from "@/lib/cms/queries";
+import { getSitePages } from "@/lib/cms/site-pages";
 import { createMetadata } from "@/lib/seo";
 import { formatPublicAddress, whatsappLink } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
@@ -11,18 +12,23 @@ import { SiteImage } from "@/components/site-image";
 import { ReviewsSection } from "@/components/sections/reviews-section";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSettings();
+  const [settings, pages] = await Promise.all([getSettings(), getSitePages()]);
   const address = formatPublicAddress(settings.address);
   return createMetadata({
     title: "Contact",
-    description: `Contactez Bureau d'Études et Construction à ${settings.address.city} : ${address.full}. Téléphone, e-mail, WhatsApp et devis.`,
+    description: pages.contact.heroIntro || `Contactez Bureau d'Études et Construction à ${settings.address.city} : ${address.full}. Téléphone, e-mail, WhatsApp et devis.`,
     path: "/contact",
-    image: "/images/contact.jpg",
+    image: pages.contact.heroImage,
   });
 }
 
 export default async function ContactPage() {
-  const [settings, reviews] = await Promise.all([getSettings(), getApprovedReviews()]);
+  const [settings, reviews, pages] = await Promise.all([
+    getSettings(),
+    getApprovedReviews(),
+    getSitePages(),
+  ]);
+  const copy = pages.contact;
   const whatsapp = whatsappLink(settings.whatsapp, "Bonjour BEC, je souhaite un devis.");
   const address = formatPublicAddress(settings.address);
 
@@ -31,8 +37,8 @@ export default async function ContactPage() {
       <section className="relative flex min-h-[22rem] items-end overflow-hidden md:min-h-[26rem]">
         <div className="absolute inset-0">
           <SiteImage
-            src="/images/contact.jpg"
-            alt="Contact Bureau d'Études et Construction"
+            src={copy.heroImage}
+            alt={copy.heroTitle}
             fill
             priority
             sizes="100vw"
@@ -47,12 +53,9 @@ export default async function ContactPage() {
             items={[{ label: "Accueil", href: "/" }, { label: "Contact" }]}
           />
           <h1 className="mt-6 max-w-3xl text-3xl font-bold text-white sm:text-4xl md:text-5xl">
-            Contactez Bureau d&apos;Études et Construction
+            {copy.heroTitle}
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/80">
-            Pour un devis, un rendez-vous à Lubumbashi ou toute information sur
-            nos services d&apos;architecture et de construction.
-          </p>
+          <p className="mt-4 max-w-2xl text-lg text-white/80">{copy.heroIntro}</p>
         </div>
       </section>
 
@@ -60,28 +63,19 @@ export default async function ContactPage() {
         <div className="container-site grid gap-12 lg:grid-cols-2">
           <div>
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Formulaire de devis
+              {copy.formEyebrow}
             </span>
-            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Envoyez-nous un message
-            </h2>
-            <p className="mt-3 mb-8 text-muted-foreground">
-              Indiquez votre nom, e-mail, le sujet et le message. Nous vous
-              répondons aux horaires d&apos;ouverture.
-            </p>
+            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">{copy.formTitle}</h2>
+            <p className="mt-3 mb-8 text-muted-foreground">{copy.formIntro}</p>
             <ContactForm defaultSubject="Demande de devis" />
           </div>
 
           <div>
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Nos coordonnées
+              {copy.infoEyebrow}
             </span>
-            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Informations pratiques
-            </h2>
-            <p className="mt-3 mb-8 text-muted-foreground">
-              Retrouvez toutes les informations pour nous joindre directement.
-            </p>
+            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">{copy.infoTitle}</h2>
+            <p className="mt-3 mb-8 text-muted-foreground">{copy.infoIntro}</p>
             <div className="space-y-4">
               <article className="rounded-2xl border border-slate-100 bg-slate-50 p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg">
                 <div className="flex gap-4">
@@ -197,20 +191,23 @@ export default async function ContactPage() {
         </div>
       </section>
 
-      <ReviewsSection reviews={reviews} />
+      <ReviewsSection
+        reviews={reviews}
+        eyebrow={copy.reviewsEyebrow}
+        title={copy.reviewsTitle}
+        intro={copy.reviewsIntro}
+        empty={copy.reviewsEmpty}
+        formTitle={copy.reviewsFormTitle}
+      />
 
       <section className="bg-slate-50 py-16 md:py-20">
         <div className="container-site">
           <div className="mb-10 text-center">
             <span className="inline-block rounded-full bg-[#00af84]/10 px-4 py-1.5 text-sm font-semibold text-[#065b48]">
-              Localisation
+              {copy.mapEyebrow}
             </span>
-            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">
-              Où nous trouver
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              {address.full}
-            </p>
+            <h2 className="mt-4 text-3xl font-bold text-[#065b48] md:text-4xl">{copy.mapTitle}</h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">{address.full}</p>
           </div>
           <div className="relative overflow-hidden rounded-3xl shadow-xl">
             <MapEmbed
@@ -222,7 +219,14 @@ export default async function ContactPage() {
         </div>
       </section>
 
-      <ContactFaq email={settings.email} />
+      <ContactFaq
+        email={settings.email}
+        eyebrow={copy.faqEyebrow}
+        title={copy.faqTitle}
+        faqs={copy.faqs}
+        moreTitle={copy.faqMoreTitle}
+        moreText={copy.faqMoreText}
+      />
     </div>
   );
 }

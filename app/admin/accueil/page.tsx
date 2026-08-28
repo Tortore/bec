@@ -19,7 +19,7 @@ export default async function AdminAccueilPage({
     <div>
       <AdminHeader
         title="Page d’accueil"
-        description="Modifiez la bannière, les chiffres, les titres des blocs et le bandeau de contact."
+        description="Modifiez la bannière, les chiffres, les titres des blocs et le bandeau vert « Un projet à concevoir ou à construire ? »."
       />
       {saved ? (
         <p className="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">

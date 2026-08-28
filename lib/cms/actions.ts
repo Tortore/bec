@@ -21,6 +21,13 @@ import { logServerError, logServerWarning } from "@/lib/server-log";
 import { CompanyFormError, saveCompanyForm } from "@/lib/cms/company-save";
 import { footerFromFormData } from "@/lib/cms/footer-content";
 import { richTextToPlainText, sanitizeRichText } from "@/lib/rich-text";
+import {
+  faqsFromForm,
+  getSitePages,
+  linesFromForm,
+  pairsFromForm,
+  saveSitePages,
+} from "@/lib/cms/site-pages";
 
 const attempts = new Map<string, { count: number; until: number }>();
 
@@ -28,6 +35,10 @@ function revalidateSite() {
   revalidatePath("/", "layout");
   revalidatePath("/");
   revalidatePath("/contact");
+  revalidatePath("/a-propos");
+  revalidatePath("/services");
+  revalidatePath("/carrieres");
+  revalidatePath("/projets");
   revalidatePath("/admin", "layout");
 }
 
@@ -150,6 +161,12 @@ export async function uploadVideoAction(formData: FormData) {
     const code = error instanceof Error ? error.message : "";
     if (code === "FORMAT") return { ok: false as const, error: "Formats acceptés : MP4, WebM ou MOV." };
     if (code === "SIZE") return { ok: false as const, error: "La vidéo ne doit pas dépasser 50 Mo." };
+    if (code === "FAST_START") {
+      return {
+        ok: false as const,
+        error: "Cette vidéo n’est pas optimisée pour le Web. Réexportez-la en MP4 H.264 avec l’option Fast Start.",
+      };
+    }
     return { ok: false as const, error: "Impossible d’enregistrer la vidéo." };
   }
 }
@@ -676,4 +693,123 @@ export async function purgeResolvedLogsAction() {
   await prisma.appLog.deleteMany({ where: { resolvedAt: { not: null } } });
   revalidatePath("/admin/logs");
   revalidatePath("/admin");
+}
+
+function filled(value: FormDataEntryValue | null, fallback: string) {
+  const next = String(value ?? "").trim();
+  return next || fallback;
+}
+
+export async function saveServicesPageAction(formData: FormData) {
+  await requireAdmin();
+  const current = await getSitePages();
+  await saveSitePages({
+    ...current,
+    services: {
+      heroTitle: filled(formData.get("heroTitle"), current.services.heroTitle),
+      heroIntro: filled(formData.get("heroIntro"), current.services.heroIntro),
+      catalogEyebrow: filled(formData.get("catalogEyebrow"), current.services.catalogEyebrow),
+      catalogTitle: filled(formData.get("catalogTitle"), current.services.catalogTitle),
+      catalogIntro: filled(formData.get("catalogIntro"), current.services.catalogIntro),
+      methodEyebrow: filled(formData.get("methodEyebrow"), current.services.methodEyebrow),
+      methodTitle: filled(formData.get("methodTitle"), current.services.methodTitle),
+      steps: pairsFromForm(formData, "step", 4).map((row, index) => ({
+        title: row.title || current.services.steps[index]?.title || "",
+        text: row.text || current.services.steps[index]?.text || "",
+      })),
+    },
+  });
+  revalidateSite();
+  redirect("/admin/pages/services?ok=1");
+}
+
+export async function saveCareersPageAction(formData: FormData) {
+  await requireAdmin();
+  const current = await getSitePages();
+  const positions = linesFromForm(formData, "positions");
+  const documents = linesFromForm(formData, "documents");
+  await saveSitePages({
+    ...current,
+    careers: {
+      heroImage: formData.has("heroImage")
+        ? asMediaSrc(formData.get("heroImage"), current.careers.heroImage)
+        : current.careers.heroImage,
+      heroEyebrow: filled(formData.get("heroEyebrow"), current.careers.heroEyebrow),
+      heroTitle: filled(formData.get("heroTitle"), current.careers.heroTitle),
+      heroIntro: filled(formData.get("heroIntro"), current.careers.heroIntro),
+      highlights: pairsFromForm(formData, "highlight", 3).map((row, index) => ({
+        title: row.title || current.careers.highlights[index]?.title || "",
+        text: row.text || current.careers.highlights[index]?.text || "",
+      })),
+      profilesEyebrow: filled(formData.get("profilesEyebrow"), current.careers.profilesEyebrow),
+      profilesTitle: filled(formData.get("profilesTitle"), current.careers.profilesTitle),
+      profilesIntro: filled(formData.get("profilesIntro"), current.careers.profilesIntro),
+      positions: positions.length ? positions : current.careers.positions,
+      formEyebrow: filled(formData.get("formEyebrow"), current.careers.formEyebrow),
+      formTitle: filled(formData.get("formTitle"), current.careers.formTitle),
+      formIntro: filled(formData.get("formIntro"), current.careers.formIntro),
+      processEyebrow: filled(formData.get("processEyebrow"), current.careers.processEyebrow),
+      steps: pairsFromForm(formData, "step", 3).map((row, index) => ({
+        title: row.title || current.careers.steps[index]?.title || "",
+        text: row.text || current.careers.steps[index]?.text || "",
+      })),
+      documentsTitle: filled(formData.get("documentsTitle"), current.careers.documentsTitle),
+      documents: documents.length ? documents : current.careers.documents,
+      contactTitle: filled(formData.get("contactTitle"), current.careers.contactTitle),
+      contactText: filled(formData.get("contactText"), current.careers.contactText),
+    },
+  });
+  revalidateSite();
+  redirect("/admin/pages/recrutement?ok=1");
+}
+
+export async function saveProjectsPageAction(formData: FormData) {
+  await requireAdmin();
+  const current = await getSitePages();
+  await saveSitePages({
+    ...current,
+    projects: {
+      eyebrow: filled(formData.get("eyebrow"), current.projects.eyebrow),
+      title: filled(formData.get("title"), current.projects.title),
+      intro: filled(formData.get("intro"), current.projects.intro),
+    },
+  });
+  revalidateSite();
+  redirect("/admin/pages/projets?ok=1");
+}
+
+export async function saveContactPageAction(formData: FormData) {
+  await requireAdmin();
+  const current = await getSitePages();
+  const faqs = faqsFromForm(formData, 6);
+  await saveSitePages({
+    ...current,
+    contact: {
+      heroImage: formData.has("heroImage")
+        ? asMediaSrc(formData.get("heroImage"), current.contact.heroImage)
+        : current.contact.heroImage,
+      heroTitle: filled(formData.get("heroTitle"), current.contact.heroTitle),
+      heroIntro: filled(formData.get("heroIntro"), current.contact.heroIntro),
+      formEyebrow: filled(formData.get("formEyebrow"), current.contact.formEyebrow),
+      formTitle: filled(formData.get("formTitle"), current.contact.formTitle),
+      formIntro: filled(formData.get("formIntro"), current.contact.formIntro),
+      infoEyebrow: filled(formData.get("infoEyebrow"), current.contact.infoEyebrow),
+      infoTitle: filled(formData.get("infoTitle"), current.contact.infoTitle),
+      infoIntro: filled(formData.get("infoIntro"), current.contact.infoIntro),
+      mapEyebrow: filled(formData.get("mapEyebrow"), current.contact.mapEyebrow),
+      mapTitle: filled(formData.get("mapTitle"), current.contact.mapTitle),
+      reviewsEyebrow: filled(formData.get("reviewsEyebrow"), current.contact.reviewsEyebrow),
+      reviewsTitle: filled(formData.get("reviewsTitle"), current.contact.reviewsTitle),
+      reviewsIntro: filled(formData.get("reviewsIntro"), current.contact.reviewsIntro),
+      reviewsEmpty: filled(formData.get("reviewsEmpty"), current.contact.reviewsEmpty),
+      reviewsFormTitle: filled(formData.get("reviewsFormTitle"), current.contact.reviewsFormTitle),
+      faqEyebrow: filled(formData.get("faqEyebrow"), current.contact.faqEyebrow),
+      faqTitle: filled(formData.get("faqTitle"), current.contact.faqTitle),
+      faqMoreTitle: filled(formData.get("faqMoreTitle"), current.contact.faqMoreTitle),
+      faqMoreText: filled(formData.get("faqMoreText"), current.contact.faqMoreText),
+      faqs: faqs.length ? faqs : current.contact.faqs,
+    },
+  });
+  revalidateSite();
+  redirect("/admin/pages/contact?ok=1");
 }

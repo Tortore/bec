@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  careerPositions,
-  educationLevels,
-  experienceLevels,
-} from "@/lib/recruitment";
+import { educationLevels, experienceLevels } from "@/lib/recruitment";
 
 function foldLabel(value: string) {
   return value
@@ -27,7 +23,7 @@ export const applicationFieldsSchema = z.object({
   email: z.string().trim().email("Adresse e-mail invalide."),
   phone: z.string().trim().min(8, "Veuillez indiquer un numéro de téléphone."),
   city: z.string().trim().min(2, "Veuillez indiquer votre ville."),
-  position: enumFrom(careerPositions, "Choisissez un profil."),
+  position: z.string().trim().min(2, "Choisissez un profil.").max(80, "Le poste visé est trop long."),
   experience: enumFrom(experienceLevels, "Indiquez votre expérience."),
   education: enumFrom(educationLevels, "Indiquez votre formation."),
   message: z

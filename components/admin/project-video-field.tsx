@@ -78,7 +78,7 @@ export function ProjectVideoField({
       <div>
         <Label htmlFor={name}>Vidéo du projet (facultative)</Label>
         <p className="mt-1 text-sm text-slate-500">
-          Collez un lien YouTube pour une lecture directe sur le site, ou téléversez un fichier MP4 (50 Mo max).
+          Collez un lien YouTube, ou téléversez un MP4 H.264 optimisé « Fast Start » (50 Mo max).
         </p>
       </div>
 

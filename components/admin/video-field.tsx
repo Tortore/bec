@@ -13,10 +13,12 @@ export function VideoField({
   name,
   defaultValue = "",
   videos,
+  onUploadingChange,
 }: {
   name: string;
   defaultValue?: string;
   videos: string[];
+  onUploadingChange?: (uploading: boolean) => void;
 }) {
   const [value, setValue] = useState(defaultValue);
   const [error, setError] = useState("");
@@ -44,6 +46,7 @@ export function VideoField({
       return;
     }
     setUploading(true);
+    onUploadingChange?.(true);
     setError("");
     setOk("");
     const data = new FormData();
@@ -67,6 +70,7 @@ export function VideoField({
       );
     } finally {
       setUploading(false);
+      onUploadingChange?.(false);
     }
   }
 
@@ -79,7 +83,7 @@ export function VideoField({
     <div className="space-y-2">
       <Label htmlFor={name}>Vidéo de fond (facultative)</Label>
       <p className="text-sm text-slate-500">
-        Téléversez un fichier MP4 (H.264), WebM ou MOV, 50 Mo maximum. Puis enregistrez l’accueil.
+        Téléversez un fichier MP4 H.264 optimisé « Fast Start », WebM ou MOV, 50 Mo maximum. Puis enregistrez l’accueil.
       </p>
       {playbackSrc ? (
         <video
